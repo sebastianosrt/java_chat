@@ -1,11 +1,15 @@
 package Server;
 
+import jdk.nashorn.internal.parser.JSONParser;
+import netscape.javascript.JSObject;
+
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.PrintWriter;
 import java.net.Socket;
 import java.util.ArrayList;
+import org.json.*;
 
 // riceve i messaggi da un client e li inoltra al destinatario
 public class GestoreClient implements Runnable {
@@ -28,16 +32,16 @@ public class GestoreClient implements Runnable {
             username = input.readLine();
             // ascolta l'arrivo di messaggi finchè il client è connesso
             while (client.isConnected()) {
-                // riceve il messaggio che sarà composto così: "username-destinatario messaggio"
-                String[] messaggio = input.readLine().split(" ", 2);
-                String destinatario = messaggio[0];
-                String testo = messaggio[1];
+                // riceve il messaggio che sarà una JSON string
+                String messaggio = input.readLine();
+                // converto la stringa in oggetto e prendo il valore del campo destinatario
+                String destinatario = new JSONObject(messaggio).getString("destinatario");
                 // prende i client connessi
                 ArrayList<GestoreClient> clients = server.getClients();
                 // ricerca del destinatario tra i client ed invia il messaggio
                 for (GestoreClient c : clients)
                     if (c.getUsername().equals(destinatario))
-                        c.inviaMessaggio(testo);
+                        c.inviaMessaggio(messaggio);
                 // TODO: salvataggio nel database
             }
             // quando il client si disconnette
