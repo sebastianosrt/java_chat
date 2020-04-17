@@ -13,6 +13,7 @@ public class GestoreClient implements Runnable {
     private Socket client;
     private PrintWriter output;
     private BufferedReader input;
+    private String username;
 
     public GestoreClient(Server server, Socket client) {
         this.server = server;
@@ -23,18 +24,23 @@ public class GestoreClient implements Runnable {
     public void run() {
         try {
             init();
+            // ricevo l'username dal client gestito
+            username = input.readLine();
             // ascolta l'arrivo di messaggi finchè il client è connesso
             while (client.isConnected()) {
-                // riceve il messaggio
-                String messaggio = input.readLine();
-// TODO: invia messaggio al destinatario
+                // riceve il messaggio che sarà composto così: "username-destinatario messaggio"
+                String[] messaggio = input.readLine().split(" ", 2);
+                String destinatario = messaggio[0];
+                String testo = messaggio[1];
                 // prende i client connessi
                 ArrayList<GestoreClient> clients = server.getClients();
-                // ricerca del destinatario tra i client
-                for (GestoreClient c : clients) {
-
-                }
+                // ricerca del destinatario tra i client ed invia il messaggio
+                for (GestoreClient c : clients)
+                    if (c.getUsername().equals(destinatario))
+                        c.inviaMessaggio(testo);
+                // TODO: salvataggio nel database
             }
+            // quando il client si disconnette
             destroy();
         } catch (IOException e) {
             e.printStackTrace();
@@ -47,8 +53,9 @@ public class GestoreClient implements Runnable {
         input = new BufferedReader(new InputStreamReader(client.getInputStream()));
     }
 
-    // chiude gli stream ed i socket
+    // chiude gli stream ed i socket e rimuove un gestore client
     private void destroy() throws IOException {
+        server.rimuoviClient(username);
         output.close();
         input.close();
         client.close();
@@ -58,5 +65,10 @@ public class GestoreClient implements Runnable {
     public void inviaMessaggio(String messaggio) {
         output.println(messaggio);
         output.flush();
+    }
+
+    // ritorna l'username
+    public String getUsername() {
+        return username;
     }
 }
