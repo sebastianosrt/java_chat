@@ -43,7 +43,12 @@ public class GestoreClient implements Runnable {
             // quando il client si disconnette
             destroy();
         } catch (IOException e) {
-            e.printStackTrace();
+            // client si disconnette
+            try {
+                destroy();
+            } catch (IOException ex) {
+                ex.printStackTrace();
+            }
         }
     }
 
