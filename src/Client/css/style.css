@@ -1,0 +1,42 @@
+* {
+    -fx-color1: rgb(47, 47, 47);
+    -fx-color2: white;
+    -fx-color3: #9dffff;
+    -fx-color4: #ff68ff;
+    -fx-color5: rgb(175, 124, 175);
+    -fx-color6: rgb(125, 160, 151);
+    -fx-color7: rgb(128, 133, 130);
+}
+
+.body {
+    -fx-background-color: -fx-color1;
+}
+
+.label {
+    -fx-text-fill: -fx-color2;
+}
+
+.btn {
+    -fx-border-radius: 0;
+    -fx-background-color: -fx-color6;
+}
+
+.btn:hover {
+    -fx-background-color: -fx-color5;
+}
+
+.button:hover,
+.labelfor {
+    -fx-cursor: hand;
+}
+
+.input {
+    -fx-background-color: derive(-fx-color1, 20%);
+    -fx-text-box-border: #40e6a9;
+    -fx-focus-color: red;
+    -fx-text-fill: -fx-color2;
+}
+
+.error {
+    -fx-text-fill: red;
+}

@@ -2,20 +2,49 @@
 
 <?import javafx.scene.control.Button?>
 <?import javafx.scene.control.Label?>
+<?import javafx.scene.control.PasswordField?>
 <?import javafx.scene.control.TextField?>
 <?import javafx.scene.layout.AnchorPane?>
+<?import javafx.scene.layout.Pane?>
 <?import javafx.scene.text.Font?>
 
-<AnchorPane prefHeight="338.0" prefWidth="600.0" xmlns="http://javafx.com/javafx/11.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="Client.Views.LogInView">
+<AnchorPane prefHeight="338.0" prefWidth="600.0" stylesheets="@../css/style.css" xmlns="http://javafx.com/javafx" xmlns:fx="http://javafx.com/fxml" fx:controller="Client.Controllers.LogIn">
    <children>
-         <Button layoutX="264.0" layoutY="252.0" mnemonicParsing="false" prefHeight="45.0" prefWidth="72.0" text="Submit" />
-         <Label layoutX="264.0" layoutY="31.0" prefHeight="45.0" prefWidth="72.0" text="Log In">
-            <font>
-               <Font size="25.0" />
-            </font>
-         </Label>
-         <TextField layoutX="226.0" layoutY="131.0" text="Username" />
-         <TextField layoutX="226.0" layoutY="188.0" text="Password" />
-      <Label layoutX="287.0" layoutY="218.0" text="Error" />
+      <Pane fx:id="registrazionePanel" layoutX="10.0" layoutY="10.0" prefHeight="348.0" prefWidth="610.0" styleClass="body" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+         <children>
+            <Label layoutX="246.0" layoutY="30.0" prefHeight="45.0" prefWidth="109.0" text="Registrati">
+               <font>
+                  <Font size="25.0" />
+               </font>
+            </Label>
+            <TextField fx:id="username_r" layoutX="225.0" layoutY="96.0" promptText="Username" styleClass="input" />
+            <PasswordField fx:id="password_r" layoutX="224.0" layoutY="144.0" promptText="Password" styleClass="input" />
+            <Label fx:id="error_r" layoutX="286.0" layoutY="189.0" styleClass="error" text="Error" />
+            <Button fx:id="login_r" layoutX="311.0" layoutY="272.0" mnemonicParsing="false" onMouseClicked="#handleMouseClick" styleClass="btn" text="Log in" />
+            <Label fx:id="login_label" layoutX="178.0" layoutY="275.0" onMouseClicked="#handleMouseClick" styleClass="labelfor" text="Hai già un account?">
+               <font>
+                  <Font size="14.0" />
+               </font></Label>
+            <Button fx:id="submit_r" layoutX="263.0" layoutY="213.0" mnemonicParsing="false" onMouseClicked="#handleMouseClick" prefHeight="25.0" prefWidth="72.0" styleClass="btn" text="Invia" />
+         </children>
+      </Pane>
+      <Pane fx:id="loginPanel" prefHeight="338.0" prefWidth="600.0" styleClass="body" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+         <children>
+               <Label layoutX="264.0" layoutY="30.0" prefHeight="45.0" prefWidth="72.0" text="Log In">
+                  <font>
+                     <Font size="25.0" />
+                  </font>
+               </Label>
+               <TextField fx:id="username_f" layoutX="226.0" layoutY="96.0" promptText="Username" styleClass="input" />
+            <PasswordField fx:id="password_f" layoutX="226.0" layoutY="144.0" promptText="Password" styleClass="input" />
+            <Label fx:id="error_f" layoutX="287.0" layoutY="189.0" styleClass="error" text="Error" />
+            <Button fx:id="registrati_f" layoutX="313.0" layoutY="272.0" mnemonicParsing="false" onMouseClicked="#handleMouseClick" styleClass="btn" text="Registrati" />
+            <Label fx:id="registrati_label" layoutX="173.0" layoutY="275.0" onMouseClicked="#handleMouseClick" styleClass="labelfor" text="Non hai un'account?">
+               <font>
+                  <Font size="14.0" />
+               </font></Label>
+               <Button fx:id="submit_f" layoutX="264.0" layoutY="214.0" mnemonicParsing="false" onMouseClicked="#handleMouseClick" prefHeight="25.0" prefWidth="72.0" styleClass="btn" text="Invia" />
+         </children>
+      </Pane>
    </children>
 </AnchorPane>

@@ -1,5 +1,6 @@
 package Client.Views;
 
+import animatefx.animation.ZoomIn;
 import javafx.application.Application;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
@@ -15,7 +16,12 @@ public class LogInView extends Application {
         FXMLLoader loader = new FXMLLoader(getClass().getResource("LogInView.fxml"));
         Parent root = loader.load();
         Scene scene = new Scene(root);
+        primaryStage.setResizable(false);
         primaryStage.setScene(scene);
         primaryStage.show();
+    }
+
+    public static void main(String[] args) {
+        launch(args);
     }
 }
