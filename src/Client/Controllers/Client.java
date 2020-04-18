@@ -5,4 +5,8 @@ public class Client implements Runnable {
     public void run() {
 
     }
+
+    public void inviaMessaggio(String messaggio) {
+
+    }
 }
