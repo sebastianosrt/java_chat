@@ -1,6 +1,5 @@
 package Client.Controllers;
 
-import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
@@ -20,7 +19,7 @@ import java.util.ResourceBundle;
 * Questa classe gestisce l'interfaccia di log in
 * @author Sebastiano Sartor
 * */
-public class LogIn implements Initializable {
+public class LogInController implements Initializable {
     @FXML private Pane loginPanel;
     @FXML private Pane registrazionePanel;
     @FXML private TextField username_f;
@@ -44,24 +43,37 @@ public class LogIn implements Initializable {
     public void logIn(MouseEvent event) {
         // prende le credenziali dalle caselle di testo
         String username = username_f.getText();
-        String password = username_f.getText();
+        String password = password_f.getText();
         // TODO: query
         String error = "";
-//        if (error.length() > 0)
-//            error_f.setText(error);
+        if (username.length() == 0) {
+            error_f.setText("Inserisci un'username");
+            return;
+        }
+        if (password.length() == 0) {
+            error_f.setText("Inserisci una password");
+            return;
+        }
+        if (error.length() > 0)
+            error_f.setText(error);
 //        // apre la chat
 //        else {
-            try {
-                Node node = (Node) event.getSource();
-                Stage stage = (Stage) node.getScene().getWindow();
-                stage.close();
-                Scene scene = new Scene(FXMLLoader.load(getClass().getResource("/Client/Views/ChatView.fxml")));
-                stage.setScene(scene);
-                stage.setResizable(false);
-                stage.show();
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
+        try {
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("/Client/Views/ChatView.fxml"));
+            loader.setController(new ClientController());
+            ClientController controller = loader.getController();
+            controller.setUsername(username);
+
+            Scene scene = new Scene(loader.load());
+            Node node = (Node) event.getSource();
+            Stage stage = (Stage) node.getScene().getWindow();
+            stage.close();
+            stage.setScene(scene);
+            stage.setResizable(false);
+            stage.show();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
 //        }
     }
 
@@ -70,6 +82,8 @@ public class LogIn implements Initializable {
     * */
     @FXML
     private void handleMouseClick(MouseEvent event) {
+        error_r.setText("");
+        error_f.setText("");
         if (event.getSource() == submit_f) {
             logIn(event);
         } else if (event.getSource() == submit_r) {

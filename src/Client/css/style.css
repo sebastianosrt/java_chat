@@ -1,42 +1,59 @@
 * {
-    -fx-color1: rgb(47, 47, 47);
-    -fx-color2: white;
-    -fx-color3: #9dffff;
-    -fx-color4: #ff68ff;
-    -fx-color5: rgb(175, 124, 175);
-    -fx-color6: rgb(125, 160, 151);
-    -fx-color7: rgb(128, 133, 130);
+    -color1: white;
+    -color2: #6B61CB;
+    -color3: #707070;
 }
 
 .body {
-    -fx-background-color: -fx-color1;
+    -fx-background-color: -color2;
+}
+
+.panel1 {
+    -fx-background-color: -color2;
 }
 
 .label {
-    -fx-text-fill: -fx-color2;
-}
-
-.btn {
-    -fx-border-radius: 0;
-    -fx-background-color: -fx-color6;
-}
-
-.btn:hover {
-    -fx-background-color: -fx-color5;
-}
-
-.button:hover,
-.labelfor {
-    -fx-cursor: hand;
+    -fx-text-fill: -color1;
 }
 
 .input {
-    -fx-background-color: derive(-fx-color1, 20%);
-    -fx-text-box-border: #40e6a9;
-    -fx-focus-color: red;
-    -fx-text-fill: -fx-color2;
+    -fx-text-fill: -color1;
+    -fx-prompt-text-fill: derive(-color3, 90%);
+}
+
+.chatTitle {
+    -fx-background-color: -color3;
+}
+
+.separator *.line {
+    -fx-border-style: solid;
+    -fx-border-width: 1px;
+    -fx-border-color: -color3;
+}
+
+.separatorlight *.line {
+    -fx-border-style: solid;
+    -fx-border-width: 1px;
+    -fx-border-color: white;
 }
 
 .error {
     -fx-text-fill: red;
 }
+
+.button, .labelfor {
+    -fx-cursor: hand;
+}
+.button1 {
+    -fx-background-color: #8fffbf;
+}
+
+.button:hover {
+    -fx-background-color: #fcb103;
+    -fx-scale-x: 1.05;
+    -fx-scale-y: 1.05;
+}
+.button:pressed {
+     -fx-scale-y: 0.9;
+     -fx-scale-x: 0.9;
+ }
