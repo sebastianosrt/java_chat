@@ -54,10 +54,11 @@ public class LogInController implements Initializable {
             error_f.setText("Inserisci una password");
             return;
         }
-        if (error.length() > 0)
+        if (error.length() > 0) {
             error_f.setText(error);
-//        // apre la chat
-//        else {
+            return;
+        }
+        // apre la chat
         try {
             FXMLLoader loader = new FXMLLoader(getClass().getResource("/Client/Views/ChatView.fxml"));
             loader.setController(new ClientController());
@@ -74,7 +75,6 @@ public class LogInController implements Initializable {
         } catch (IOException e) {
             e.printStackTrace();
         }
-//        }
     }
 
     /*
