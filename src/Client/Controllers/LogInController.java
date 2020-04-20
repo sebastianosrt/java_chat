@@ -46,18 +46,18 @@ public class LogInController implements Initializable {
         String password = password_f.getText();
         // TODO: query
         String error = "";
-        if (username.length() == 0) {
-            error_f.setText("Inserisci un'username");
-            return;
-        }
-        if (password.length() == 0) {
-            error_f.setText("Inserisci una password");
-            return;
-        }
-        if (error.length() > 0) {
-            error_f.setText(error);
-            return;
-        }
+//        if (username.length() == 0) {
+//            error_f.setText("Inserisci un'username");
+//            return;
+//        }
+//        if (password.length() == 0) {
+//            error_f.setText("Inserisci una password");
+//            return;
+//        }
+//        if (error.length() > 0) {
+//            error_f.setText(error);
+//            return;
+//        }
         // apre la chat
         try {
             FXMLLoader loader = new FXMLLoader(getClass().getResource("/Client/Views/ChatView.fxml"));
@@ -72,6 +72,8 @@ public class LogInController implements Initializable {
             stage.setScene(scene);
             stage.setResizable(false);
             stage.show();
+            stage.requestFocus();
+            node.setFocusTraversable(true);
         } catch (IOException e) {
             e.printStackTrace();
         }

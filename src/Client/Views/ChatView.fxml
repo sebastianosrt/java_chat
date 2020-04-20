@@ -3,18 +3,19 @@
 <?import com.jfoenix.controls.JFXButton?>
 <?import com.jfoenix.controls.JFXTextField?>
 <?import javafx.scene.control.Label?>
+<?import javafx.scene.control.ScrollPane?>
 <?import javafx.scene.control.Separator?>
 <?import javafx.scene.layout.AnchorPane?>
 <?import javafx.scene.layout.Pane?>
 <?import javafx.scene.text.Font?>
 
-<AnchorPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="441.0" prefWidth="765.0" stylesheets="@../css/style.css" xmlns="http://javafx.com/javafx/11.0.1" xmlns:fx="http://javafx.com/fxml/1">
+<AnchorPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="441.0" prefWidth="765.0" style="-fx-background-color: white;" stylesheets="@../css/style.css" xmlns="http://javafx.com/javafx/11.0.1" xmlns:fx="http://javafx.com/fxml/1">
    <children>
       <Pane prefHeight="441.0" prefWidth="307.0" style="-fx-border-color: -color3;" styleClass="panel1" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="458.0" AnchorPane.topAnchor="0.0">
          <children>
             <Label fx:id="username_f" layoutX="14.0" layoutY="14.0" prefHeight="28.0" prefWidth="117.0" text="Username">
                <font>
-                  <Font size="19.0" />
+                  <Font size="20.0" />
                </font>
             </Label>
             <JFXTextField fx:id="search_f" focusColor="#00ff8c" labelFloat="true" layoutX="139.0" layoutY="16.0" prefHeight="25.0" prefWidth="134.0" promptText="cerca..." styleClass="input" unFocusColor="#defffc" />
@@ -23,8 +24,8 @@
       </Pane>
       <Separator layoutX="339.0" layoutY="383.0" prefHeight="3.0" prefWidth="395.0" />
       <JFXTextField fx:id="message_f" focusColor="#6b61cb" layoutX="333.0" layoutY="402.0" prefHeight="25.0" prefWidth="316.0" promptText="Inserisci il messaggio..." />
-      <JFXButton fx:id="sendBtn" buttonType="RAISED" layoutX="665.0" layoutY="400.0" prefHeight="30.0" prefWidth="69.0" styleClass="button1" text="Invia" />
-      <Pane layoutX="318.0" prefHeight="58.0" prefWidth="459.0" styleClass="chatTitle">
+      <JFXButton fx:id="sendBtn" buttonType="RAISED" layoutX="665.0" layoutY="400.0" onMouseClicked="#handleMouseClick" prefHeight="30.0" prefWidth="69.0" styleClass="button1" text="Invia" />
+      <Pane layoutX="316.0" prefHeight="58.0" prefWidth="467.0" styleClass="chatTitle">
          <children>
             <Label fx:id="destinatario_f" layoutX="21.0" layoutY="14.0" text="Destinatario">
                <font>
@@ -33,5 +34,6 @@
             </Label>
          </children>
       </Pane>
+      <ScrollPane fx:id="scrollPane" layoutX="324.0" layoutY="61.0" prefHeight="319.0" prefWidth="452.0" style="-fx-border-color: white; -fx-background-color: white;" />
    </children>
 </AnchorPane>

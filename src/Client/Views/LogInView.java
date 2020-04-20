@@ -18,6 +18,7 @@ public class LogInView extends Application {
         primaryStage.setResizable(false);
         primaryStage.setScene(scene);
         primaryStage.show();
+        primaryStage.requestFocus();
     }
 
     public static void main(String[] args) {
