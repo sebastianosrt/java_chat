@@ -23,7 +23,7 @@
          </children>
       </Pane>
       <Separator layoutX="339.0" layoutY="383.0" prefHeight="3.0" prefWidth="395.0" />
-      <JFXTextField fx:id="message_f" focusColor="#6b61cb" layoutX="333.0" layoutY="402.0" prefHeight="25.0" prefWidth="316.0" promptText="Inserisci il messaggio..." />
+      <JFXTextField fx:id="message_f" focusColor="#ff8300" layoutX="333.0" layoutY="402.0" prefHeight="25.0" prefWidth="316.0" promptText="Inserisci il messaggio..." unFocusColor="#6b61cb" />
       <JFXButton fx:id="sendBtn" buttonType="RAISED" layoutX="665.0" layoutY="400.0" onMouseClicked="#handleMouseClick" prefHeight="30.0" prefWidth="69.0" styleClass="button1" text="Invia" />
       <Pane layoutX="316.0" prefHeight="58.0" prefWidth="467.0" styleClass="chatTitle">
          <children>
