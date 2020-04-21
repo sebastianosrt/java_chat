@@ -12,7 +12,7 @@ import java.util.ArrayList;
 import org.json.*;
 
 // riceve i messaggi da un client e li inoltra al destinatario
-public class GestoreClient implements Runnable {
+class GestoreClient implements Runnable {
     private Server server;
     private Socket client;
     private PrintWriter output;

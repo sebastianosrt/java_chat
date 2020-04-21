@@ -5,7 +5,7 @@ import java.net.ServerSocket;
 import java.net.Socket;
 import java.util.ArrayList;
 
-public class Server implements Runnable {
+class Server implements Runnable {
     private ArrayList<GestoreClient> clients = new ArrayList<>();
 
     @Override
