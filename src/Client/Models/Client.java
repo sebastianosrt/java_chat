@@ -1,4 +1,4 @@
-package Client.Controllers;
+package Client.Models;
 
 public class Client implements Runnable {
 
