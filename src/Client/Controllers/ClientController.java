@@ -1,14 +1,9 @@
 package Client.Controllers;
 
-import javafx.event.EventHandler;
 import javafx.fxml.FXML;
-import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
-import javafx.geometry.Insets;
-import javafx.geometry.Orientation;
 import javafx.geometry.Pos;
 import javafx.scene.Node;
-import javafx.scene.Scene;
 import javafx.scene.control.*;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
@@ -25,16 +20,12 @@ import javafx.scene.text.Font;
 import javafx.scene.text.FontWeight;
 import javafx.scene.text.Text;
 import javafx.scene.text.TextFlow;
-import javafx.stage.Stage;
-import animatefx.animation.*;
 
 import java.awt.*;
 import java.awt.datatransfer.StringSelection;
-import java.awt.event.InputEvent;
-import java.io.DataOutput;
-import java.io.IOException;
 import java.net.URL;
 import java.util.ArrayList;
+import java.util.List;
 import java.util.ResourceBundle;
 
 
@@ -50,12 +41,16 @@ public class ClientController implements Initializable {
     @FXML private TextField message_f;
     @FXML private Button sendBtn;
     @FXML private ScrollPane scrollPane;
+    @FXML private ScrollPane contactsPane;
+    @FXML private Pane coveringPane;
     private VBox chatContaier;
+    private VBox contactsContaier;
     private int lastId = 0;
     private ContextMenu menu;
     private MenuItem copia;
     private MenuItem elimina;
     private HBox selectedItem;
+    private HBox activeContact = null;
 
     /*
      * Questo metodo gestisce i click del mouse
@@ -77,12 +72,13 @@ public class ClientController implements Initializable {
         username_f.setFocusTraversable(true);
         username_f.requestFocus();
 
+        // chat
         chatContaier = new VBox();
         chatContaier.setPrefWidth(scrollPane.getPrefWidth() - 20);
         scrollPane.setContent(chatContaier);
-
         chatContaier.heightProperty().addListener(observable -> scrollPane.setVvalue(1D));
 
+        // menù
         menu = new ContextMenu();
         elimina = new MenuItem("elimina");
         copia = new MenuItem("copia");
@@ -98,12 +94,47 @@ public class ClientController implements Initializable {
             // copy on clipboard
             Toolkit.getDefaultToolkit().getSystemClipboard().setContents(new StringSelection(str), null);
         });
+
+        // contatto test
+        contactsContaier = new VBox();
+        contactsContaier.setPrefWidth(contactsPane.getPrefWidth() - 5);
+        contactsPane.setContent(contactsContaier);
+
+        HBox hbox = new HBox();
+        hbox.getStyleClass().addAll("hbox", "contact");
+        hbox.setAlignment(Pos.CENTER_LEFT);
+        Label label = new Label("Usename");
+        label.setFont(Font.font("Arial", FontWeight.BOLD, 16));
+        hbox.getChildren().addAll(label);
+
+        hbox.setOnMouseClicked(e -> {
+            selectContact(e);
+        });
+
+        HBox hbox2 = new HBox();
+        hbox2.getStyleClass().addAll("hbox", "contact");
+        hbox2.setAlignment(Pos.CENTER_LEFT);
+        Label label2 = new Label("User");
+        label2.setFont(Font.font("Arial", FontWeight.BOLD, 16));
+        hbox2.getChildren().add(label2);
+
+        hbox2.setOnMouseClicked(e -> {
+            selectContact(e);
+        });
+
+        contactsContaier.getChildren().addAll(hbox, new Separator());
+        contactsContaier.getChildren().addAll(hbox2, new Separator());
     }
 
     public void setUsername(String username) {
         this.username = username;
     }
 
+    /*
+    * Questo metodo aggiunge alla view un nuovo messaggio e gli aggiunge un event listener
+    * @params username - l'username del mittente del messaggio
+    * @params message - il contenuto del messaggio
+    * */
     public void invia(String username, String message) {
         message = Double.toString(Math.random());
 
@@ -151,5 +182,46 @@ public class ClientController implements Initializable {
         });
 
         chatContaier.getChildren().addAll(hbox);
+        raiseContact();
+    }
+
+    /*
+     * Questo metodo seleziona un contatto
+     * @params event - l'evento del click di tipo MouseEvent
+     * */
+    private void selectContact(MouseEvent e) {
+        // toglie la classe css attivo dal contatto attivo precendente
+        if (activeContact != null) activeContact.getStyleClass().remove("contactActive");
+
+        HBox b = (HBox) e.getSource();
+        activeContact = b;
+        b.getStyleClass().add("contactActive");
+        coveringPane.toBack();
+        chatContaier.getChildren().clear();
+    }
+
+    /*
+    * Questo metodo porta in cima alla lista dei contatti l'ultimo con cui si è messaggato
+    * se non è già primo
+    * */
+    private void raiseContact() {
+        // metto i contatti in una lista
+        List<Node> nodes = new ArrayList<Node>(contactsContaier.getChildren());
+        // se il contatto è già in cima
+        if (nodes.get(0).equals(activeContact))
+            return;
+        // prendo l'indice del contatto da portare in alto per rimuovere il separator
+        int i = nodes.indexOf(activeContact);
+        // rimuovo separator
+        nodes.remove(i + 1);
+        // rimuovo il contatto da portare in alto
+        nodes.remove(activeContact);
+        // lo porto in alto (lo metto come primo nodo della lista)
+        nodes.add(0, activeContact);
+        // aggiungo un separator in 2 posizione
+        nodes.add(1, new Separator());
+        // rimuovo tutti i contatti e ci metto la nuova lista
+        contactsContaier.getChildren().clear();
+        contactsContaier.getChildren().addAll(nodes);
     }
 }

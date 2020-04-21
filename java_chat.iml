@@ -10,15 +10,6 @@
     <orderEntry type="module-library">
       <library>
         <CLASSES>
-          <root url="jar://$MODULE_DIR$/src/lib/json-20190722.jar!/" />
-        </CLASSES>
-        <JAVADOC />
-        <SOURCES />
-      </library>
-    </orderEntry>
-    <orderEntry type="module-library">
-      <library>
-        <CLASSES>
           <root url="jar://$MODULE_DIR$/src/lib/AnimateFX-1.2.1.jar!/" />
         </CLASSES>
         <JAVADOC />
@@ -37,7 +28,7 @@
     <orderEntry type="module-library">
       <library>
         <CLASSES>
-          <root url="jar://$MODULE_DIR$/src/lib/fontawesomefx-8.9.jar!/" />
+          <root url="jar://$MODULE_DIR$/src/lib/json-20190722.jar!/" />
         </CLASSES>
         <JAVADOC />
         <SOURCES />

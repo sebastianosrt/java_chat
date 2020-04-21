@@ -13,13 +13,14 @@
    <children>
       <Pane prefHeight="441.0" prefWidth="307.0" style="-fx-border-color: -color3;" styleClass="panel1" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="458.0" AnchorPane.topAnchor="0.0">
          <children>
-            <Label fx:id="username_f" layoutX="14.0" layoutY="14.0" prefHeight="28.0" prefWidth="117.0" text="Username">
+            <Label fx:id="username_f" layoutX="14.0" layoutY="13.0" prefHeight="32.0" prefWidth="134.0" text="Username">
                <font>
-                  <Font size="20.0" />
+                  <Font name="System Bold" size="22.0" />
                </font>
             </Label>
-            <JFXTextField fx:id="search_f" focusColor="#00ff8c" labelFloat="true" layoutX="139.0" layoutY="16.0" prefHeight="25.0" prefWidth="134.0" promptText="cerca..." styleClass="input" unFocusColor="#defffc" />
+            <JFXTextField fx:id="search_f" focusColor="#00ff8c" labelFloat="true" layoutX="154.0" layoutY="17.0" prefHeight="25.0" prefWidth="134.0" promptText="cerca..." styleClass="input" unFocusColor="#defffc" />
             <Separator layoutX="35.0" layoutY="58.0" maxHeight="1.0" opacity="0.65" prefHeight="1.0" prefWidth="238.0" styleClass="separatorlight" />
+            <ScrollPane fx:id="contactsPane" layoutY="64.0" prefHeight="377.0" prefWidth="316.0" styleClass="panel1" />
          </children>
       </Pane>
       <Separator layoutX="339.0" layoutY="383.0" prefHeight="3.0" prefWidth="395.0" />
@@ -35,5 +36,14 @@
          </children>
       </Pane>
       <ScrollPane fx:id="scrollPane" layoutX="324.0" layoutY="61.0" prefHeight="319.0" prefWidth="452.0" style="-fx-border-color: white; -fx-background-color: white;" />
+      <Pane fx:id="coveringPane" layoutX="316.0" layoutY="-16.0" prefHeight="463.0" prefWidth="479.0" style="-fx-background-color: white;">
+         <children>
+            <Label layoutX="129.0" layoutY="217.0" style="-fx-text-fill: black;" text="Nessuna chat selezionata">
+               <font>
+                  <Font size="20.0" />
+               </font>
+            </Label>
+         </children>
+      </Pane>
    </children>
 </AnchorPane>

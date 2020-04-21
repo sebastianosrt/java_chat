@@ -38,6 +38,7 @@
     -fx-cursor: hand;
 }
 .scroll-pane > .viewport  { -fx-background-color: white; }
+.panel1 > .viewport  { -fx-background-color: -color2; }
 .button1 {
     -fx-background-color: #8fffbf;
 }
@@ -68,9 +69,8 @@
      c -0.436089,3.14572 -2.890695,3.57304 -4.908212,4.67449 z";
 }
 .hbox{
-    -fx-background-insets: 15;
+//    -fx-background-insets: 15;
     -fx-padding: 12px;
-}fx-padding: 12px;
 }
 .tempFlow{
     -fx-padding: 5 15 5 5;
@@ -81,12 +81,10 @@
 .scroll-bar:horizontal, .scroll-bar:vertical{
     -fx-background-color:transparent;
 }
-
 .increment-button, .decrement-button {
     -fx-background-color: transparent;
     -fx-border-color: transparent;
 }
-
 .scroll-bar:horizontal .track,
 .scroll-bar:vertical .track{
     -fx-background-color: transparent;
@@ -104,4 +102,13 @@
 }
 .menu-item .label {
     -fx-text-fill: black;
+}
+.contact:hover {
+    -fx-background-color: derive(-color5, -20%);
+}
+.contactActive {
+    -fx-background-color: derive(-color4, -40%);
+}
+.contactActive:hover {
+    -fx-background-color: derive(-color4, -40%);
 }
