@@ -1,5 +1,7 @@
 package Client.Controllers;
 
+import com.jfoenix.controls.JFXTextArea;
+import javafx.application.Platform;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.geometry.Pos;
@@ -10,6 +12,7 @@ import javafx.scene.control.Label;
 import javafx.scene.control.MenuItem;
 import javafx.scene.control.ScrollPane;
 import javafx.scene.control.TextField;
+import javafx.scene.image.ImageView;
 import javafx.scene.input.KeyCode;
 import javafx.scene.input.MouseButton;
 import javafx.scene.input.MouseEvent;
@@ -22,8 +25,10 @@ import javafx.scene.text.Font;
 import javafx.scene.text.FontWeight;
 import javafx.scene.text.Text;
 import javafx.scene.text.TextFlow;
+import javafx.stage.Stage;
 
 import java.awt.*;
+import java.awt.TextArea;
 import java.awt.datatransfer.StringSelection;
 import java.net.URL;
 import java.util.ArrayList;
@@ -41,11 +46,13 @@ public class ClientController implements Initializable {
     @FXML private Label username_f;
     @FXML private Label destinatario_f;
     @FXML private TextField search_f;
-    @FXML private TextField message_f;
+    @FXML private JFXTextArea message_f;
     @FXML private Button sendBtn;
     @FXML private ScrollPane scrollPane;
     @FXML private ScrollPane contactsPane;
     @FXML private Pane coveringPane;
+    @FXML private ImageView closeBtn;
+    @FXML private ImageView minimizeBtn;
     private VBox chatContaier;
     private VBox contactsContaier;
     private int lastId = 0;
@@ -138,6 +145,14 @@ public class ClientController implements Initializable {
                 message_f.setText("");
             }
         });
+        // chiudi scheda
+        closeBtn.setOnMouseClicked(e -> {
+            Platform.exit();
+        });
+        // minimizza scheda
+        minimizeBtn.setOnMouseClicked(e -> {
+            ((Stage)((ImageView)e.getSource()).getScene().getWindow()).setIconified(true);
+        });
     }
 
     public void setUsername(String username) {
@@ -151,51 +166,55 @@ public class ClientController implements Initializable {
     * */
     public void addMessaggio(String username, String message) {
         if (message.length() > 0) {
-            Text text=new Text(message);
-            text.setFill(Color.BLACK);
+            //toglie gli \n finali
+            while (message.length() > 0 && message.charAt(message.length() - 1) == '\n') message = message.substring(0, message.length() - 1);
+            if (message.length() > 0) {
+                Text text=new Text(message);
+                text.setFill(Color.BLACK);
 
-            TextFlow tempFlow = new TextFlow();
-            if(!this.username.equals(username)){
-                text.setFill(Color.WHITE);
-                Text txtName=new Text(username + "\n");
-                txtName.setFill(Color.WHITE);
-                txtName.setFont(Font.font("Verdana", FontWeight.BOLD, 12));
-                txtName.getStyleClass().add("txtName");
-                tempFlow.getChildren().add(txtName);
-            }
-
-            tempFlow.getChildren().add(text);
-            tempFlow.setMaxWidth(200);
-
-            TextFlow flow = new TextFlow(tempFlow);
-
-            HBox hbox = new HBox(12);
-
-            if (!this.username.equals(username)) {
-                tempFlow.getStyleClass().add("tempFlowFlipped");
-                flow.getStyleClass().add("textFlowFlipped");
-                chatContaier.setAlignment(Pos.TOP_LEFT);
-                hbox.setAlignment(Pos.CENTER_LEFT);
-            } else {
-                tempFlow.getStyleClass().add("tempFlow");
-                flow.getStyleClass().add("textFlow");
-                hbox.setAlignment(Pos.BOTTOM_RIGHT);
-            }
-            hbox.getChildren().add(flow);
-            hbox.getStyleClass().add("hbox");
-            hbox.setId(lastId++ + "");
-
-            flow.setAccessibleText(message);
-
-            hbox.setOnMouseClicked((MouseEvent e) -> {
-                if (e.getButton() == MouseButton.SECONDARY) {
-                    selectedItem = (HBox) e.getSource();
-                    menu.show(scrollPane, e.getScreenX(), e.getScreenY());
+                TextFlow tempFlow = new TextFlow();
+                if(!this.username.equals(username)){
+                    text.setFill(Color.WHITE);
+                    Text txtName=new Text(username + "\n");
+                    txtName.setFill(Color.WHITE);
+                    txtName.setFont(Font.font("Verdana", FontWeight.BOLD, 12));
+                    txtName.getStyleClass().add("txtName");
+                    tempFlow.getChildren().add(txtName);
                 }
-            });
 
-            chatContaier.getChildren().addAll(hbox);
-            raiseContact();
+                tempFlow.getChildren().add(text);
+                tempFlow.setMaxWidth(200);
+
+                TextFlow flow = new TextFlow(tempFlow);
+
+                HBox hbox = new HBox(12);
+
+                if (!this.username.equals(username)) {
+                    tempFlow.getStyleClass().add("tempFlowFlipped");
+                    flow.getStyleClass().add("textFlowFlipped");
+                    chatContaier.setAlignment(Pos.TOP_LEFT);
+                    hbox.setAlignment(Pos.CENTER_LEFT);
+                } else {
+                    tempFlow.getStyleClass().add("tempFlow");
+                    flow.getStyleClass().add("textFlow");
+                    hbox.setAlignment(Pos.BOTTOM_RIGHT);
+                }
+                hbox.getChildren().add(flow);
+                hbox.getStyleClass().add("hbox");
+                hbox.setId(lastId++ + "");
+
+                flow.setAccessibleText(message);
+
+                hbox.setOnMouseClicked((MouseEvent e) -> {
+                    if (e.getButton() == MouseButton.SECONDARY) {
+                        selectedItem = (HBox) e.getSource();
+                        menu.show(scrollPane, e.getScreenX(), e.getScreenY());
+                    }
+                });
+
+                chatContaier.getChildren().addAll(hbox);
+                raiseContact();
+            }
         }
     }
 

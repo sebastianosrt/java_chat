@@ -1,11 +1,15 @@
 package Client.Controllers;
 
+import javafx.application.Platform;
+import javafx.event.EventHandler;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
 import javafx.scene.Node;
+import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.*;
+import javafx.scene.image.ImageView;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.Pane;
 import javafx.stage.Stage;
@@ -34,6 +38,10 @@ public class LogInController implements Initializable {
     @FXML private Button login_r;
     @FXML private Label registrati_label;
     @FXML private Label login_label;
+    @FXML private ImageView closeBtn;
+    @FXML private ImageView minimizeBtn;
+    private double xOffset = 0;
+    private double yOffset = 0;
 
     /*
     * Questo metodo prende le credenziali dalla view, esegue la query al database
@@ -65,7 +73,8 @@ public class LogInController implements Initializable {
             ClientController controller = loader.getController();
             controller.setUsername(username);
 
-            Scene scene = new Scene(loader.load());
+            Parent root = loader.load();
+            Scene scene = new Scene(root);
             Node node = (Node) event.getSource();
             Stage stage = (Stage) node.getScene().getWindow();
             stage.close();
@@ -74,6 +83,15 @@ public class LogInController implements Initializable {
             stage.show();
             stage.requestFocus();
             node.setFocusTraversable(true);
+
+            root.setOnMousePressed(event12 -> {
+                xOffset = event12.getSceneX();
+                yOffset = event12.getSceneY();
+            });
+            root.setOnMouseDragged(event1 -> {
+                stage.setX(event1.getScreenX() - xOffset);
+                stage.setY(event1.getScreenY() - yOffset);
+            });
         } catch (IOException e) {
             e.printStackTrace();
         }
@@ -106,5 +124,14 @@ public class LogInController implements Initializable {
     public void initialize(URL location, ResourceBundle resources) {
         error_f.setText("");
         error_r.setText("");
+
+        // chiudi scheda
+        closeBtn.setOnMouseClicked(e -> {
+            Platform.exit();
+        });
+        // minimizza scheda
+        minimizeBtn.setOnMouseClicked(e -> {
+            ((Stage)((ImageView)e.getSource()).getScene().getWindow()).setIconified(true);
+        });
     }
 }
