@@ -10,8 +10,10 @@ import javafx.scene.control.Label;
 import javafx.scene.control.MenuItem;
 import javafx.scene.control.ScrollPane;
 import javafx.scene.control.TextField;
+import javafx.scene.input.KeyCode;
 import javafx.scene.input.MouseButton;
 import javafx.scene.input.MouseEvent;
+import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.Pane;
 import javafx.scene.layout.VBox;
@@ -35,6 +37,7 @@ import java.util.ResourceBundle;
  * */
 public class ClientController implements Initializable {
     private String username;
+    @FXML private AnchorPane body;
     @FXML private Label username_f;
     @FXML private Label destinatario_f;
     @FXML private TextField search_f;
@@ -59,7 +62,8 @@ public class ClientController implements Initializable {
     private void handleMouseClick(MouseEvent event) {
         // invia il messaggio
         if (event.getSource() == sendBtn) {
-            invia("", "wefewvwev");
+            addMessaggio(username, message_f.getText());
+            message_f.setText("");
         }
     }
 
@@ -106,6 +110,7 @@ public class ClientController implements Initializable {
         Label label = new Label("Usename");
         label.setFont(Font.font("Arial", FontWeight.BOLD, 16));
         hbox.getChildren().addAll(label);
+        hbox.setAccessibleText(label.getText());
 
         hbox.setOnMouseClicked(e -> {
             selectContact(e);
@@ -117,6 +122,7 @@ public class ClientController implements Initializable {
         Label label2 = new Label("User");
         label2.setFont(Font.font("Arial", FontWeight.BOLD, 16));
         hbox2.getChildren().add(label2);
+        hbox2.setAccessibleText(label2.getText());
 
         hbox2.setOnMouseClicked(e -> {
             selectContact(e);
@@ -124,6 +130,14 @@ public class ClientController implements Initializable {
 
         contactsContaier.getChildren().addAll(hbox, new Separator());
         contactsContaier.getChildren().addAll(hbox2, new Separator());
+
+        // quando viene premuto enter invia un messaggio
+        body.setOnKeyReleased(e -> {
+            if (e.getCode() == KeyCode.ENTER) {
+                addMessaggio(username, message_f.getText());
+                message_f.setText("");
+            }
+        });
     }
 
     public void setUsername(String username) {
@@ -135,54 +149,54 @@ public class ClientController implements Initializable {
     * @params username - l'username del mittente del messaggio
     * @params message - il contenuto del messaggio
     * */
-    public void invia(String username, String message) {
-        message = Double.toString(Math.random());
+    public void addMessaggio(String username, String message) {
+        if (message.length() > 0) {
+            Text text=new Text(message);
+            text.setFill(Color.BLACK);
 
-        Text text=new Text(message);
-        text.setFill(Color.BLACK);
-
-        TextFlow tempFlow = new TextFlow();
-        if(!this.username.equals(username)){
-            text.setFill(Color.WHITE);
-            Text txtName=new Text(username + "\n");
-            txtName.setFill(Color.WHITE);
-            txtName.setFont(Font.font("Verdana", FontWeight.BOLD, 12));
-            txtName.getStyleClass().add("txtName");
-            tempFlow.getChildren().add(txtName);
-        }
-
-        tempFlow.getChildren().add(text);
-        tempFlow.setMaxWidth(200);
-
-        TextFlow flow = new TextFlow(tempFlow);
-
-        HBox hbox = new HBox(12);
-
-        if (!this.username.equals(username)) {
-            tempFlow.getStyleClass().add("tempFlowFlipped");
-            flow.getStyleClass().add("textFlowFlipped");
-            chatContaier.setAlignment(Pos.TOP_LEFT);
-            hbox.setAlignment(Pos.CENTER_LEFT);
-        } else {
-            tempFlow.getStyleClass().add("tempFlow");
-            flow.getStyleClass().add("textFlow");
-            hbox.setAlignment(Pos.BOTTOM_RIGHT);
-        }
-        hbox.getChildren().add(flow);
-        hbox.getStyleClass().add("hbox");
-        hbox.setId(lastId++ + "");
-
-        flow.setAccessibleText(message);
-
-        hbox.setOnMouseClicked((MouseEvent e) -> {
-            if (e.getButton() == MouseButton.SECONDARY) {
-                selectedItem = (HBox) e.getSource();
-                menu.show(scrollPane, e.getScreenX(), e.getScreenY());
+            TextFlow tempFlow = new TextFlow();
+            if(!this.username.equals(username)){
+                text.setFill(Color.WHITE);
+                Text txtName=new Text(username + "\n");
+                txtName.setFill(Color.WHITE);
+                txtName.setFont(Font.font("Verdana", FontWeight.BOLD, 12));
+                txtName.getStyleClass().add("txtName");
+                tempFlow.getChildren().add(txtName);
             }
-        });
 
-        chatContaier.getChildren().addAll(hbox);
-        raiseContact();
+            tempFlow.getChildren().add(text);
+            tempFlow.setMaxWidth(200);
+
+            TextFlow flow = new TextFlow(tempFlow);
+
+            HBox hbox = new HBox(12);
+
+            if (!this.username.equals(username)) {
+                tempFlow.getStyleClass().add("tempFlowFlipped");
+                flow.getStyleClass().add("textFlowFlipped");
+                chatContaier.setAlignment(Pos.TOP_LEFT);
+                hbox.setAlignment(Pos.CENTER_LEFT);
+            } else {
+                tempFlow.getStyleClass().add("tempFlow");
+                flow.getStyleClass().add("textFlow");
+                hbox.setAlignment(Pos.BOTTOM_RIGHT);
+            }
+            hbox.getChildren().add(flow);
+            hbox.getStyleClass().add("hbox");
+            hbox.setId(lastId++ + "");
+
+            flow.setAccessibleText(message);
+
+            hbox.setOnMouseClicked((MouseEvent e) -> {
+                if (e.getButton() == MouseButton.SECONDARY) {
+                    selectedItem = (HBox) e.getSource();
+                    menu.show(scrollPane, e.getScreenX(), e.getScreenY());
+                }
+            });
+
+            chatContaier.getChildren().addAll(hbox);
+            raiseContact();
+        }
     }
 
     /*
@@ -190,14 +204,22 @@ public class ClientController implements Initializable {
      * @params event - l'evento del click di tipo MouseEvent
      * */
     private void selectContact(MouseEvent e) {
-        // toglie la classe css attivo dal contatto attivo precendente
-        if (activeContact != null) activeContact.getStyleClass().remove("contactActive");
-
+        // prendo il contatto selezionato dall'evento
         HBox b = (HBox) e.getSource();
-        activeContact = b;
-        b.getStyleClass().add("contactActive");
-        coveringPane.toBack();
-        chatContaier.getChildren().clear();
+        // se il contatto selezionato non è già attivo
+        if (b != activeContact) {
+            // toglie la classe css attivo dal contatto attivo precendente
+            if (activeContact != null) activeContact.getStyleClass().remove("contactActive");
+            // rende attivo il nuovo contatto
+            activeContact = b;
+            b.getStyleClass().add("contactActive");
+            // toglie il pannello che dice che nessuna chat è selezionata
+            coveringPane.toBack();
+            // toglie tutti i messaggi con il contatto precedente
+            chatContaier.getChildren().clear();
+            // setta il nome del destinatario
+            destinatario_f.setText(b.getAccessibleText());
+        }
     }
 
     /*
