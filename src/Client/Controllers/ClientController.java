@@ -1,5 +1,7 @@
 package Client.Controllers;
 
+import Client.Models.Messaggio;
+import Client.Models.Test;
 import com.jfoenix.controls.JFXTextArea;
 import javafx.application.Platform;
 import javafx.fxml.FXML;
@@ -28,10 +30,10 @@ import javafx.scene.text.TextFlow;
 import javafx.stage.Stage;
 
 import java.awt.*;
-import java.awt.TextArea;
 import java.awt.datatransfer.StringSelection;
 import java.net.URL;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.ResourceBundle;
 
@@ -106,37 +108,13 @@ public class ClientController implements Initializable {
             Toolkit.getDefaultToolkit().getSystemClipboard().setContents(new StringSelection(str), null);
         });
 
-        // contatto test
+        // contatti
         contactsContaier = new VBox();
         contactsContaier.setPrefWidth(contactsPane.getPrefWidth() - 5);
         contactsPane.setContent(contactsContaier);
 
-        HBox hbox = new HBox();
-        hbox.getStyleClass().addAll("hbox", "contact");
-        hbox.setAlignment(Pos.CENTER_LEFT);
-        Label label = new Label("Usename");
-        label.setFont(Font.font("Arial", FontWeight.BOLD, 16));
-        hbox.getChildren().addAll(label);
-        hbox.setAccessibleText(label.getText());
-
-        hbox.setOnMouseClicked(e -> {
-            selectContact(e);
-        });
-
-        HBox hbox2 = new HBox();
-        hbox2.getStyleClass().addAll("hbox", "contact");
-        hbox2.setAlignment(Pos.CENTER_LEFT);
-        Label label2 = new Label("User");
-        label2.setFont(Font.font("Arial", FontWeight.BOLD, 16));
-        hbox2.getChildren().add(label2);
-        hbox2.setAccessibleText(label2.getText());
-
-        hbox2.setOnMouseClicked(e -> {
-            selectContact(e);
-        });
-
-        contactsContaier.getChildren().addAll(hbox, new Separator());
-        contactsContaier.getChildren().addAll(hbox2, new Separator());
+        ArrayList<String> contatti = new ArrayList<String>(Arrays.asList(new String[]{"user", "pippo", "foo"}));
+        caricaContatti(contatti);
 
         // quando viene premuto enter invia un messaggio
         body.setOnKeyReleased(e -> {
@@ -153,6 +131,10 @@ public class ClientController implements Initializable {
         minimizeBtn.setOnMouseClicked(e -> {
             ((Stage)((ImageView)e.getSource()).getScene().getWindow()).setIconified(true);
         });
+        // ricerca utente
+        search_f.setOnKeyPressed(e -> {
+           // TODO: ricerca utente
+        });
     }
 
     public void setUsername(String username) {
@@ -165,55 +147,57 @@ public class ClientController implements Initializable {
     * @params message - il contenuto del messaggio
     * */
     public void addMessaggio(String username, String message) {
-        if (message.length() > 0) {
-            //toglie gli \n finali
-            while (message.length() > 0 && message.charAt(message.length() - 1) == '\n') message = message.substring(0, message.length() - 1);
+        if (username.equals(destinatario_f.getText()) || username == this.username) {
             if (message.length() > 0) {
-                Text text=new Text(message);
-                text.setFill(Color.BLACK);
+                //toglie gli \n finali
+                while (message.length() > 0 && message.charAt(message.length() - 1) == '\n') message = message.substring(0, message.length() - 1);
+                if (message.length() > 0) {
+                    Text text=new Text(message);
+                    text.setFill(Color.BLACK);
 
-                TextFlow tempFlow = new TextFlow();
-                if(!this.username.equals(username)){
-                    text.setFill(Color.WHITE);
-                    Text txtName=new Text(username + "\n");
-                    txtName.setFill(Color.WHITE);
-                    txtName.setFont(Font.font("Verdana", FontWeight.BOLD, 12));
-                    txtName.getStyleClass().add("txtName");
-                    tempFlow.getChildren().add(txtName);
-                }
-
-                tempFlow.getChildren().add(text);
-                tempFlow.setMaxWidth(200);
-
-                TextFlow flow = new TextFlow(tempFlow);
-
-                HBox hbox = new HBox(12);
-
-                if (!this.username.equals(username)) {
-                    tempFlow.getStyleClass().add("tempFlowFlipped");
-                    flow.getStyleClass().add("textFlowFlipped");
-                    chatContaier.setAlignment(Pos.TOP_LEFT);
-                    hbox.setAlignment(Pos.CENTER_LEFT);
-                } else {
-                    tempFlow.getStyleClass().add("tempFlow");
-                    flow.getStyleClass().add("textFlow");
-                    hbox.setAlignment(Pos.BOTTOM_RIGHT);
-                }
-                hbox.getChildren().add(flow);
-                hbox.getStyleClass().add("hbox");
-                hbox.setId(lastId++ + "");
-
-                flow.setAccessibleText(message);
-
-                hbox.setOnMouseClicked((MouseEvent e) -> {
-                    if (e.getButton() == MouseButton.SECONDARY) {
-                        selectedItem = (HBox) e.getSource();
-                        menu.show(scrollPane, e.getScreenX(), e.getScreenY());
+                    TextFlow tempFlow = new TextFlow();
+                    if(!this.username.equals(username)){
+                        text.setFill(Color.WHITE);
+                        Text txtName=new Text(username + "\n");
+                        txtName.setFill(Color.WHITE);
+                        txtName.setFont(Font.font("Verdana", FontWeight.BOLD, 12));
+                        txtName.getStyleClass().add("txtName");
+                        tempFlow.getChildren().add(txtName);
                     }
-                });
 
-                chatContaier.getChildren().addAll(hbox);
-                raiseContact();
+                    tempFlow.getChildren().add(text);
+                    tempFlow.setMaxWidth(200);
+
+                    TextFlow flow = new TextFlow(tempFlow);
+
+                    HBox hbox = new HBox(12);
+
+                    if (!this.username.equals(username)) {
+                        tempFlow.getStyleClass().add("tempFlowFlipped");
+                        flow.getStyleClass().add("textFlowFlipped");
+                        chatContaier.setAlignment(Pos.TOP_LEFT);
+                        hbox.setAlignment(Pos.CENTER_LEFT);
+                    } else {
+                        tempFlow.getStyleClass().add("tempFlow");
+                        flow.getStyleClass().add("textFlow");
+                        hbox.setAlignment(Pos.BOTTOM_RIGHT);
+                    }
+                    hbox.getChildren().add(flow);
+                    hbox.getStyleClass().add("hbox");
+                    hbox.setId(lastId++ + "");
+
+                    flow.setAccessibleText(message);
+
+                    hbox.setOnMouseClicked((MouseEvent e) -> {
+                        if (e.getButton() == MouseButton.SECONDARY) {
+                            selectedItem = (HBox) e.getSource();
+                            menu.show(scrollPane, e.getScreenX(), e.getScreenY());
+                        }
+                    });
+
+                    chatContaier.getChildren().addAll(hbox);
+                    raiseContact();
+                }
             }
         }
     }
@@ -238,6 +222,8 @@ public class ClientController implements Initializable {
             chatContaier.getChildren().clear();
             // setta il nome del destinatario
             destinatario_f.setText(b.getAccessibleText());
+            // TODO: carica i messaggi
+//            caricaMessaggi(DB.getMessaggi(chatId));
         }
     }
 
@@ -264,5 +250,32 @@ public class ClientController implements Initializable {
         // rimuovo tutti i contatti e ci metto la nuova lista
         contactsContaier.getChildren().clear();
         contactsContaier.getChildren().addAll(nodes);
+    }
+
+    public void caricaMessaggi(ArrayList<Messaggio> messaggi) {
+        messaggi.forEach(m -> {
+            addMessaggio(m.mittente, m.testo);
+        });
+    }
+
+    public void addContatto(String username) {
+        HBox hbox = new HBox();
+        hbox.getStyleClass().addAll("hbox", "contact");
+        hbox.setAlignment(Pos.CENTER_LEFT);
+        Label label = new Label(username);
+        label.setFont(Font.font("Arial", FontWeight.BOLD, 16));
+        hbox.getChildren().addAll(label);
+        hbox.setAccessibleText(label.getText());
+
+        hbox.setOnMouseClicked(e -> {
+            selectContact(e);
+        });
+        contactsContaier.getChildren().addAll(hbox, new Separator());
+    }
+
+    public void caricaContatti(ArrayList<String> contatti) {
+        contatti.forEach(c -> {
+            addContatto(c);
+        });
     }
 }

@@ -34,15 +34,17 @@ class GestoreClient implements Runnable {
             while (client.isConnected()) {
                 // riceve il messaggio che sarà una JSON string
                 String messaggio = input.readLine();
-                // converto la stringa in oggetto e prendo il valore del campo destinatario
-                String destinatario = new JSONObject(messaggio).getString("destinatario");
-                // prende i client connessi
-                ArrayList<GestoreClient> clients = server.getClients();
-                // ricerca del destinatario tra i client ed invia il messaggio
-                for (GestoreClient c : clients)
-                    if (c.getUsername().equals(destinatario))
-                        c.inviaMessaggio(messaggio);
-                // TODO: salvataggio nel database
+                if (new JSONObject(messaggio).getString("comando").equals("invia_messaggio")) {
+                    // converto la stringa in oggetto e prendo il valore del campo destinatario
+                    String destinatario = new JSONObject(messaggio).getString("destinatario");
+                    // prende i client connessi
+                    ArrayList<GestoreClient> clients = server.getClients();
+                    // ricerca del destinatario tra i client ed invia il messaggio
+                    for (GestoreClient c : clients)
+                        if (c.getUsername().equals(destinatario))
+                            c.inviaMessaggio(messaggio);
+                    // TODO: salvataggio nel database
+                }
             }
             // quando il client si disconnette
             destroy();
