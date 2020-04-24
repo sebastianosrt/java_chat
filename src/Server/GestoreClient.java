@@ -34,7 +34,9 @@ class GestoreClient implements Runnable {
             while (client.isConnected()) {
                 // riceve il messaggio che sarà una JSON string
                 String messaggio = input.readLine();
-                if (new JSONObject(messaggio).getString("comando").equals("invia_messaggio")) {
+                String comando = new JSONObject(messaggio).getString("comando");
+
+                if (comando.equals("invia_messaggio")) {
                     // converto la stringa in oggetto e prendo il valore del campo destinatario
                     String destinatario = new JSONObject(messaggio).getString("destinatario");
                     // prende i client connessi
@@ -44,6 +46,11 @@ class GestoreClient implements Runnable {
                         if (c.getUsername().equals(destinatario))
                             c.inviaMessaggio(messaggio);
                     // TODO: salvataggio nel database
+                } else if(comando.equals("set_username")) {
+                    setUsername(new JSONObject(messaggio).getString("username"));
+                } else if(comando.equals("elimina_messaggio")) {
+                } else if(comando.equals("get_messaggi")) {
+                } else if(comando.equals("get_contatti")) {
                 }
             }
             // quando il client si disconnette
@@ -66,7 +73,7 @@ class GestoreClient implements Runnable {
 
     // chiude gli stream ed i socket e rimuove un gestore client
     private void destroy() throws IOException {
-        server.rimuoviClient(username);
+        server.rimuoviClient(this);
         output.close();
         input.close();
         client.close();
@@ -76,6 +83,11 @@ class GestoreClient implements Runnable {
     public void inviaMessaggio(String messaggio) {
         output.println(messaggio);
         output.flush();
+    }
+
+    // setta l'username
+    public void setUsername(String username) {
+        this.username = username;
     }
 
     // ritorna l'username

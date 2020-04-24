@@ -33,11 +33,7 @@ class Server implements Runnable {
     }
 
     // rimuove un client dalla lista
-    public void rimuoviClient(String username) {
-        for (GestoreClient client : clients)
-            if (client.getUsername().equals(username)) {
-                clients.remove(client);
-                return;
-            }
+    public void rimuoviClient(GestoreClient client) {
+        clients.remove(client);
     }
 }

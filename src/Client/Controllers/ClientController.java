@@ -1,7 +1,6 @@
 package Client.Controllers;
 
 import Client.Models.Messaggio;
-import Client.Models.Test;
 import com.jfoenix.controls.JFXTextArea;
 import javafx.application.Platform;
 import javafx.fxml.FXML;

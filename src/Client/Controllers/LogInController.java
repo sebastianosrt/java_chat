@@ -129,6 +129,7 @@ public class LogInController implements Initializable {
         closeBtn.setOnMouseClicked(e -> {
             Platform.exit();
         });
+
         // minimizza scheda
         minimizeBtn.setOnMouseClicked(e -> {
             ((Stage)((ImageView)e.getSource()).getScene().getWindow()).setIconified(true);

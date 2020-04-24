@@ -1,4 +1,4 @@
-package Client.Views;
+package Client;
 
 import javafx.application.Application;
 import javafx.event.EventHandler;
@@ -11,13 +11,14 @@ import javafx.stage.StageStyle;
 
 import java.io.IOException;
 
-public class LogInView extends Application {
+public class Main extends Application {
     private double xOffset = 0;
     private double yOffset = 0;
 
+    // apre la pagina di log in
     @Override
     public void start(Stage primaryStage) throws IOException {
-        FXMLLoader loader = new FXMLLoader(getClass().getResource("LogInView.fxml"));
+        FXMLLoader loader = new FXMLLoader(getClass().getResource("Views/LogInView.fxml"));
         Parent root = loader.load();
 
         root.setOnMousePressed(event -> {
