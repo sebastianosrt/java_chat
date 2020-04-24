@@ -1,8 +1,11 @@
 package Server;
 
+import Server.MySQL.MySQL;
+
 import java.io.IOException;
 import java.net.ServerSocket;
 import java.net.Socket;
+import java.sql.SQLException;
 import java.util.ArrayList;
 
 /**
@@ -13,6 +16,11 @@ class Server implements Runnable {
 
     @Override
     public void run() {
+        try {
+            MySQL.openConnection();
+        } catch (SQLException throwables) {
+            throwables.printStackTrace();
+        }
         try {
             // creo il server socket
             ServerSocket server = new ServerSocket(666);
@@ -27,6 +35,11 @@ class Server implements Runnable {
             }
         } catch (IOException e) {
             e.printStackTrace();
+        }
+        try {
+            MySQL.closeConnection();
+        } catch (SQLException throwables) {
+            throwables.printStackTrace();
         }
     }
 

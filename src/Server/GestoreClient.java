@@ -5,7 +5,11 @@ import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.PrintWriter;
 import java.net.Socket;
+import java.sql.SQLException;
 import java.util.ArrayList;
+
+import Server.MySQL.MySQL;
+import Server.MySQL.MySQLException.UsernameAlreadyExistException;
 import org.json.*;
 
 /**
@@ -33,7 +37,8 @@ class GestoreClient implements Runnable {
             while (client.isConnected()) {
                 // riceve il messaggio che sarà una JSON string
                 String messaggio = input.readLine();
-                String comando = new JSONObject(messaggio).getString("comando");
+                JSONObject object = new JSONObject(messaggio);
+                String comando = object.getString("comando");
 
                 if (comando.equals("invia_messaggio")) {
                     // converto la stringa in oggetto e prendo il valore del campo destinatario
@@ -51,11 +56,16 @@ class GestoreClient implements Runnable {
                 } else if(comando.equals("get_messaggi")) {
                 } else if(comando.equals("get_contatti")) {
                 } else if(comando.equals("login")) {
+                    JSONObject res = MySQL.authentication(object.getString("username"), object.getString("password"));
+                    output.println(res);
+                    output.flush();
+                } else if(comando.equals("registrazione")) {
+                    MySQL.addUser(object.getString("username"), object.getString("password"));
                 }
             }
-            // quando il client si disconnette
+            // quando il client si disconnette o avviene una SQLException
             destroy();
-        } catch (IOException e) {
+        } catch (IOException | SQLException e) {
             // client si disconnette
             try {
                 destroy();
