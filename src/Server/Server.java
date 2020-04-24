@@ -5,6 +5,9 @@ import java.net.ServerSocket;
 import java.net.Socket;
 import java.util.ArrayList;
 
+/**
+ * @author Sebastiano Sartor
+ */
 class Server implements Runnable {
     private ArrayList<GestoreClient> clients = new ArrayList<>();
 
@@ -27,12 +30,18 @@ class Server implements Runnable {
         }
     }
 
-    // ritorna i client connessi
+    /**
+     * ritorna i client connessi
+     * @return clients
+     */
     public ArrayList<GestoreClient> getClients() {
         return clients;
     }
 
-    // rimuove un client dalla lista
+    /**
+     * rimuove un client dalla lista
+     * @param client
+     */
     public void rimuoviClient(GestoreClient client) {
         clients.remove(client);
     }

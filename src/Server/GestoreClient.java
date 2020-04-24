@@ -1,8 +1,5 @@
 package Server;
 
-import jdk.nashorn.internal.parser.JSONParser;
-import netscape.javascript.JSObject;
-
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
@@ -11,13 +8,17 @@ import java.net.Socket;
 import java.util.ArrayList;
 import org.json.*;
 
-// riceve i messaggi da un client e li inoltra al destinatario
+/**
+ * Questa classe riceve i messaggi da un client ed
+ * esegue un comando dato
+ * @author Sebastiano Sartor
+ * */
 class GestoreClient implements Runnable {
     private Server server;
     private Socket client;
     private PrintWriter output;
     private BufferedReader input;
-    private String username;
+    private String username = null;
 
     public GestoreClient(Server server, Socket client) {
         this.server = server;
@@ -28,8 +29,6 @@ class GestoreClient implements Runnable {
     public void run() {
         try {
             init();
-            // ricevo l'username dal client gestito
-            username = input.readLine();
             // ascolta l'arrivo di messaggi finchè il client è connesso
             while (client.isConnected()) {
                 // riceve il messaggio che sarà una JSON string
@@ -51,6 +50,7 @@ class GestoreClient implements Runnable {
                 } else if(comando.equals("elimina_messaggio")) {
                 } else if(comando.equals("get_messaggi")) {
                 } else if(comando.equals("get_contatti")) {
+                } else if(comando.equals("login")) {
                 }
             }
             // quando il client si disconnette
@@ -65,13 +65,19 @@ class GestoreClient implements Runnable {
         }
     }
 
-    // inizializza gli stream
+    /**
+     * inizializza gli stream
+     * @throws IOException
+     */
     private void init() throws IOException {
         output = new PrintWriter(client.getOutputStream());
         input = new BufferedReader(new InputStreamReader(client.getInputStream()));
     }
 
-    // chiude gli stream ed i socket e rimuove un gestore client
+    /**
+     * chiude gli stream ed i socket e rimuove un gestore client
+     * @throws IOException
+     */
     private void destroy() throws IOException {
         server.rimuoviClient(this);
         output.close();
@@ -79,18 +85,27 @@ class GestoreClient implements Runnable {
         client.close();
     }
 
-    // invia un messaggio al client connesso
+    /**
+     * invia un messaggio al client connesso
+     * @param messaggio
+     */
     public void inviaMessaggio(String messaggio) {
         output.println(messaggio);
         output.flush();
     }
 
-    // setta l'username
+    /**
+     * setta l'username
+     * @param username
+     */
     public void setUsername(String username) {
         this.username = username;
     }
 
-    // ritorna l'username
+    /**
+     * ritorna l'username
+     * @return
+     */
     public String getUsername() {
         return username;
     }

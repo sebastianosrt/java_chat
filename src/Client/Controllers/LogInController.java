@@ -1,7 +1,6 @@
 package Client.Controllers;
 
 import javafx.application.Platform;
-import javafx.event.EventHandler;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
@@ -19,7 +18,7 @@ import java.net.URL;
 import java.util.ResourceBundle;
 
 
-/*
+/**
 * Questa classe gestisce l'interfaccia di log in
 * @author Sebastiano Sartor
 * */
@@ -43,10 +42,9 @@ public class LogInController implements Initializable {
     private double xOffset = 0;
     private double yOffset = 0;
 
-    /*
-    * Questo metodo prende le credenziali dalla view, esegue la query al database
-    * in caso di errore lo mostra, altrimenti apre l'interfaccia della chat
-    * @params event - l'evento del click di tipo MouseEvent
+    /**
+    * Questo metodo prende le credenziali dalla view, esegue la query al database in caso di errore lo mostra, altrimenti apre l'interfaccia della chat
+    * @param event - l'evento del click di tipo MouseEvent
     * */
     public void logIn(MouseEvent event) {
         // prende le credenziali dalle caselle di testo
@@ -68,37 +66,49 @@ public class LogInController implements Initializable {
 //        }
         // apre la chat
         try {
-            FXMLLoader loader = new FXMLLoader(getClass().getResource("/Client/Views/ChatView.fxml"));
-            loader.setController(new ClientController());
-            ClientController controller = loader.getController();
-            controller.setUsername(username);
-
-            Parent root = loader.load();
-            Scene scene = new Scene(root);
-            Node node = (Node) event.getSource();
-            Stage stage = (Stage) node.getScene().getWindow();
-            stage.close();
-            stage.setScene(scene);
-            stage.setResizable(false);
-            stage.show();
-            stage.requestFocus();
-            node.setFocusTraversable(true);
-
-            root.setOnMousePressed(event12 -> {
-                xOffset = event12.getSceneX();
-                yOffset = event12.getSceneY();
-            });
-            root.setOnMouseDragged(event1 -> {
-                stage.setX(event1.getScreenX() - xOffset);
-                stage.setY(event1.getScreenY() - yOffset);
-            });
+            apriChatView(username, event);
         } catch (IOException e) {
             e.printStackTrace();
         }
     }
 
-    /*
+    /**
+    * Questo metodo apre la chat
+    * @param username - l'username dell'utente che ha aperto la chat
+    * @param event - l'oggetto dell'evento click
+    * @throws IOException
+    * */
+    private void apriChatView(String username, MouseEvent event) throws IOException {
+        FXMLLoader loader = new FXMLLoader(getClass().getResource("/Client/Views/ChatView.fxml"));
+        loader.setController(new ClientController());
+        ClientController controller = loader.getController();
+        controller.setUsername(username);
+
+        Parent root = loader.load();
+        Scene scene = new Scene(root);
+        Node node = (Node) event.getSource();
+        Stage stage = (Stage) node.getScene().getWindow();
+        stage.close();
+        stage.setScene(scene);
+        stage.setResizable(false);
+        stage.show();
+        stage.requestFocus();
+        node.setFocusTraversable(true);
+
+        // muove la finestra quando viene trascinata
+        root.setOnMousePressed(event12 -> {
+            xOffset = event12.getSceneX();
+            yOffset = event12.getSceneY();
+        });
+        root.setOnMouseDragged(event1 -> {
+            stage.setX(event1.getScreenX() - xOffset);
+            stage.setY(event1.getScreenY() - yOffset);
+        });
+    }
+
+    /**
     * Questo metodo gestisce i click del mouse
+    * @param event - l'oggetto dell'evento click
     * */
     @FXML
     private void handleMouseClick(MouseEvent event) {
@@ -117,9 +127,6 @@ public class LogInController implements Initializable {
         }
     }
 
-    /*
-    * Questo metodo inizializza l'interfaccia
-    * */
     @Override
     public void initialize(URL location, ResourceBundle resources) {
         error_f.setText("");

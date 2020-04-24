@@ -37,7 +37,7 @@ import java.util.List;
 import java.util.ResourceBundle;
 
 
-/*
+/**
  * Questa classe gestisce l'interfaccia di log in
  * @author Sebastiano Sartor
  * */
@@ -63,9 +63,10 @@ public class ClientController implements Initializable {
     private HBox selectedItem;
     private HBox activeContact = null;
 
-    /*
+    /**
      * Questo metodo gestisce i click del mouse
-     * */
+     * @param event
+     */
     @FXML
     private void handleMouseClick(MouseEvent event) {
         // invia il messaggio
@@ -75,9 +76,11 @@ public class ClientController implements Initializable {
         }
     }
 
-    /*
+    /**
      * Questo metodo inizializza l'interfaccia
-     * */
+     * @param location
+     * @param resources
+     */
     @Override
     public void initialize(URL location, ResourceBundle resources) {
         username_f.setText(username);
@@ -140,10 +143,10 @@ public class ClientController implements Initializable {
         this.username = username;
     }
 
-    /*
+    /**
     * Questo metodo aggiunge alla view un nuovo messaggio e gli aggiunge un event listener
-    * @params username - l'username del mittente del messaggio
-    * @params message - il contenuto del messaggio
+    * @param username - l'username del mittente del messaggio
+    * @param message - il contenuto del messaggio
     * */
     public void addMessaggio(String username, String message) {
         if (username.equals(destinatario_f.getText()) || username == this.username) {
@@ -201,9 +204,9 @@ public class ClientController implements Initializable {
         }
     }
 
-    /*
+    /**
      * Questo metodo seleziona un contatto
-     * @params event - l'evento del click di tipo MouseEvent
+     * @param e - l'evento del click di tipo MouseEvent
      * */
     private void selectContact(MouseEvent e) {
         // prendo il contatto selezionato dall'evento
@@ -226,9 +229,8 @@ public class ClientController implements Initializable {
         }
     }
 
-    /*
-    * Questo metodo porta in cima alla lista dei contatti l'ultimo con cui si è messaggato
-    * se non è già primo
+    /**
+    * Questo metodo porta in cima alla lista dei contatti l'ultimo con cui si è messaggato se non è già primo
     * */
     private void raiseContact() {
         // metto i contatti in una lista
@@ -251,12 +253,20 @@ public class ClientController implements Initializable {
         contactsContaier.getChildren().addAll(nodes);
     }
 
+    /**
+     * Questo metodo mostra i messaggi con un contatto
+     * @param messaggi
+     */
     public void caricaMessaggi(ArrayList<Messaggio> messaggi) {
         messaggi.forEach(m -> {
             addMessaggio(m.mittente, m.testo);
         });
     }
 
+    /**
+     * Questo metodo aggiunge un contatto nella view
+     * @param username
+     */
     public void addContatto(String username) {
         HBox hbox = new HBox();
         hbox.getStyleClass().addAll("hbox", "contact");
@@ -272,6 +282,10 @@ public class ClientController implements Initializable {
         contactsContaier.getChildren().addAll(hbox, new Separator());
     }
 
+    /**
+     * Questo metodo carica i contatti dell'utente nella view
+     * @param contatti
+     */
     public void caricaContatti(ArrayList<String> contatti) {
         contatti.forEach(c -> {
             addContatto(c);
