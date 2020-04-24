@@ -16,6 +16,9 @@ import animatefx.animation.*;
 import java.io.IOException;
 import java.net.URL;
 import java.util.ResourceBundle;
+import java.util.logging.Logger;
+
+import Client.Models.LogIn;
 
 
 /**
@@ -50,7 +53,6 @@ public class LogInController implements Initializable {
         // prende le credenziali dalle caselle di testo
         String username = username_f.getText();
         String password = password_f.getText();
-        // TODO: query
         String error = "";
 //        if (username.length() == 0) {
 //            error_f.setText("Inserisci un'username");
@@ -64,12 +66,21 @@ public class LogInController implements Initializable {
 //            error_f.setText(error);
 //            return;
 //        }
-        // apre la chat
+        String username_login = null;
         try {
-            apriChatView(username, event);
+            username_login = LogIn.login(username, password);
         } catch (IOException e) {
             e.printStackTrace();
         }
+        if(username_login != null) {
+            // apre la chat
+            try {
+                apriChatView(username, event);
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        }
+
     }
 
     /**
