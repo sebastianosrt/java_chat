@@ -26,7 +26,6 @@ public class LogIn {
         output.println(json_r);
         output.flush();
         JSONObject resp = new JSONObject(input.readLine());
-        System.out.println(resp);
 
         output.close();
         input.close();
