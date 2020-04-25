@@ -112,3 +112,6 @@
 .contactActive:hover {
     -fx-background-color: derive(-color4, -40%);
 }
+.response {
+    -fx-fill-color: green;
+}

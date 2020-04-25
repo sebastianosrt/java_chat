@@ -18,27 +18,24 @@ class Server implements Runnable {
     public void run() {
         try {
             MySQL.openConnection();
-        } catch (SQLException throwables) {
-            throwables.printStackTrace();
-        }
-        try {
-            // creo il server socket
-            ServerSocket server = new ServerSocket(666);
-            // ascolta all'infinito richieste di connessione
-            while (true) {
-                // ricevi connessione da un client
-                Socket socket = server.accept();
-                // quando riceve una connessione aggiunge un nuovo client alla lista e crea un nuovo gestore client
-                GestoreClient client = new GestoreClient(this, socket);
-                clients.add(client);
-                new Thread(client).start();
+            try {
+                // creo il server socket
+                ServerSocket server = new ServerSocket(666);
+                // ascolta all'infinito richieste di connessione
+                while (true) {
+                    // ricevi connessione da un client
+                    Socket socket = server.accept();
+                    // quando riceve una connessione aggiunge un nuovo client alla lista e crea un nuovo gestore client
+                    GestoreClient client = new GestoreClient(this, socket);
+                    clients.add(client);
+                    new Thread(client).start();
+                }
+            } catch (IOException e) {
+                e.printStackTrace();
             }
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-        try {
             MySQL.closeConnection();
-        } catch (SQLException throwables) {
+        }
+        catch (SQLException throwables) {
             throwables.printStackTrace();
         }
     }

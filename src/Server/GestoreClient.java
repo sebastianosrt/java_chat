@@ -52,15 +52,17 @@ class GestoreClient implements Runnable {
                     // TODO: salvataggio nel database
                 } else if(comando.equals("set_username")) {
                     setUsername(new JSONObject(messaggio).getString("username"));
-                } else if(comando.equals("elimina_messaggio")) {
-                } else if(comando.equals("get_messaggi")) {
-                } else if(comando.equals("get_contatti")) {
                 } else if(comando.equals("login")) {
                     JSONObject res = MySQL.authentication(object.getString("username"), object.getString("password"));
-                    output.println(res);
+                    output.println(res.toString());
                     output.flush();
                 } else if(comando.equals("registrazione")) {
-                    MySQL.addUser(object.getString("username"), object.getString("password"));
+                    JSONObject res = MySQL.addUser(object.getString("username"), object.getString("password"));
+                    output.println(res);
+                    output.flush();
+                } else if(comando.equals("get_contatti")) {
+                } else if(comando.equals("get_messaggi")) {
+                } else if(comando.equals("elimina_messaggio")) {
                 }
             }
             // quando il client si disconnette o avviene una SQLException

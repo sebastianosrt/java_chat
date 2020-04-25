@@ -42,7 +42,7 @@ public class Autenticazione {
 
     }
 
-    public static String sigin(String username, String password) {
+    public static String signup(String username, String password) {
         JSONObject json_r = new JSONObject();
         json_r.put("sorgente", "");
         json_r.put("destinatario", "database");

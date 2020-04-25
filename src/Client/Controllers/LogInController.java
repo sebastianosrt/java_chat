@@ -1,5 +1,6 @@
 package Client.Controllers;
 
+import Client.Models.Autenticazione;
 import javafx.application.Platform;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
@@ -16,10 +17,6 @@ import animatefx.animation.*;
 import java.io.IOException;
 import java.net.URL;
 import java.util.ResourceBundle;
-import java.util.logging.Logger;
-
-import Client.Models.LogIn;
-
 
 /**
 * Questa classe gestisce l'interfaccia di log in
@@ -31,6 +28,7 @@ public class LogInController implements Initializable {
     @FXML private TextField username_f;
     @FXML private TextField password_f;
     @FXML private Label error_f;
+    @FXML private Label response;
     @FXML private Button submit_f;
     @FXML private Button registrati_f;
     @FXML private TextField username_r;
@@ -42,6 +40,8 @@ public class LogInController implements Initializable {
     @FXML private Label login_label;
     @FXML private ImageView closeBtn;
     @FXML private ImageView minimizeBtn;
+    @FXML private ImageView closeBtn1;
+    @FXML private ImageView minimizeBtn1;
     private double xOffset = 0;
     private double yOffset = 0;
 
@@ -54,33 +54,52 @@ public class LogInController implements Initializable {
         String username = username_f.getText();
         String password = password_f.getText();
         String error = "";
-//        if (username.length() == 0) {
-//            error_f.setText("Inserisci un'username");
-//            return;
-//        }
-//        if (password.length() == 0) {
-//            error_f.setText("Inserisci una password");
-//            return;
-//        }
-//        if (error.length() > 0) {
-//            error_f.setText(error);
-//            return;
-//        }
-        String username_login = null;
+        if (username.length() == 0) {
+            error_f.setText("Inserisci un'username");
+            return;
+        }
+        if (password.length() == 0) {
+            error_f.setText("Inserisci una password");
+            return;
+        }
+        error = Autenticazione.login(username, password);
+        if (error.length() > 0) {
+            error_f.setText(error);
+            return;
+        }
+        // apre la chat
         try {
-            username_login = LogIn.login(username, password);
+            apriChatView(username, event);
         } catch (IOException e) {
-            e.printStackTrace();
+            error_f.setText("Errore interno\nImpossible aprire la chat");
         }
-        if(username_login != null) {
-            // apre la chat
-            try {
-                apriChatView(username, event);
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
-        }
+    }
 
+    /**
+     * Questo metodo registra un utente
+     */
+    public void signUp() {
+        response.setText("");
+        // prende le credenziali dalle caselle di testo
+        String username = username_r.getText();
+        String password = password_r.getText();
+        String error = "";
+        if (username.length() == 0) {
+            error_r.setText("Inserisci un'username");
+            return;
+        }
+        if (password.length() == 0) {
+            error_r.setText("Inserisci una password");
+            return;
+        }
+        error = Autenticazione.signup(username, password);
+        if (error.length() > 0)
+            error_r.setText(error);
+        else {
+            response.setText("Registrato correttamente!");
+            password_r.setText("");
+            username_r.setText("");
+        }
     }
 
     /**
@@ -128,7 +147,7 @@ public class LogInController implements Initializable {
         if (event.getSource() == submit_f) {
             logIn(event);
         } else if (event.getSource() == submit_r) {
-//            signup(event);
+            signUp();
         } else if (event.getSource() == registrati_label || event.getSource() == registrati_f) {
             new Pulse(registrazionePanel).play();
             registrazionePanel.toFront();
@@ -142,14 +161,21 @@ public class LogInController implements Initializable {
     public void initialize(URL location, ResourceBundle resources) {
         error_f.setText("");
         error_r.setText("");
+        response.setText("");
 
         // chiudi scheda
         closeBtn.setOnMouseClicked(e -> {
             Platform.exit();
         });
+        closeBtn1.setOnMouseClicked(e -> {
+            Platform.exit();
+        });
 
         // minimizza scheda
         minimizeBtn.setOnMouseClicked(e -> {
+            ((Stage)((ImageView)e.getSource()).getScene().getWindow()).setIconified(true);
+        });
+        minimizeBtn1.setOnMouseClicked(e -> {
             ((Stage)((ImageView)e.getSource()).getScene().getWindow()).setIconified(true);
         });
     }
