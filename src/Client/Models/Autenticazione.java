@@ -19,7 +19,7 @@ public class Autenticazione {
         json_r.put("password", password);
 
         try {
-            Socket socket = new Socket("192.168.1.211", 666); //TODO cambiare ip in 'localhost'
+            Socket socket = new Socket("localhost", 666);
             PrintWriter output = new PrintWriter(socket.getOutputStream(), false);
             BufferedReader input = new BufferedReader(new InputStreamReader(socket.getInputStream()));
 
@@ -51,7 +51,7 @@ public class Autenticazione {
         json_r.put("password", password);
 
         try {
-            Socket socket = new Socket("192.168.1.211", 666); //TODO cambiare ip in 'localhost'
+            Socket socket = new Socket("localhost", 666);
             PrintWriter output = new PrintWriter(socket.getOutputStream(), false);
             BufferedReader input = new BufferedReader(new InputStreamReader(socket.getInputStream()));
 
