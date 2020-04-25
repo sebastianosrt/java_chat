@@ -111,12 +111,14 @@ public class MySQL {
      *
      * @param username nome dell'utente da aggiungere
      * @param password password dell'utente da aggiungere
-     * @return aggiunto true or false
+     * @return json response of the result
      * @throws SQLException
      */
-    public static boolean addUser(String username, String password) throws SQLException, UsernameAlreadyExistException {
+    public static JSONObject addUser(String username, String password) throws SQLException {
 
-        boolean aggiunto = false;
+        JSONObject response = new JSONObject();
+        response.put("sorgente", "database");
+        response.put("metodo", "aggiungi_utente");
         try {
             boolean statusConn = conn.isClosed();
             if(!statusConn){
@@ -128,18 +130,19 @@ public class MySQL {
                     pstmt.setString(3, "");
                     pstmt.executeUpdate(); //esegue la query
 
-                    System.out.println("Utente aggiunto al DB!");
-                    aggiunto = true;
+                    response.put("risultato", "true");
                 }else{
-                    throw new UsernameAlreadyExistException("username già esistente");
+                    response.put("risultato", "false");
+                    response.put("errore", "username_already_exist");
                 }
             }else{
-                System.out.println("Connessione chiusa!");
+                response.put("risultato", "false");
+                response.put("errore", "connection_closed");
             }
         }catch (SQLException e){
             System.out.println(e.toString());
         }
-        return aggiunto;
+        return response;
     }
 
 
@@ -150,37 +153,40 @@ public class MySQL {
      * @return json response of the result
      * @throws SQLException
      */
-    public static JSONObject authentication(String username, String password) throws SQLException, UsernameAlreadyExistException, WrongPasswordException{
+    public static JSONObject authentication(String username, String password) throws SQLException{
 
-        JSONObject r = new JSONObject();
+        JSONObject response = new JSONObject();
+        response.put("sorgente", "database");
+        response.put("metodo", "autenticazione");
         try {
             boolean statusConn = conn.isClosed();
             if(!statusConn){
                 PreparedStatement pstmt = conn.prepareStatement("SELECT * FROM `users` WHERE `username` = ?");
                 pstmt.setString(1, username);
 
-                ResultSet  result = pstmt.executeQuery(); //esegue la query
+                ResultSet result_q = pstmt.executeQuery(); //esegue la query
                 //se trova la riga con l'username, allroa result.next NON SARA' VUOTO
-                if(result.next()){
-                    HashMap<String, String> u = MySQL.createRowObj(result); //specie di array associativo
+                if(result_q.next()){
+                    HashMap<String, String> u = MySQL.createRowObj(result_q); //specie di array associativo
 
                     if(u.get("password").equals(password)){
-                        System.out.println("password corretta");
-                        return new JSONObject(u);
+                        response.put("risultato", "true");
                     }else{
-                        throw new WrongPasswordException("password sbagliata");
+                        response.put("risultato", "false");
+                        response.put("errore", "incorrect_password");
                     }
                 }else{
-                    throw new UsernameAlreadyExistException("username non esistente");
+                    response.put("risultato", "false");
+                    response.put("errore", "inexistent_username");
                 }
             }else{
-                System.out.println("Connessione chiusa!");
+                response.put("risultato", "false");
+                response.put("errore", "connection_closed");
             }
         }catch (SQLException e){
             System.out.println(e.toString());
         }
-
-        return r.put("Errore", "qualcosa è andato storto");
+        return response;
     }
 
 
