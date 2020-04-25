@@ -1,28 +1,41 @@
 package Client.Models;
 
+import com.mysql.jdbc.Buffer;
 import org.json.JSONObject;
+
+import java.io.BufferedReader;
 import java.io.IOException;
+import java.io.InputStreamReader;
+import java.io.PrintWriter;
+import java.net.Socket;
 
 public class LogIn {
 
     public static String login(String username, String password) throws IOException {
-        JSONObject json_dati = new JSONObject();
-        json_dati.put("comando", "query");
-        json_dati.put("metodo", "login");
-        json_dati.put("username", username);
-        json_dati.put("password", password);
+        JSONObject json_r = new JSONObject();
+        json_r.put("sorgente", "");
+        json_r.put("destinatario", "database");
+        json_r.put("comando", "login");
+        json_r.put("username", username);
+        json_r.put("password", password);
 
-        JSONObject json_main = new JSONObject();
-        json_main.put("sorgente", "");
-        json_main.put("destinatario", "database");
-        json_main.put("dati", json_dati);
+        Socket socket = new Socket("localhost", 666);
+        PrintWriter output = new PrintWriter(socket.getOutputStream(), false);
+        BufferedReader input = new BufferedReader(new InputStreamReader(socket.getInputStream()));
 
-        // TODO autenticazione
+        output.println(json_r);
+        output.flush();
+        JSONObject resp = new JSONObject(input.readLine());
+        System.out.println(resp);
 
-        if(username.equals("admin") && password.equals("admin")) {
-            return username;
+        output.close();
+        input.close();
+        socket.close();
+
+        if(resp.getString("risultato").equals("true")) {
+            return "";
         } else {
-            return null;
+            return resp.getString("errore");
         }
     }
 
