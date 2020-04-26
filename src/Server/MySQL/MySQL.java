@@ -65,6 +65,8 @@ public class MySQL {
                 //qua si possono aggiungere tutte le query per ogni tabella
                 tables.add("CREATE TABLE IF NOT EXISTS `users` (`id` int(0) NOT NULL AUTO_INCREMENT,`username` varchar(255) NOT NULL,`password` varchar(255) NOT NULL,`statusClient` varchar(255),PRIMARY KEY (`id`));"); //tabella utenti
 
+                tables.add("CREATE TABLE IF NOT EXISTS `contacts` (`id` int(0) NOT NULL AUTO_INCREMENT,`user` varchar(255) NOT NULL,`contact` varchar(255) NOT NULL,PRIMARY KEY (`id`));"); //tabella contatti
+
                 //crea le tabelle
                 for(String table : tables){
                     PreparedStatement pstmt = conn.prepareStatement(table);
@@ -210,5 +212,123 @@ public class MySQL {
     }
 
 
+    /**
+     *
+     * @param user username del profilo autenticato
+     * @param contact contatto da cercare
+     * @return json response of the result
+     * @throws SQLException
+     */
+    public static boolean existContact(String user, String contact) throws SQLException {
+        boolean esiste = false;
 
+        boolean statusConn = conn.isClosed();
+        if(!statusConn){
+            PreparedStatement pstmt = conn.prepareStatement("SELECT * FROM `contacts` WHERE `user` = ? AND `contact` = ?");
+            pstmt.setString(1, user);
+            pstmt.setString(2, contact);
+
+            ResultSet  result = pstmt.executeQuery(); //esegue la query
+
+            //se trova la riga con l'username, allora result.next NON SARA' VUOTO
+            if(result.next()){
+                esiste = true;
+            }
+
+        }else{
+            System.out.println("Connessione chiusa!");
+        }
+
+        return esiste;
+    }
+
+
+    /**
+     *
+     * @param user username del profilo autenticato
+     * @param contact contatto da aggiungere
+     * @return json response of the result
+     * @throws SQLException
+     */
+    public static JSONObject addContact(String user, String contact) throws SQLException{
+        JSONObject response = new JSONObject();
+        response.put("sorgente", "database");
+        response.put("metodo", "aggiungi_contatto");
+
+        try {
+            boolean statusConn = conn.isClosed();
+            if(!statusConn){
+                boolean esiste_username = MySQL.existUsername(user);
+
+                if(esiste_username){
+                    boolean esiste_contatto = MySQL.existContact(user, contact);
+                    if(!esiste_contatto){
+                        PreparedStatement pstmt = conn.prepareStatement("INSERT INTO `contacts` (`user`, `contact`) VALUES (?,?)");
+                        pstmt.setString(1, user);
+                        pstmt.setString(2, contact);
+                        pstmt.executeUpdate(); //esegue la query
+
+                        response.put("risultato", "true");
+                    }else{
+                        response.put("risultato", "false");
+                        response.put("errore", "contact_already_exist");
+                    }
+                }else{
+                    response.put("risultato", "false");
+                    response.put("errore", "username_inesistente");
+                }
+
+            }else{
+                response.put("risultato", "false");
+                response.put("errore", "connection_closed");
+            }
+        }catch (SQLException e){
+            System.out.println(e.toString());
+        }
+        return response;
+    }
+
+    /**
+     *
+     * @param user username dell'utente di cui cercare i contatti
+     * @return lista di contatti
+     * @throws SQLException
+     */
+    public static JSONObject getListContacts(String user) throws SQLException{
+        JSONObject response = new JSONObject();
+        response.put("sorgente", "database");
+        response.put("metodo", "get_contatti");
+
+        try {
+            boolean statusConn = conn.isClosed();
+            if(!statusConn){
+                boolean esiste_username = MySQL.existUsername(user);
+
+                if(esiste_username){
+
+                    PreparedStatement pstmt = conn.prepareStatement("SELECT `contact` FROM `contacts` WHERE `user` = ?");
+                    pstmt.setString(1, user);
+                    ResultSet  rs = pstmt.executeQuery(); //esegue la query
+
+                    ArrayList<String> contacts = new ArrayList<>();
+                    while (rs.next()){
+                        contacts.add(rs.getString("contact"));
+                    }
+                    response.put("risultato","true");
+                    response.put("lista_contatti",contacts);
+
+                }else{
+                    response.put("risultato", "false");
+                    response.put("errore", "username_inesistente");
+                }
+
+            }else{
+                response.put("risultato", "false");
+                response.put("errore", "connection_closed");
+            }
+        }catch (SQLException e){
+            System.out.println(e.toString());
+        }
+        return response;
+    }
 }
