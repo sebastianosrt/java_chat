@@ -10,6 +10,12 @@ import java.net.Socket;
 
 public class Autenticazione {
 
+    /**
+     *
+     * @param username username da loggare
+     * @param password password da loggare
+     * @return stringa nulla se è andato tutto a buon fine
+     */
     public static String login(String username, String password) {
         JSONObject json_r = new JSONObject();
         json_r.put("sorgente", "");
@@ -42,6 +48,12 @@ public class Autenticazione {
 
     }
 
+    /**
+     *
+     * @param username username dell'utente da registrare
+     * @param password password dell'utente da registrare
+     * @return stringa nulla se è andato tutto a buon fine
+     */
     public static String signup(String username, String password) {
         JSONObject json_r = new JSONObject();
         json_r.put("sorgente", "");
