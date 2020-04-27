@@ -11,8 +11,9 @@ public class SetUpDB {
             //MySQL.authentication("mario", "2390udf0"); //test autenticazine
             MySQL.createTables();
             //MySQL.addUser("admin", "admin");
-            System.out.println(MySQL.addContact("mario", "paperino")); //aggiungi contatto
+            //System.out.println(MySQL.addContact("admin", "paperino")); //aggiungi contatto
             System.out.println(MySQL.getListContacts("mario")); //aggiungi contatto
+            System.out.println(MySQL.searchUser("d")); //cerca username
 
             MySQL.closeConnection();
 

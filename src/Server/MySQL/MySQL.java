@@ -331,4 +331,52 @@ public class MySQL {
         }
         return response;
     }
+
+    /**
+     *
+     * @param s stringa con cui deve inziare l'username
+     * @return listq di username trovati
+     * @throws SQLException
+     */
+    public static JSONObject searchUser(String s) throws SQLException{
+        JSONObject response = new JSONObject();
+        response.put("sorgente", "database");
+        response.put("metodo", "cerca_utente");
+
+        //SELECT * from users WHERE username LIKE 'd%'
+        try {
+            boolean statusConn = conn.isClosed();
+            if(!statusConn){
+
+                PreparedStatement pstmt = conn.prepareStatement("SELECT `username` from `users` WHERE `username` LIKE '"+s+"%'"); //che iniziano con
+
+                ResultSet  rs = pstmt.executeQuery(); //esegue la query
+
+                if(rs.next()){
+
+                    ArrayList<String> username_found = new ArrayList<>();
+                    username_found.add(rs.getString("username"));
+
+                    //se ne trova anche altri
+                    while (rs.next()){
+                        username_found.add(rs.getString("username"));
+                    }
+
+                    response.put("risultato","true");
+                    response.put("username_trovati",username_found);
+                    response.put("risultato","true");
+                }else{
+                    response.put("errore","nessun username trovato che inzia con: " + s); //non trovato
+                    response.put("risultato","false"); //non trovato
+                }
+
+            }else{
+                response.put("risultato", "false");
+                response.put("errore", "connection_closed");
+            }
+        }catch (SQLException e){
+            System.out.println(e.toString());
+        }
+        return response;
+    }
 }
