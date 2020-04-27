@@ -8,6 +8,7 @@ import java.net.Socket;
 import java.util.ArrayList;
 
 import Client.Controllers.ClientController;
+import javafx.application.Platform;
 import org.json.JSONArray;
 import org.json.JSONObject;
 
@@ -45,7 +46,7 @@ public class Client implements Runnable {
         this.setUsernameServerSocket();
 
         this.setContattiByDataBase();
-        this.client_controller.caricaContatti(this.contatti);
+        Platform.runLater(() -> this.client_controller.caricaContatti(this.contatti));
     }
 
     @Override
@@ -64,7 +65,7 @@ public class Client implements Runnable {
         json_r.put("comando", "set_username");
         json_r.put("username", this.username);
 
-        this.output.println(json_r);
+        this.output.println(json_r.toString());
         this.output.flush();
     }
 
@@ -75,7 +76,7 @@ public class Client implements Runnable {
         json_r.put("destinatario", "database");
         json_r.put("comando", "get_contatti");
 
-        this.output.println(json_r);
+        this.output.println(json_r.toString());
         this.output.flush();
         try {
             JSONObject resp = new JSONObject(this.input.readLine());

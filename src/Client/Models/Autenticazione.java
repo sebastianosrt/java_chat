@@ -29,7 +29,7 @@ public class Autenticazione {
             PrintWriter output = new PrintWriter(socket.getOutputStream(), false);
             BufferedReader input = new BufferedReader(new InputStreamReader(socket.getInputStream()));
 
-            output.println(json_r);
+            output.println(json_r.toString());
             output.flush();
             JSONObject resp = new JSONObject(input.readLine());
 
@@ -67,7 +67,7 @@ public class Autenticazione {
             PrintWriter output = new PrintWriter(socket.getOutputStream(), false);
             BufferedReader input = new BufferedReader(new InputStreamReader(socket.getInputStream()));
 
-            output.println(json_r);
+            output.println(json_r.toString());
             output.flush();
             JSONObject resp = new JSONObject(input.readLine());
 

@@ -1,5 +1,6 @@
 package Client.Controllers;
 
+import Client.Models.Client;
 import Client.Models.Messaggio;
 import com.jfoenix.controls.JFXTextArea;
 import javafx.application.Platform;
@@ -32,7 +33,6 @@ import java.awt.*;
 import java.awt.datatransfer.StringSelection;
 import java.net.URL;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 import java.util.ResourceBundle;
 
@@ -62,6 +62,7 @@ public class ClientController implements Initializable {
     private MenuItem elimina;
     private HBox selectedItem;
     private HBox activeContact = null;
+    private Client client;
 
     /**
      * Questo metodo gestisce i click del mouse
@@ -115,9 +116,6 @@ public class ClientController implements Initializable {
         contactsContaier.setPrefWidth(contactsPane.getPrefWidth() - 5);
         contactsPane.setContent(contactsContaier);
 
-        ArrayList<String> contatti = new ArrayList<String>(Arrays.asList(new String[]{"user", "pippo", "foo"}));
-        caricaContatti(contatti);
-
         // quando viene premuto enter invia un messaggio
         body.setOnKeyReleased(e -> {
             if (e.getCode() == KeyCode.ENTER) {
@@ -135,8 +133,11 @@ public class ClientController implements Initializable {
         });
         // ricerca utente
         search_f.setOnKeyPressed(e -> {
-           // TODO: ricerca utente
+            // TODO: ricerca utente
         });
+
+        client = new Client(username, this);
+        new Thread(client).start();
     }
 
     public void setUsername(String username) {
@@ -144,19 +145,19 @@ public class ClientController implements Initializable {
     }
 
     /**
-    * Questo metodo aggiunge alla view un nuovo messaggio e gli aggiunge un event listener
-    * @param username - l'username del mittente del messaggio
-    * @param message - il contenuto del messaggio
-    * */
+     * Questo metodo aggiunge alla view un nuovo messaggio e gli aggiunge un event listener
+     * @param username - l'username del mittente del messaggio
+     * @param message - il contenuto del messaggio
+     * */
     public void addMessaggio(String username, String message) {
         if (username.equals(destinatario_f.getText()) || username == this.username) {
             if (message.length() > 0) {
                 //toglie gli \n finali
                 while (message.length() > 0 && message.charAt(message.length() - 1) == '\n') message = message.substring(0, message.length() - 1);
+                //
                 if (message.length() > 0) {
                     Text text=new Text(message);
                     text.setFill(Color.BLACK);
-
                     TextFlow tempFlow = new TextFlow();
                     if(!this.username.equals(username)){
                         text.setFill(Color.WHITE);
@@ -166,14 +167,10 @@ public class ClientController implements Initializable {
                         txtName.getStyleClass().add("txtName");
                         tempFlow.getChildren().add(txtName);
                     }
-
                     tempFlow.getChildren().add(text);
                     tempFlow.setMaxWidth(200);
-
                     TextFlow flow = new TextFlow(tempFlow);
-
                     HBox hbox = new HBox(12);
-
                     if (!this.username.equals(username)) {
                         tempFlow.getStyleClass().add("tempFlowFlipped");
                         flow.getStyleClass().add("textFlowFlipped");
@@ -187,21 +184,59 @@ public class ClientController implements Initializable {
                     hbox.getChildren().add(flow);
                     hbox.getStyleClass().add("hbox");
                     hbox.setId(lastId++ + "");
-
                     flow.setAccessibleText(message);
-
                     hbox.setOnMouseClicked((MouseEvent e) -> {
                         if (e.getButton() == MouseButton.SECONDARY) {
                             selectedItem = (HBox) e.getSource();
                             menu.show(scrollPane, e.getScreenX(), e.getScreenY());
                         }
                     });
-
                     chatContaier.getChildren().addAll(hbox);
                     raiseContact();
                 }
             }
         }
+    }
+
+    /**
+     * Questo metodo mostra i messaggi con un contatto
+     * @param messaggi
+     */
+    public void caricaMessaggi(ArrayList<Messaggio> messaggi) {
+        chatContaier.getChildren().clear();
+        messaggi.forEach(m -> {
+            addMessaggio(m.mittente, m.testo);
+        });
+    }
+
+    /**
+     * Questo metodo aggiunge un contatto nella view
+     * @param username
+     */
+    public void addContatto(String username) {
+        HBox hbox = new HBox();
+        hbox.getStyleClass().addAll("hbox", "contact");
+        hbox.setAlignment(Pos.CENTER_LEFT);
+        Label label = new Label(username);
+        label.setFont(Font.font("Arial", FontWeight.BOLD, 16));
+        hbox.getChildren().addAll(label);
+        hbox.setAccessibleText(label.getText());
+
+        hbox.setOnMouseClicked(e -> {
+            selectContact(e);
+        });
+        contactsContaier.getChildren().addAll(hbox, new Separator());
+    }
+
+    /**
+     * Questo metodo carica tutti i contatti dell'utente nella view
+     * @param contatti
+     */
+    public void caricaContatti(ArrayList<String> contatti) {
+        contactsContaier.getChildren().clear();
+        contatti.forEach(c -> {
+            addContatto(c);
+        });
     }
 
     /**
@@ -230,8 +265,8 @@ public class ClientController implements Initializable {
     }
 
     /**
-    * Questo metodo porta in cima alla lista dei contatti l'ultimo con cui si è messaggato se non è già primo
-    * */
+     * Questo metodo porta in cima alla lista dei contatti l'ultimo con cui si è messaggato se non è già primo
+     * */
     private void raiseContact() {
         // metto i contatti in una lista
         List<Node> nodes = new ArrayList<Node>(contactsContaier.getChildren());
@@ -251,44 +286,5 @@ public class ClientController implements Initializable {
         // rimuovo tutti i contatti e ci metto la nuova lista
         contactsContaier.getChildren().clear();
         contactsContaier.getChildren().addAll(nodes);
-    }
-
-    /**
-     * Questo metodo mostra i messaggi con un contatto
-     * @param messaggi
-     */
-    public void caricaMessaggi(ArrayList<Messaggio> messaggi) {
-        messaggi.forEach(m -> {
-            addMessaggio(m.mittente, m.testo);
-        });
-    }
-
-    /**
-     * Questo metodo aggiunge un contatto nella view
-     * @param username
-     */
-    public void addContatto(String username) {
-        HBox hbox = new HBox();
-        hbox.getStyleClass().addAll("hbox", "contact");
-        hbox.setAlignment(Pos.CENTER_LEFT);
-        Label label = new Label(username);
-        label.setFont(Font.font("Arial", FontWeight.BOLD, 16));
-        hbox.getChildren().addAll(label);
-        hbox.setAccessibleText(label.getText());
-
-        hbox.setOnMouseClicked(e -> {
-            selectContact(e);
-        });
-        contactsContaier.getChildren().addAll(hbox, new Separator());
-    }
-
-    /**
-     * Questo metodo carica i contatti dell'utente nella view
-     * @param contatti
-     */
-    public void caricaContatti(ArrayList<String> contatti) {
-        contatti.forEach(c -> {
-            addContatto(c);
-        });
     }
 }

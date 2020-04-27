@@ -9,7 +9,6 @@ import java.sql.SQLException;
 import java.util.ArrayList;
 
 import Server.MySQL.MySQL;
-import Server.MySQL.MySQLException.UsernameAlreadyExistException;
 import org.json.*;
 
 /**
@@ -37,32 +36,37 @@ class GestoreClient implements Runnable {
             while (client.isConnected()) {
                 // riceve il messaggio che sarà una JSON string
                 String messaggio = input.readLine();
-                JSONObject object = new JSONObject(messaggio);
-                String comando = object.getString("comando");
+                if (messaggio != null) {
+                    JSONObject object = new JSONObject(messaggio);
+                    String comando = object.getString("comando");
 
-                if (comando.equals("invia_messaggio")) {
-                    // converto la stringa in oggetto e prendo il valore del campo destinatario
-                    String destinatario = new JSONObject(messaggio).getString("destinatario");
-                    // prende i client connessi
-                    ArrayList<GestoreClient> clients = server.getClients();
-                    // ricerca del destinatario tra i client ed invia il messaggio
-                    for (GestoreClient c : clients)
-                        if (c.getUsername().equals(destinatario))
-                            c.inviaMessaggio(messaggio);
-                    // TODO: salvataggio nel database
-                } else if(comando.equals("set_username")) {
-                    setUsername(new JSONObject(messaggio).getString("username"));
-                } else if(comando.equals("login")) {
-                    JSONObject res = MySQL.authentication(object.getString("username"), object.getString("password"));
-                    output.println(res.toString());
-                    output.flush();
-                } else if(comando.equals("registrazione")) {
-                    JSONObject res = MySQL.addUser(object.getString("username"), object.getString("password"));
-                    output.println(res);
-                    output.flush();
-                } else if(comando.equals("get_contatti")) {
-                } else if(comando.equals("get_messaggi")) {
-                } else if(comando.equals("elimina_messaggio")) {
+                    if (comando.equals("invia_messaggio")) {
+                        // converto la stringa in oggetto e prendo il valore del campo destinatario
+                        String destinatario = new JSONObject(messaggio).getString("destinatario");
+                        // prende i client connessi
+                        ArrayList<GestoreClient> clients = server.getClients();
+                        // ricerca del destinatario tra i client ed invia il messaggio
+                        for (GestoreClient c : clients)
+                            if (c.getUsername().equals(destinatario))
+                                c.inviaMessaggio(messaggio);
+                        // TODO: salvataggio nel database
+                    } else if(comando.equals("set_username")) {
+                        setUsername(object.getString("username"));
+                    } else if(comando.equals("login")) {
+                        JSONObject res = MySQL.authentication(object.getString("username"), object.getString("password"));
+                        output.println(res.toString());
+                        output.flush();
+                    } else if(comando.equals("registrazione")) {
+                        JSONObject res = MySQL.addUser(object.getString("username"), object.getString("password"));
+                        output.println(res);
+                        output.flush();
+                    } else if(comando.equals("get_contatti")) {
+                        JSONObject res = MySQL.getListContacts(object.getString("sorgente"));
+                        output.println(res);
+                        output.flush();
+                    } else if(comando.equals("get_messaggi")) {
+                    } else if(comando.equals("elimina_messaggio")) {
+                    }
                 }
             }
             // quando il client si disconnette o avviene una SQLException
