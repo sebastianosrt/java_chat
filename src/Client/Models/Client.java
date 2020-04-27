@@ -7,11 +7,14 @@ import java.io.PrintWriter;
 import java.net.Socket;
 import java.util.ArrayList;
 
+import Client.Controllers.ClientController;
+import javafx.application.Platform;
 import org.json.JSONArray;
 import org.json.JSONObject;
 
 public class Client implements Runnable {
 
+    private ClientController client_controller;
     private Socket socket;
     private PrintWriter output;
     private BufferedReader input;
@@ -23,7 +26,8 @@ public class Client implements Runnable {
      *
      * @param username username dell'utente loggato
      */
-    public Client(String username) {
+    public Client(String username, ClientController client_controller) {
+        this.client_controller = client_controller;
         this.username = username;
         this.contatti = new ArrayList<String>();
 
@@ -35,21 +39,19 @@ public class Client implements Runnable {
             e.printStackTrace();
         }
 
-        this.setUsernameServerSocket();
-        this.setContattiByDataBase();
+        this.init();
     }
 
-    /**
-     *
-     * @return lista di contatti dell'utente
-     */
-    public ArrayList<String> getContatti() {
-        return this.contatti;
+    private void init() {
+        this.setUsernameServerSocket();
+
+        this.setContattiByDataBase();
+        Platform.runLater(() -> this.client_controller.caricaContatti(this.contatti));
     }
 
     @Override
     public void run() {
-        
+
     }
 
     public void inviaMessaggio(String messaggio) {
@@ -63,7 +65,7 @@ public class Client implements Runnable {
         json_r.put("comando", "set_username");
         json_r.put("username", this.username);
 
-        this.output.println(json_r);
+        this.output.println(json_r.toString());
         this.output.flush();
     }
 
@@ -74,7 +76,7 @@ public class Client implements Runnable {
         json_r.put("destinatario", "database");
         json_r.put("comando", "get_contatti");
 
-        this.output.println(json_r);
+        this.output.println(json_r.toString());
         this.output.flush();
         try {
             JSONObject resp = new JSONObject(this.input.readLine());
