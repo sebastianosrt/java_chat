@@ -55,15 +55,18 @@ class GestoreClient implements Runnable {
                     } else if(comando.equals("login")) {
                         JSONObject res = MySQL.authentication(object.getString("username"), object.getString("password"));
                         output.println(res.toString());
-                        output.flush();
                     } else if(comando.equals("registrazione")) {
                         JSONObject res = MySQL.addUser(object.getString("username"), object.getString("password"));
                         output.println(res);
-                        output.flush();
                     } else if(comando.equals("get_contatti")) {
                         JSONObject res = MySQL.getListContacts(object.getString("sorgente"));
                         output.println(res);
-                        output.flush();
+                    } else if(comando.equals("add_contatto")) {
+                        JSONObject res = MySQL.addContact(object.getString("sorgente"), object.getString("contatto"));
+                        output.println(res);
+                    } else if(comando.equals("cerca_utenti")) {
+                        JSONObject res = MySQL.searchUser(object.getString("nome_utente"));
+                        output.println(res);
                     } else if(comando.equals("get_messaggi")) {
                     } else if(comando.equals("elimina_messaggio")) {
                     }
@@ -86,7 +89,7 @@ class GestoreClient implements Runnable {
      * @throws IOException
      */
     private void init() throws IOException {
-        output = new PrintWriter(client.getOutputStream());
+        output = new PrintWriter(client.getOutputStream(), true);
         input = new BufferedReader(new InputStreamReader(client.getInputStream()));
     }
 

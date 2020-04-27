@@ -19,7 +19,6 @@ public class Client implements Runnable {
     private PrintWriter output;
     private BufferedReader input;
     private String username;
-    private ArrayList<String> contatti;
     private String contatto_selezionato;
 
     /**
@@ -29,10 +28,9 @@ public class Client implements Runnable {
     public Client(String username, ClientController client_controller) {
         this.client_controller = client_controller;
         this.username = username;
-        this.contatti = new ArrayList<String>();
 
         try {
-            this.socket = new Socket("192.168.1.211", 666);
+            this.socket = new Socket("localhost", 666);
             this.output = new PrintWriter(this.socket.getOutputStream(), false);
             this.input = new BufferedReader(new InputStreamReader(this.socket.getInputStream()));
         } catch(IOException e) {
@@ -44,9 +42,7 @@ public class Client implements Runnable {
 
     private void init() {
         this.setUsernameServerSocket();
-
-        this.setContattiByDataBase();
-        Platform.runLater(() -> this.client_controller.caricaContatti(this.contatti));
+        Platform.runLater(() -> this.client_controller.caricaContatti(this.getContattiFromDataBase()));
     }
 
     @Override
@@ -97,7 +93,8 @@ public class Client implements Runnable {
         this.output.flush();
     }
 
-    private void setContattiByDataBase() {
+    public ArrayList<String> getContattiFromDataBase() {
+        ArrayList<String> contatti = new ArrayList();
         JSONObject json_r = new JSONObject();
         json_r.put("sorgente", this.username);
         json_r.put("destinatario", "database");
@@ -112,12 +109,12 @@ public class Client implements Runnable {
                 JSONArray contatti_array = resp.getJSONArray("lista_contatti");
                 int contatti_length = contatti_array.length();
                 for(int i = 0; i < contatti_length; i++) {
-                    this.contatti.add(contatti_array.getString(i));
+                    contatti.add(contatti_array.getString(i));
                 }
             }
         } catch (IOException e) {
             e.printStackTrace();
         }
-
+        return contatti;
     }
 }

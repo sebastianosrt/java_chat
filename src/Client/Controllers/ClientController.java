@@ -43,6 +43,10 @@ import java.util.ResourceBundle;
  * */
 public class ClientController implements Initializable {
     private String username;
+    private Client client;
+    private int lastId = 0;
+    private boolean newContact = false;
+
     @FXML private AnchorPane body;
     @FXML private Label username_f;
     @FXML private Label destinatario_f;
@@ -54,15 +58,13 @@ public class ClientController implements Initializable {
     @FXML private Pane coveringPane;
     @FXML private ImageView closeBtn;
     @FXML private ImageView minimizeBtn;
-    private VBox chatContaier;
-    private VBox contactsContaier;
-    private int lastId = 0;
-    private ContextMenu menu;
-    private MenuItem copia;
-    private MenuItem elimina;
-    private HBox selectedItem;
-    private HBox activeContact = null;
-    private Client client;
+    @FXML private VBox chatContaier;
+    @FXML private VBox contactsContaier;
+    @FXML private ContextMenu menu;
+    @FXML private MenuItem copia;
+    @FXML private MenuItem elimina;
+    @FXML private HBox selectedItem;
+    @FXML private HBox activeContact = null;
 
     /**
      * Questo metodo gestisce i click del mouse
@@ -132,8 +134,9 @@ public class ClientController implements Initializable {
             ((Stage)((ImageView)e.getSource()).getScene().getWindow()).setIconified(true);
         });
         // ricerca utente
-        search_f.setOnKeyPressed(e -> {
-            // TODO: ricerca utente
+        search_f.setOnKeyReleased(e -> {
+            if (search_f.getText().length() > 0) caricaContatti(client.searchUsers(search_f.getText()));
+            else caricaContatti(client.getContattiFromDataBase());
         });
 
         client = new Client(username, this);
@@ -152,6 +155,10 @@ public class ClientController implements Initializable {
     public void addMessaggio(String username, String message) {
         if (username.equals(destinatario_f.getText()) || username == this.username) {
             if (message.length() > 0) {
+//                if (newContact) {
+//                    client.addContact(destinatario_f.getText());
+//                    newContact = false;
+//                }
                 //toglie gli \n finali
                 while (message.length() > 0 && message.charAt(message.length() - 1) == '\n') message = message.substring(0, message.length() - 1);
                 //
@@ -203,10 +210,12 @@ public class ClientController implements Initializable {
      * @param messaggi
      */
     public void caricaMessaggi(ArrayList<Messaggio> messaggi) {
-        chatContaier.getChildren().clear();
-        messaggi.forEach(m -> {
-            addMessaggio(m.mittente, m.testo);
-        });
+        if (messaggi.size() > 0) {
+            chatContaier.getChildren().clear();
+            messaggi.forEach(m -> {
+                addMessaggio(m.mittente, m.testo);
+            });
+        } else newContact = true;
     }
 
     /**
