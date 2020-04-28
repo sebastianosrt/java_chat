@@ -31,7 +31,7 @@ public class Client implements Runnable {
 
         try {
             this.socket = new Socket("localhost", 666);
-            this.output = new PrintWriter(this.socket.getOutputStream(), false);
+            this.output = new PrintWriter(this.socket.getOutputStream(), true);
             this.input = new BufferedReader(new InputStreamReader(this.socket.getInputStream()));
         } catch(IOException e) {
             e.printStackTrace();
@@ -59,8 +59,6 @@ public class Client implements Runnable {
         json_r.put("nome_utente", utente);
 
         this.output.println(json_r.toString());
-        this.output.flush();
-
         try {
             JSONObject resp = new JSONObject(this.input.readLine());
 
@@ -78,6 +76,22 @@ public class Client implements Runnable {
         return lista_utenti;
     }
 
+    public void addContactToDataBase(String username_contatto) {
+        JSONObject json_r = new JSONObject();
+        json_r.put("sorgente", this.username);
+        json_r.put("destinatario", "serversocket");
+        json_r.put("comando", "add_contatto");
+        json_r.put("contatto", username_contatto);
+
+        this.output.println(json_r);
+        try {
+            JSONObject resp = new JSONObject(this.input.readLine());
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
+    }
+
     public void inviaMessaggio(String messaggio) {
 
     }
@@ -90,7 +104,6 @@ public class Client implements Runnable {
         json_r.put("username", this.username);
 
         this.output.println(json_r.toString());
-        this.output.flush();
     }
 
     public ArrayList<String> getContattiFromDataBase() {
@@ -101,7 +114,6 @@ public class Client implements Runnable {
         json_r.put("comando", "get_contatti");
 
         this.output.println(json_r.toString());
-        this.output.flush();
         try {
             JSONObject resp = new JSONObject(this.input.readLine());
 
