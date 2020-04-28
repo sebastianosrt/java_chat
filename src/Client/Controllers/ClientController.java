@@ -155,10 +155,11 @@ public class ClientController implements Initializable {
     public void addMessaggio(String username, String message) {
         if (username.equals(destinatario_f.getText()) || username == this.username) {
             if (message.length() > 0) {
-//                if (newContact) {
-//                    client.addContact(destinatario_f.getText());
-//                    newContact = false;
-//                }
+                if (newContact) {
+                    client.addContactToDataBase(destinatario_f.getText());
+                    newContact = false;
+                    caricaContatti(client.getContattiFromDataBase());
+                }
                 //toglie gli \n finali
                 while (message.length() > 0 && message.charAt(message.length() - 1) == '\n') message = message.substring(0, message.length() - 1);
                 //
@@ -210,7 +211,7 @@ public class ClientController implements Initializable {
      * @param messaggi
      */
     public void caricaMessaggi(ArrayList<Messaggio> messaggi) {
-        if (messaggi.size() > 0) {
+        if (client.getContattiFromDataBase().contains(destinatario_f.getText())) {
             chatContaier.getChildren().clear();
             messaggi.forEach(m -> {
                 addMessaggio(m.mittente, m.testo);
@@ -268,8 +269,11 @@ public class ClientController implements Initializable {
             chatContaier.getChildren().clear();
             // setta il nome del destinatario
             destinatario_f.setText(b.getAccessibleText());
+            // resetta la ricerca
+            search_f.setText("");
+            caricaContatti(client.getContattiFromDataBase());
             // TODO: carica i messaggi
-//            caricaMessaggi(DB.getMessaggi(chatId));
+//            caricaMessaggi(client.getMessaggi(chatId));
         }
     }
 
@@ -277,23 +281,25 @@ public class ClientController implements Initializable {
      * Questo metodo porta in cima alla lista dei contatti l'ultimo con cui si è messaggato se non è già primo
      * */
     private void raiseContact() {
-        // metto i contatti in una lista
-        List<Node> nodes = new ArrayList<Node>(contactsContaier.getChildren());
-        // se il contatto è già in cima
-        if (nodes.get(0).equals(activeContact))
-            return;
-        // prendo l'indice del contatto da portare in alto per rimuovere il separator
-        int i = nodes.indexOf(activeContact);
-        // rimuovo separator
-        nodes.remove(i + 1);
-        // rimuovo il contatto da portare in alto
-        nodes.remove(activeContact);
-        // lo porto in alto (lo metto come primo nodo della lista)
-        nodes.add(0, activeContact);
-        // aggiungo un separator in 2 posizione
-        nodes.add(1, new Separator());
-        // rimuovo tutti i contatti e ci metto la nuova lista
-        contactsContaier.getChildren().clear();
-        contactsContaier.getChildren().addAll(nodes);
+        if (!newContact) {
+            // metto i contatti in una lista
+            List<Node> nodes = new ArrayList<Node>(contactsContaier.getChildren());
+            // se il contatto è già in cima
+            if (nodes.get(0).equals(activeContact))
+                return;
+            // prendo l'indice del contatto da portare in alto per rimuovere il separator
+            int i = nodes.indexOf(activeContact);
+            // rimuovo separator
+            nodes.remove(i + 1);
+            // rimuovo il contatto da portare in alto
+            nodes.remove(activeContact);
+            // lo porto in alto (lo metto come primo nodo della lista)
+            nodes.add(0, activeContact);
+            // aggiungo un separator in 2 posizione
+            nodes.add(1, new Separator());
+            // rimuovo tutti i contatti e ci metto la nuova lista
+            contactsContaier.getChildren().clear();
+            contactsContaier.getChildren().addAll(nodes);
+        }
     }
 }
