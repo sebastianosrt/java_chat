@@ -67,6 +67,8 @@ public class MySQL {
 
                 tables.add("CREATE TABLE IF NOT EXISTS `contacts` (`id` int(0) NOT NULL AUTO_INCREMENT,`user` varchar(255) NOT NULL,`contact` varchar(255) NOT NULL,PRIMARY KEY (`id`));"); //tabella contatti
 
+                tables.add("CREATE TABLE IF NOT EXISTS `messages` (`id` int(0) NOT NULL AUTO_INCREMENT,`mittente` varchar(255) NOT NULL,`destinatario` varchar(255) NOT NULL, `type` varchar(48) NOT NULL DEFAULT 'text', `data` text NOT NULL, PRIMARY KEY (`id`));"); //tabella contatti
+
                 //crea le tabelle
                 for(String table : tables){
                     PreparedStatement pstmt = conn.prepareStatement(table);
@@ -379,4 +381,94 @@ public class MySQL {
         }
         return response;
     }
+
+    /**
+     *
+     * @param mittente intestario del messaggio inviato
+     * @param destinatario ricevente del messaggio inviato
+     * @param type tipo di messaggio inviato (testo, file)
+     * @param data contenuto del messaggio
+     * @return json response of the result with the id of inserted row in the DB
+     * @throws SQLException
+     */
+    public static JSONObject addMessage(String mittente, String destinatario, String type, String data) throws SQLException {
+
+        JSONObject response = new JSONObject();
+        response.put("sorgente", "database");
+        response.put("metodo", "aggiungi_messaggio");
+        try {
+            boolean statusConn = conn.isClosed();
+            if(!statusConn){
+
+                PreparedStatement pstmt = conn.prepareStatement("INSERT INTO `messages` (`mittente`, `destinatario`, `type`, `data`) VALUES (?,?,?,?)", Statement.RETURN_GENERATED_KEYS);
+                pstmt.setString(1, mittente);
+                pstmt.setString(2, destinatario);
+                pstmt.setString(3, type); //default text
+                pstmt.setString(4, data);
+                pstmt.executeUpdate(); //esegue la query
+
+                ResultSet generatedKeys = pstmt.getGeneratedKeys();
+                if (generatedKeys.next()) {
+                    response.put("inserted_id", generatedKeys.getLong(1));
+                }
+                response.put("risultato", "true");
+
+            }else{
+                response.put("risultato", "false");
+                response.put("errore", "connection_closed");
+            }
+        }catch (SQLException e){
+            System.out.println(e.toString());
+        }
+        return response;
+    }
+
+
+    /**
+     *
+     * @param mittente colui che invia il messaggio
+     * @param destinatario colui che riceve il messaggio
+     * @return json response of the result
+     * @throws SQLException
+     */
+    public static JSONObject getMessaggi(String mittente, String destinatario) throws SQLException{
+        JSONObject response = new JSONObject();
+        response.put("sorgente", "database");
+        response.put("metodo", "get_messaggi");
+
+        try {
+            boolean statusConn = conn.isClosed();
+            if(!statusConn){
+
+                PreparedStatement pstmt = conn.prepareStatement("SELECT * FROM `messages` WHERE `mittente` IN (?,?) AND `destinatario` IN (?,?)");
+                pstmt.setString(1, mittente);
+                pstmt.setString(2, destinatario);
+                pstmt.setString(3, mittente);
+                pstmt.setString(4, destinatario);
+                ResultSet  rs = pstmt.executeQuery(); //esegue la query
+
+                ArrayList<JSONObject> listOfMessages = new ArrayList<>();
+
+                while (rs.next()){
+                    //nel caso bisogni modificare manualmente l'id dei messaggi (impostanto l'ordine crescente di arrivo 1,2,3)
+                    //HashMap<String,String> temp_map = new HashMap<>();
+                    //temp_map.put("temp_id", rs.getString(0));
+
+                    JSONObject temp_message = new JSONObject(MySQL.createRowObj(rs)); //viene passata una HashMap
+                    listOfMessages.add(temp_message);
+                }
+
+                response.put("lista_messaggi",listOfMessages);
+                response.put("risultato","true");
+
+            }else{
+                response.put("risultato", "false");
+                response.put("errore", "connection_closed");
+            }
+        }catch (SQLException e){
+            System.out.println(e.toString());
+        }
+        return response;
+    }
+
 }
