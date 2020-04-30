@@ -19,7 +19,6 @@ public class Client implements Runnable {
     private PrintWriter output;
     private BufferedReader input;
     private String username;
-    private String contatto_selezionato;
 
     /**
      *
@@ -89,7 +88,6 @@ public class Client implements Runnable {
         } catch (IOException e) {
             e.printStackTrace();
         }
-
     }
 
     public void inviaMessaggio(String messaggio) {
@@ -128,5 +126,31 @@ public class Client implements Runnable {
             e.printStackTrace();
         }
         return contatti;
+    }
+
+    public ArrayList<Messaggio> getMessaggiFromDataBase(String contatto) {
+        ArrayList<Messaggio> messaggi = new ArrayList<Messaggio>();
+        JSONObject json_r = new JSONObject();
+        json_r.put("sorgente", this.username);
+        json_r.put("destinatario", "database");
+        json_r.put("comando", "get_messaggi");
+        json_r.put("contatto", contatto);
+
+        this.output.println(json_r);
+        try {
+            JSONObject resp = new JSONObject(this.input.readLine());
+            if(resp.getString("risultato").equals("true")) {
+                JSONArray messaggi_array = resp.getJSONArray("lista_messaggi");
+                int messaggi_length = messaggi_array.length();
+                for(int i = 0; i < messaggi_length; i++) {
+                    JSONObject messaggio = messaggi_array.getJSONObject(i);
+                    messaggi.add(new Messaggio(messaggio.getInt("id"), messaggio.getString("data"), messaggio.getString("mittente"), messaggio.getString("destinatario"), messaggio.getString("type")));
+                }
+            }
+        } catch(IOException e) {
+            e.printStackTrace();
+        }
+
+        return messaggi;
     }
 }

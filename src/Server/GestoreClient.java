@@ -68,6 +68,8 @@ class GestoreClient implements Runnable {
                         JSONObject res = MySQL.searchUser(object.getString("nome_utente"));
                         output.println(res);
                     } else if(comando.equals("get_messaggi")) {
+                        JSONObject res = MySQL.getMessaggi(object.getString("sorgente"), object.getString("contatto"));
+                        output.println(res);
                     } else if(comando.equals("elimina_messaggio")) {
                     }
                 }
