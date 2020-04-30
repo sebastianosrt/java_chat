@@ -46,6 +46,17 @@ public class Client implements Runnable {
 
     @Override
     public void run() {
+        JSONObject req;
+        while(true) {
+            try {
+                req = new JSONObject(this.input.readLine());
+
+                System.out.println(req);
+
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        }
 
     }
 
@@ -57,9 +68,12 @@ public class Client implements Runnable {
         json_r.put("comando", "cerca_utenti");
         json_r.put("nome_utente", utente);
 
-        this.output.println(json_r.toString());
         try {
-            JSONObject resp = new JSONObject(this.input.readLine());
+            Socket s = new Socket("localhost", 666);
+            PrintWriter out = new PrintWriter(s.getOutputStream(), true);
+            BufferedReader in = new BufferedReader(new InputStreamReader(s.getInputStream()));
+            out.println(json_r.toString());
+            JSONObject resp = new JSONObject(in.readLine());
 
             if(resp.getString("risultato").equals("true")) {
                 JSONArray utenti_array = resp.getJSONArray("username_trovati");
@@ -68,6 +82,10 @@ public class Client implements Runnable {
                     lista_utenti.add(utenti_array.getString(i));
                 }
             }
+
+            out.close();
+            in.close();
+            s.close();
         } catch (IOException e) {
             e.printStackTrace();
         }
@@ -82,16 +100,45 @@ public class Client implements Runnable {
         json_r.put("comando", "add_contatto");
         json_r.put("contatto", username_contatto);
 
-        this.output.println(json_r);
         try {
-            JSONObject resp = new JSONObject(this.input.readLine());
+            Socket s = new Socket("localhost", 666);
+            PrintWriter out = new PrintWriter(s.getOutputStream(), true);
+            BufferedReader in = new BufferedReader(new InputStreamReader(s.getInputStream()));
+            out.println(json_r.toString());
+            JSONObject resp = new JSONObject(in.readLine());
+
+            out.close();
+            in.close();
+            s.close();
         } catch (IOException e) {
             e.printStackTrace();
         }
     }
 
-    public void inviaMessaggio(String messaggio) {
+    public int inviaMessaggio(String contatto, String messaggio) {
+        JSONObject json_r = new JSONObject();
+        json_r.put("sorgente", this.username);
+        json_r.put("destinatario", contatto);
+        json_r.put("comando", "invia_messaggio");
+        json_r.put("testo", messaggio);
 
+        try {
+            Socket s = new Socket("localhost", 666);
+            PrintWriter out = new PrintWriter(s.getOutputStream(), true);
+            BufferedReader in = new BufferedReader(new InputStreamReader(s.getInputStream()));
+            out.println(json_r.toString());
+            JSONObject resp = new JSONObject(in.readLine());
+
+            System.out.println(resp);
+
+            out.close();
+            in.close();
+            s.close();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
+        return -1;
     }
 
     private void setUsernameServerSocket() {
@@ -101,7 +148,7 @@ public class Client implements Runnable {
         json_r.put("comando", "set_username");
         json_r.put("username", this.username);
 
-        this.output.println(json_r.toString());
+        this.output.println(json_r);
     }
 
     public ArrayList<String> getContattiFromDataBase() {
@@ -111,9 +158,12 @@ public class Client implements Runnable {
         json_r.put("destinatario", "database");
         json_r.put("comando", "get_contatti");
 
-        this.output.println(json_r.toString());
         try {
-            JSONObject resp = new JSONObject(this.input.readLine());
+            Socket s = new Socket("localhost", 666);
+            PrintWriter out = new PrintWriter(s.getOutputStream(), true);
+            BufferedReader in = new BufferedReader(new InputStreamReader(s.getInputStream()));
+            out.println(json_r.toString());
+            JSONObject resp = new JSONObject(in.readLine());
 
             if(resp.getString("risultato").equals("true")) {
                 JSONArray contatti_array = resp.getJSONArray("lista_contatti");
@@ -122,6 +172,10 @@ public class Client implements Runnable {
                     contatti.add(contatti_array.getString(i));
                 }
             }
+
+            out.close();
+            in.close();
+            s.close();
         } catch (IOException e) {
             e.printStackTrace();
         }
@@ -136,9 +190,12 @@ public class Client implements Runnable {
         json_r.put("comando", "get_messaggi");
         json_r.put("contatto", contatto);
 
-        this.output.println(json_r);
         try {
-            JSONObject resp = new JSONObject(this.input.readLine());
+            Socket s = new Socket("localhost", 666);
+            PrintWriter out = new PrintWriter(s.getOutputStream(), true);
+            BufferedReader in = new BufferedReader(new InputStreamReader(s.getInputStream()));
+            out.println(json_r.toString());
+            JSONObject resp = new JSONObject(in.readLine());
             if(resp.getString("risultato").equals("true")) {
                 JSONArray messaggi_array = resp.getJSONArray("lista_messaggi");
                 int messaggi_length = messaggi_array.length();
@@ -147,6 +204,10 @@ public class Client implements Runnable {
                     messaggi.add(new Messaggio(messaggio.getInt("id"), messaggio.getString("data"), messaggio.getString("mittente"), messaggio.getString("destinatario"), messaggio.getString("type")));
                 }
             }
+
+            out.close();
+            in.close();
+            s.close();
         } catch(IOException e) {
             e.printStackTrace();
         }
