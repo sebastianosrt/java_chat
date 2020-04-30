@@ -44,7 +44,6 @@ import java.util.ResourceBundle;
 public class ClientController implements Initializable {
     private String username;
     private Client client;
-    private int lastId = 0;
     private boolean newContact = false;
 
     @FXML private AnchorPane body;
@@ -63,12 +62,12 @@ public class ClientController implements Initializable {
     @FXML private ContextMenu menu;
     @FXML private MenuItem copia;
     @FXML private MenuItem elimina;
-    @FXML private HBox selectedItem;
+    @FXML private HBox selectedMessage;
     @FXML private HBox activeContact = null;
 
     /**
      * Questo metodo gestisce i click del mouse
-     * @param event
+     * @param event - evento click
      */
     @FXML
     private void handleMouseClick(MouseEvent event) {
@@ -79,11 +78,6 @@ public class ClientController implements Initializable {
         }
     }
 
-    /**
-     * Questo metodo inizializza l'interfaccia
-     * @param location
-     * @param resources
-     */
     @Override
     public void initialize(URL location, ResourceBundle resources) {
         username_f.setText(username);
@@ -103,11 +97,11 @@ public class ClientController implements Initializable {
         menu.getItems().addAll(elimina, copia);
 
         elimina.setOnAction(event -> {
-            String id = selectedItem.getId();
-            chatContaier.getChildren().remove(selectedItem);
+            String id = selectedMessage.getId();
+            chatContaier.getChildren().remove(selectedMessage);
         });
         copia.setOnAction(event -> {
-            TextFlow f = (TextFlow) selectedItem.getChildren().get(0);
+            TextFlow f = (TextFlow) selectedMessage.getChildren().get(0);
             String str = f.getAccessibleText();
             // copy on clipboard
             Toolkit.getDefaultToolkit().getSystemClipboard().setContents(new StringSelection(str), null);
@@ -126,13 +120,9 @@ public class ClientController implements Initializable {
             }
         });
         // chiudi scheda
-        closeBtn.setOnMouseClicked(e -> {
-            Platform.exit();
-        });
+        closeBtn.setOnMouseClicked(e -> Platform.exit());
         // minimizza scheda
-        minimizeBtn.setOnMouseClicked(e -> {
-            ((Stage)((ImageView)e.getSource()).getScene().getWindow()).setIconified(true);
-        });
+        minimizeBtn.setOnMouseClicked(e -> ((Stage)((ImageView)e.getSource()).getScene().getWindow()).setIconified(true));
         // ricerca utente
         search_f.setOnKeyReleased(e -> {
             if (search_f.getText().length() > 0) caricaContatti(client.searchUsers(search_f.getText()));
@@ -153,7 +143,7 @@ public class ClientController implements Initializable {
      * @param message - il contenuto del messaggio
      * */
     public void addMessaggio(String username, String message) {
-        if (username.equals(destinatario_f.getText()) || username == this.username) {
+        if (username.equals(destinatario_f.getText()) || username.equals(this.username)) {
             if (message.length() > 0) {
                 if (newContact) {
                     client.addContactToDataBase(destinatario_f.getText());
@@ -164,6 +154,7 @@ public class ClientController implements Initializable {
                 while (message.length() > 0 && message.charAt(message.length() - 1) == '\n') message = message.substring(0, message.length() - 1);
                 //
                 if (message.length() > 0) {
+                    int id = 0;
                     Text text=new Text(message);
                     text.setFill(Color.BLACK);
                     TextFlow tempFlow = new TextFlow();
@@ -191,11 +182,12 @@ public class ClientController implements Initializable {
                     }
                     hbox.getChildren().add(flow);
                     hbox.getStyleClass().add("hbox");
-                    hbox.setId(lastId++ + "");
+                    hbox.setId(id + "");
                     flow.setAccessibleText(message);
+                    // seleziona messaggio
                     hbox.setOnMouseClicked((MouseEvent e) -> {
                         if (e.getButton() == MouseButton.SECONDARY) {
-                            selectedItem = (HBox) e.getSource();
+                            selectedMessage = (HBox) e.getSource();
                             menu.show(scrollPane, e.getScreenX(), e.getScreenY());
                         }
                     });
@@ -208,20 +200,18 @@ public class ClientController implements Initializable {
 
     /**
      * Questo metodo mostra i messaggi con un contatto
-     * @param messaggi
+     * @param messaggi - array contenente i messaggi della chat messaggi
      */
     public void caricaMessaggi(ArrayList<Messaggio> messaggi) {
         if (client.getContattiFromDataBase().contains(destinatario_f.getText())) {
             chatContaier.getChildren().clear();
-            messaggi.forEach(m -> {
-                addMessaggio(m.mittente, m.testo);
-            });
+            messaggi.forEach(m -> addMessaggio(m.mittente, m.testo));
         } else newContact = true;
     }
 
     /**
      * Questo metodo aggiunge un contatto nella view
-     * @param username
+     * @param username - l'username del contatto da aggiungere
      */
     public void addContatto(String username) {
         HBox hbox = new HBox();
@@ -232,21 +222,17 @@ public class ClientController implements Initializable {
         hbox.getChildren().addAll(label);
         hbox.setAccessibleText(label.getText());
 
-        hbox.setOnMouseClicked(e -> {
-            selectContact(e);
-        });
+        hbox.setOnMouseClicked(this::selectContact);
         contactsContaier.getChildren().addAll(hbox, new Separator());
     }
 
     /**
      * Questo metodo carica tutti i contatti dell'utente nella view
-     * @param contatti
+     * @param contatti - array contenente i contatti dell'utente
      */
     public void caricaContatti(ArrayList<String> contatti) {
         contactsContaier.getChildren().clear();
-        contatti.forEach(c -> {
-            addContatto(c);
-        });
+        contatti.forEach(this::addContatto);
     }
 
     /**
@@ -272,8 +258,7 @@ public class ClientController implements Initializable {
             // resetta la ricerca
             search_f.setText("");
             caricaContatti(client.getContattiFromDataBase());
-            // TODO: carica i messaggi
-//            caricaMessaggi(client.getMessaggi(chatId));
+            caricaMessaggi(client.getMessaggiFromDataBase(this.username));
         }
     }
 
@@ -283,7 +268,7 @@ public class ClientController implements Initializable {
     private void raiseContact() {
         if (!newContact) {
             // metto i contatti in una lista
-            List<Node> nodes = new ArrayList<Node>(contactsContaier.getChildren());
+            List<Node> nodes = new ArrayList<>(contactsContaier.getChildren());
             // se il contatto è già in cima
             if (nodes.get(0).equals(activeContact))
                 return;
