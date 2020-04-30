@@ -43,6 +43,7 @@ import java.util.ResourceBundle;
  * */
 public class ClientController implements Initializable {
     private String username;
+    private String contattoAttivo;
     private Client client;
     private boolean newContact = false;
 
@@ -143,10 +144,10 @@ public class ClientController implements Initializable {
      * @param message - il contenuto del messaggio
      * */
     public void addMessaggio(String username, String message) {
-        if (username.equals(destinatario_f.getText()) || username.equals(this.username)) {
+        if (username.equals(contattoAttivo) || username.equals(this.username)) {
             if (message.length() > 0) {
                 if (newContact) {
-                    client.addContactToDataBase(destinatario_f.getText());
+                    client.addContactToDataBase(contattoAttivo);
                     newContact = false;
                     caricaContatti(client.getContattiFromDataBase());
                 }
@@ -203,7 +204,7 @@ public class ClientController implements Initializable {
      * @param messaggi - array contenente i messaggi della chat messaggi
      */
     public void caricaMessaggi(ArrayList<Messaggio> messaggi) {
-        if (client.getContattiFromDataBase().contains(destinatario_f.getText())) {
+        if (client.getContattiFromDataBase().contains(contattoAttivo)) {
             chatContaier.getChildren().clear();
             messaggi.forEach(m -> addMessaggio(m.mittente, m.testo));
         } else newContact = true;
@@ -255,10 +256,11 @@ public class ClientController implements Initializable {
             chatContaier.getChildren().clear();
             // setta il nome del destinatario
             destinatario_f.setText(b.getAccessibleText());
+            contattoAttivo = b.getAccessibleText();
             // resetta la ricerca
             search_f.setText("");
-            caricaContatti(client.getContattiFromDataBase());
-            caricaMessaggi(client.getMessaggiFromDataBase(this.username));
+//            caricaContatti(client.getContattiFromDataBase());
+            caricaMessaggi(client.getMessaggiFromDataBase(contattoAttivo));
         }
     }
 
