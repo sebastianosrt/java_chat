@@ -41,15 +41,19 @@ class GestoreClient implements Runnable {
                     String comando = object.getString("comando");
 
                     if (comando.equals("invia_messaggio")) {
-                        // converto la stringa in oggetto e prendo il valore del campo destinatario
-                        String destinatario = new JSONObject(messaggio).getString("destinatario");
-                        // prende i client connessi
-                        ArrayList<GestoreClient> clients = server.getClients();
-                        // ricerca del destinatario tra i client ed invia il messaggio
-                        for (GestoreClient c : clients)
-                            if (c.getUsername().equals(destinatario))
-                                c.inviaMessaggio(messaggio);
-                        // TODO: salvataggio nel database
+                        JSONObject res = MySQL.addMessage(object.getString("sorgente"), object.getString("destinatario"), object.getString("type"), object.getString("data"));
+                        if (res.getString("risultato").equals("true")) {
+                            output.println(res);
+                            object.put("id", res.getInt("inserted_id"));
+                            // converto la stringa in oggetto e prendo il valore del campo destinatario
+                            String destinatario = new JSONObject(messaggio).getString("destinatario");
+                            // prende i client connessi
+                            ArrayList<GestoreClient> clients = server.getClients();
+                            // ricerca del destinatario tra i client ed invia il messaggio
+                            for (GestoreClient c : clients)
+                                if (c.getUsername() != null && c.getUsername().equals(destinatario))
+                                    c.inviaMessaggio(messaggio);
+                        }
                     } else if(comando.equals("set_username")) {
                         setUsername(object.getString("username"));
                     } else if(comando.equals("login")) {

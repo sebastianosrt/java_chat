@@ -47,12 +47,17 @@ public class Client implements Runnable {
     @Override
     public void run() {
         JSONObject req;
+        String comando;
         while(true) {
             try {
                 req = new JSONObject(this.input.readLine());
-
-                System.out.println(req);
-
+                comando = req.getString("comando");
+                if(comando.equals("invia_messaggio")) {
+                    if(req.getString("type").equals("text")) {
+                        JSONObject finalReq = req;
+                        Platform.runLater(() -> this.client_controller.addMessaggio(finalReq.getString("sorgente"), finalReq.getString("data")));
+                    }
+                }
             } catch (IOException e) {
                 e.printStackTrace();
             }
@@ -120,8 +125,10 @@ public class Client implements Runnable {
         json_r.put("sorgente", this.username);
         json_r.put("destinatario", contatto);
         json_r.put("comando", "invia_messaggio");
-        json_r.put("testo", messaggio);
+        json_r.put("data", messaggio);
+        json_r.put("type", "text");
 
+        int id = -1;
         try {
             Socket s = new Socket("localhost", 666);
             PrintWriter out = new PrintWriter(s.getOutputStream(), true);
@@ -129,7 +136,9 @@ public class Client implements Runnable {
             out.println(json_r.toString());
             JSONObject resp = new JSONObject(in.readLine());
 
-            System.out.println(resp);
+            if(resp.getString("risultato").equals("true")) {
+                id = resp.getInt("inserted_id");
+            }
 
             out.close();
             in.close();
@@ -138,7 +147,7 @@ public class Client implements Runnable {
             e.printStackTrace();
         }
 
-        return -1;
+        return id;
     }
 
     private void setUsernameServerSocket() {
