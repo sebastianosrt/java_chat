@@ -153,9 +153,8 @@ public class ClientController implements Initializable {
                 }
                 //toglie gli \n finali
                 while (message.length() > 0 && message.charAt(message.length() - 1) == '\n') message = message.substring(0, message.length() - 1);
-                //
                 if (message.length() > 0) {
-                    int id = 0;
+                    int id = client.inviaMessaggio(this.username, message);
                     Text text=new Text(message);
                     text.setFill(Color.BLACK);
                     TextFlow tempFlow = new TextFlow();
@@ -259,6 +258,7 @@ public class ClientController implements Initializable {
             contattoAttivo = b.getAccessibleText();
             // resetta la ricerca
             search_f.setText("");
+            client.setContatto_attivo(contattoAttivo);
 //            caricaContatti(client.getContattiFromDataBase());
             caricaMessaggi(client.getMessaggiFromDataBase(contattoAttivo));
         }
