@@ -74,7 +74,7 @@ public class ClientController implements Initializable {
     private void handleMouseClick(MouseEvent event) {
         // invia il messaggio
         if (event.getSource() == sendBtn) {
-            addMessaggio(username, message_f.getText());
+            addMessaggio(inviaMessaggio(username, message_f.getText()));
             message_f.setText("");
         }
     }
@@ -116,7 +116,7 @@ public class ClientController implements Initializable {
         // quando viene premuto enter invia un messaggio
         body.setOnKeyReleased(e -> {
             if (e.getCode() == KeyCode.ENTER) {
-                addMessaggio(username, message_f.getText());
+                addMessaggio(inviaMessaggio(username, message_f.getText()));
                 message_f.setText("");
             }
         });
@@ -139,60 +139,83 @@ public class ClientController implements Initializable {
     }
 
     /**
-     * Questo metodo aggiunge alla view un nuovo messaggio e gli aggiunge un event listener
+     * Questo metodo invia il messaggio al destinatario
      * @param username - l'username del mittente del messaggio
      * @param message - il contenuto del messaggio
      * */
-    public void addMessaggio(String username, String message) {
+    public Messaggio inviaMessaggio(String username, String message) {
+        Messaggio m = new Messaggio(0, message, username, contattoAttivo, "text");
         if (username.equals(contattoAttivo) || username.equals(this.username)) {
             if (message.length() > 0) {
-                if (newContact) {
-                    client.addContactToDataBase(contattoAttivo);
-                    newContact = false;
-                    caricaContatti(client.getContattiFromDataBase());
-                }
                 //toglie gli \n finali
                 while (message.length() > 0 && message.charAt(message.length() - 1) == '\n') message = message.substring(0, message.length() - 1);
                 if (message.length() > 0) {
-                    int id = client.inviaMessaggio(this.username, message);
-                    Text text=new Text(message);
-                    text.setFill(Color.BLACK);
-                    TextFlow tempFlow = new TextFlow();
-                    if(!this.username.equals(username)){
-                        text.setFill(Color.WHITE);
-                        Text txtName=new Text(username + "\n");
-                        txtName.setFill(Color.WHITE);
-                        txtName.setFont(Font.font("Verdana", FontWeight.BOLD, 12));
-                        txtName.getStyleClass().add("txtName");
-                        tempFlow.getChildren().add(txtName);
+                    m.id = client.inviaMessaggio(this.username, message);
+                    return m;
+                }
+            }
+        }
+        return null;
+    }
+
+    /**
+     * Questo metodo aggiunge alla view un nuovo messaggio e gli aggiunge un event listener per il tasto destro del mouse
+     * @param message - il messaggio
+     * */
+    public void addMessaggio(Messaggio message) {
+        if (message != null) {
+            String username = message.mittente;
+            String testo = message.testo;
+            if (username.equals(contattoAttivo) || username.equals(this.username)) {
+                if (testo.length() > 0) {
+                    if (newContact) {
+                        client.addContactToDataBase(contattoAttivo);
+                        newContact = false;
+                        caricaContatti(client.getContattiFromDataBase());
                     }
-                    tempFlow.getChildren().add(text);
-                    tempFlow.setMaxWidth(200);
-                    TextFlow flow = new TextFlow(tempFlow);
-                    HBox hbox = new HBox(12);
-                    if (!this.username.equals(username)) {
-                        tempFlow.getStyleClass().add("tempFlowFlipped");
-                        flow.getStyleClass().add("textFlowFlipped");
-                        chatContaier.setAlignment(Pos.TOP_LEFT);
-                        hbox.setAlignment(Pos.CENTER_LEFT);
-                    } else {
-                        tempFlow.getStyleClass().add("tempFlow");
-                        flow.getStyleClass().add("textFlow");
-                        hbox.setAlignment(Pos.BOTTOM_RIGHT);
-                    }
-                    hbox.getChildren().add(flow);
-                    hbox.getStyleClass().add("hbox");
-                    hbox.setId(id + "");
-                    flow.setAccessibleText(message);
-                    // seleziona messaggio
-                    hbox.setOnMouseClicked((MouseEvent e) -> {
-                        if (e.getButton() == MouseButton.SECONDARY) {
-                            selectedMessage = (HBox) e.getSource();
-                            menu.show(scrollPane, e.getScreenX(), e.getScreenY());
+                    //toglie gli \n finali
+                    while (testo.length() > 0 && testo.charAt(testo.length() - 1) == '\n') testo = testo.substring(0, testo.length() - 1);
+                    if (testo.length() > 0) {
+                        int id = message.id;
+                        Text text=new Text(testo);
+                        text.setFill(Color.BLACK);
+                        TextFlow tempFlow = new TextFlow();
+                        if(!this.username.equals(username)){
+                            text.setFill(Color.WHITE);
+                            Text txtName=new Text(username + "\n");
+                            txtName.setFill(Color.WHITE);
+                            txtName.setFont(Font.font("Verdana", FontWeight.BOLD, 12));
+                            txtName.getStyleClass().add("txtName");
+                            tempFlow.getChildren().add(txtName);
                         }
-                    });
-                    chatContaier.getChildren().addAll(hbox);
-                    raiseContact();
+                        tempFlow.getChildren().add(text);
+                        tempFlow.setMaxWidth(200);
+                        TextFlow flow = new TextFlow(tempFlow);
+                        HBox hbox = new HBox(12);
+                        if (!this.username.equals(username)) {
+                            tempFlow.getStyleClass().add("tempFlowFlipped");
+                            flow.getStyleClass().add("textFlowFlipped");
+                            chatContaier.setAlignment(Pos.TOP_LEFT);
+                            hbox.setAlignment(Pos.CENTER_LEFT);
+                        } else {
+                            tempFlow.getStyleClass().add("tempFlow");
+                            flow.getStyleClass().add("textFlow");
+                            hbox.setAlignment(Pos.BOTTOM_RIGHT);
+                        }
+                        hbox.getChildren().add(flow);
+                        hbox.getStyleClass().add("hbox");
+                        hbox.setId(id + "");
+                        flow.setAccessibleText(testo);
+                        // seleziona messaggio
+                        hbox.setOnMouseClicked((MouseEvent e) -> {
+                            if (e.getButton() == MouseButton.SECONDARY) {
+                                selectedMessage = (HBox) e.getSource();
+                                menu.show(scrollPane, e.getScreenX(), e.getScreenY());
+                            }
+                        });
+                        chatContaier.getChildren().addAll(hbox);
+                        raiseContact();
+                    }
                 }
             }
         }
@@ -205,7 +228,8 @@ public class ClientController implements Initializable {
     public void caricaMessaggi(ArrayList<Messaggio> messaggi) {
         if (client.getContattiFromDataBase().contains(contattoAttivo)) {
             chatContaier.getChildren().clear();
-            messaggi.forEach(m -> addMessaggio(m.mittente, m.testo));
+            messaggi.forEach(m -> System.out.println(m.id));
+//            messaggi.forEach(m -> inviaMessaggio(m.mittente, m.testo));
         } else newContact = true;
     }
 
