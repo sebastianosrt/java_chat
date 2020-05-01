@@ -53,7 +53,7 @@ public class LogInController implements Initializable {
         // prende le credenziali dalle caselle di testo
         String username = username_f.getText();
         String password = password_f.getText();
-        String error = "";
+        String error;
         if (username.length() == 0) {
             error_f.setText("Inserisci un'username");
             return;
@@ -83,7 +83,7 @@ public class LogInController implements Initializable {
         // prende le credenziali dalle caselle di testo
         String username = username_r.getText();
         String password = password_r.getText();
-        String error = "";
+        String error;
         if (username.length() == 0) {
             error_r.setText("Inserisci un'username");
             return;
@@ -164,19 +164,11 @@ public class LogInController implements Initializable {
         response.setText("");
 
         // chiudi scheda
-        closeBtn.setOnMouseClicked(e -> {
-            Platform.exit();
-        });
-        closeBtn1.setOnMouseClicked(e -> {
-            Platform.exit();
-        });
+        closeBtn.setOnMouseClicked(e -> Platform.exit());
+        closeBtn1.setOnMouseClicked(e -> Platform.exit());
 
         // minimizza scheda
-        minimizeBtn.setOnMouseClicked(e -> {
-            ((Stage)((ImageView)e.getSource()).getScene().getWindow()).setIconified(true);
-        });
-        minimizeBtn1.setOnMouseClicked(e -> {
-            ((Stage)((ImageView)e.getSource()).getScene().getWindow()).setIconified(true);
-        });
+        minimizeBtn.setOnMouseClicked(e -> ((Stage)((ImageView)e.getSource()).getScene().getWindow()).setIconified(true));
+        minimizeBtn1.setOnMouseClicked(e -> ((Stage)((ImageView)e.getSource()).getScene().getWindow()).setIconified(true));
     }
 }
