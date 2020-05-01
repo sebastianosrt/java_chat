@@ -19,6 +19,7 @@ public class Client implements Runnable {
     private PrintWriter output;
     private BufferedReader input;
     private String username;
+    private String contatto_attivo;
 
     /**
      *
@@ -53,9 +54,11 @@ public class Client implements Runnable {
                 req = new JSONObject(this.input.readLine());
                 comando = req.getString("comando");
                 if(comando.equals("invia_messaggio")) {
-                    if(req.getString("type").equals("text")) {
-                        JSONObject finalReq = req;
-                        Platform.runLater(() -> this.client_controller.addMessaggio(finalReq.getString("sorgente"), finalReq.getString("data")));
+                    if(this.contatto_attivo != null && req.getString("sorgente").equals(this.contatto_attivo)) {
+                        if(req.getString("type").equals("text")) {
+                            JSONObject finalReq = req;
+                            Platform.runLater(() -> this.client_controller.addMessaggio(finalReq.getString("sorgente"), finalReq.getString("data")));
+                        }
                     }
                 }
             } catch (IOException e) {
@@ -222,5 +225,9 @@ public class Client implements Runnable {
         }
 
         return messaggi;
+    }
+
+    public void setContatto_attivo(String contatto) {
+        this.contatto_attivo = contatto;
     }
 }
