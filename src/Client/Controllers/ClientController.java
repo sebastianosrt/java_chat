@@ -121,7 +121,11 @@ public class ClientController implements Initializable {
             }
         });
         // chiudi scheda
-        closeBtn.setOnMouseClicked(e -> Platform.exit());
+        closeBtn.setOnMouseClicked(e -> {
+            client.exit();
+            System.out.println("ciao");
+            Platform.exit();
+        });
         // minimizza scheda
         minimizeBtn.setOnMouseClicked(e -> ((Stage)((ImageView)e.getSource()).getScene().getWindow()).setIconified(true));
         // ricerca utente
@@ -228,7 +232,6 @@ public class ClientController implements Initializable {
     public void caricaMessaggi(ArrayList<Messaggio> messaggi) {
         if (client.getContattiFromDataBase().contains(contattoAttivo)) {
             chatContaier.getChildren().clear();
-            messaggi.forEach(m -> System.out.println(m.id));
             messaggi.forEach(m -> addMessaggio(m));
         } else newContact = true;
     }
@@ -283,7 +286,7 @@ public class ClientController implements Initializable {
             // resetta la ricerca
             search_f.setText("");
             client.setContatto_attivo(contattoAttivo);
-//            caricaContatti(client.getContattiFromDataBase());
+            caricaContatti(client.getContattiFromDataBase());
             caricaMessaggi(client.getMessaggiFromDataBase(contattoAttivo));
         }
     }

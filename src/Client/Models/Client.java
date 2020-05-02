@@ -13,7 +13,6 @@ import java.net.Socket;
 import java.util.ArrayList;
 
 public class Client implements Runnable {
-
     private ClientController client_controller;
     private Socket socket;
     private PrintWriter output;
@@ -49,24 +48,25 @@ public class Client implements Runnable {
     public void run() {
         JSONObject req;
         String comando;
-        while(true) {
+        while(!this.socket.isClosed()) {
             try {
-                req = new JSONObject(this.input.readLine());
-                System.out.println(req);
-                comando = req.getString("comando");
-                if(comando.equals("invia_messaggio")) {
-                    if(this.contatto_attivo != null && req.getString("sorgente").equals(this.contatto_attivo)) {
-                        if(req.getString("type").equals("text")) {
-                            JSONObject finalReq = req;
-                            Platform.runLater(() -> this.client_controller.addMessaggio(new Messaggio(finalReq.getInt("id"), finalReq.getString("data"), finalReq.getString("sorgente"), finalReq.getString("destinatario"), finalReq.getString("type"))));
+                String res = this.input.readLine();
+                if (res != null) {
+                    req = new JSONObject(res);
+                    comando = req.getString("comando");
+                    if(comando.equals("invia_messaggio")) {
+                        if(this.contatto_attivo != null && req.getString("sorgente").equals(this.contatto_attivo)) {
+                            if(req.getString("type").equals("text")) {
+                                JSONObject finalReq = req;
+                                Platform.runLater(() -> this.client_controller.addMessaggio(new Messaggio(finalReq.getInt("id"), finalReq.getString("data"), finalReq.getString("sorgente"), finalReq.getString("destinatario"), finalReq.getString("type"))));
+                            }
                         }
                     }
                 }
             } catch (IOException e) {
-                e.printStackTrace();
+                System.out.println("exit");
             }
         }
-
     }
 
     public ArrayList<String> searchUsers(String utente) {
@@ -230,5 +230,14 @@ public class Client implements Runnable {
 
     public void setContatto_attivo(String contatto) {
         this.contatto_attivo = contatto;
+    }
+    public void exit() {
+        try {
+            this.socket.close();
+            this.input.close();
+            this.output.close();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
     }
 }
