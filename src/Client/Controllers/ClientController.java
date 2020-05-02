@@ -150,7 +150,7 @@ public class ClientController implements Initializable {
                 //toglie gli \n finali
                 while (message.length() > 0 && message.charAt(message.length() - 1) == '\n') message = message.substring(0, message.length() - 1);
                 if (message.length() > 0) {
-                    m.id = client.inviaMessaggio(this.username, message);
+                    m.id = client.inviaMessaggio(this.contattoAttivo, message);
                     return m;
                 }
             }
@@ -229,7 +229,7 @@ public class ClientController implements Initializable {
         if (client.getContattiFromDataBase().contains(contattoAttivo)) {
             chatContaier.getChildren().clear();
             messaggi.forEach(m -> System.out.println(m.id));
-//            messaggi.forEach(m -> inviaMessaggio(m.mittente, m.testo));
+            messaggi.forEach(m -> addMessaggio(m));
         } else newContact = true;
     }
 

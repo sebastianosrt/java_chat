@@ -52,12 +52,13 @@ public class Client implements Runnable {
         while(true) {
             try {
                 req = new JSONObject(this.input.readLine());
+                System.out.println(req);
                 comando = req.getString("comando");
                 if(comando.equals("invia_messaggio")) {
                     if(this.contatto_attivo != null && req.getString("sorgente").equals(this.contatto_attivo)) {
                         if(req.getString("type").equals("text")) {
                             JSONObject finalReq = req;
-                            Platform.runLater(() -> this.client_controller.addMessaggio(finalReq.getString("sorgente"), finalReq.getString("data")));
+                            Platform.runLater(() -> this.client_controller.addMessaggio(new Messaggio(finalReq.getInt("id"), finalReq.getString("data"), finalReq.getString("sorgente"), finalReq.getString("destinatario"), finalReq.getString("type"))));
                         }
                     }
                 }

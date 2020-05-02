@@ -52,7 +52,7 @@ class GestoreClient implements Runnable {
                             // ricerca del destinatario tra i client ed invia il messaggio
                             for (GestoreClient c : clients)
                                 if (c.getUsername() != null && c.getUsername().equals(destinatario))
-                                    c.inviaMessaggio(messaggio);
+                                    c.inviaMessaggio(object.toString());
                         }
                     } else if(comando.equals("set_username")) {
                         setUsername(object.getString("username"));
@@ -116,7 +116,6 @@ class GestoreClient implements Runnable {
      */
     public void inviaMessaggio(String messaggio) {
         output.println(messaggio);
-        output.flush();
     }
 
     /**
