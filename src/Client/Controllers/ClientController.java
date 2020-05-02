@@ -43,7 +43,7 @@ import java.util.ResourceBundle;
  * */
 public class ClientController implements Initializable {
     private String username;
-    private String contattoAttivo;
+    private String contattoAttivo = null;
     private Client client;
     private boolean newContact = false;
 
@@ -123,7 +123,6 @@ public class ClientController implements Initializable {
         // chiudi scheda
         closeBtn.setOnMouseClicked(e -> {
             client.exit();
-            System.out.println("ciao");
             Platform.exit();
         });
         // minimizza scheda
@@ -154,6 +153,12 @@ public class ClientController implements Initializable {
                 //toglie gli \n finali
                 while (message.length() > 0 && message.charAt(message.length() - 1) == '\n') message = message.substring(0, message.length() - 1);
                 if (message.length() > 0) {
+                    if (newContact) {
+                        client.addContactToDataBase(contattoAttivo);
+                        newContact = false;
+                        caricaContatti(client.getContattiFromDataBase());
+                    }
+                    raiseContact();
                     m.id = client.inviaMessaggio(this.contattoAttivo, message);
                     return m;
                 }
@@ -172,11 +177,6 @@ public class ClientController implements Initializable {
             String testo = message.testo;
             if (username.equals(contattoAttivo) || username.equals(this.username)) {
                 if (testo.length() > 0) {
-                    if (newContact) {
-                        client.addContactToDataBase(contattoAttivo);
-                        newContact = false;
-                        caricaContatti(client.getContattiFromDataBase());
-                    }
                     //toglie gli \n finali
                     while (testo.length() > 0 && testo.charAt(testo.length() - 1) == '\n') testo = testo.substring(0, testo.length() - 1);
                     if (testo.length() > 0) {
@@ -184,14 +184,7 @@ public class ClientController implements Initializable {
                         Text text=new Text(testo);
                         text.setFill(Color.BLACK);
                         TextFlow tempFlow = new TextFlow();
-                        if(!this.username.equals(username)){
-                            text.setFill(Color.WHITE);
-                            Text txtName=new Text(username + "\n");
-                            txtName.setFill(Color.WHITE);
-                            txtName.setFont(Font.font("Verdana", FontWeight.BOLD, 12));
-                            txtName.getStyleClass().add("txtName");
-                            tempFlow.getChildren().add(txtName);
-                        }
+
                         tempFlow.getChildren().add(text);
                         tempFlow.setMaxWidth(200);
                         TextFlow flow = new TextFlow(tempFlow);
@@ -218,7 +211,6 @@ public class ClientController implements Initializable {
                             }
                         });
                         chatContaier.getChildren().addAll(hbox);
-                        raiseContact();
                     }
                 }
             }
@@ -230,10 +222,14 @@ public class ClientController implements Initializable {
      * @param messaggi - array contenente i messaggi della chat messaggi
      */
     public void caricaMessaggi(ArrayList<Messaggio> messaggi) {
-        if (client.getContattiFromDataBase().contains(contattoAttivo)) {
+        if (messaggi.size() == 0)
+            this.newContact = true;
+        else {
+//            if (client.getContattiFromDataBase().contains(contattoAttivo)) {
             chatContaier.getChildren().clear();
-            messaggi.forEach(m -> addMessaggio(m));
-        } else newContact = true;
+            messaggi.forEach(this::addMessaggio);
+//            }
+        }
     }
 
     /**
@@ -260,6 +256,8 @@ public class ClientController implements Initializable {
     public void caricaContatti(ArrayList<String> contatti) {
         contactsContaier.getChildren().clear();
         contatti.forEach(this::addContatto);
+        if (contattoAttivo != null)
+            setActiveContact(contattoAttivo);
     }
 
     /**
@@ -271,11 +269,8 @@ public class ClientController implements Initializable {
         HBox b = (HBox) e.getSource();
         // se il contatto selezionato non è già attivo
         if (b != activeContact) {
-            // toglie la classe css attivo dal contatto attivo precendente
-            if (activeContact != null) activeContact.getStyleClass().remove("contactActive");
-            // rende attivo il nuovo contatto
-            activeContact = b;
-            b.getStyleClass().add("contactActive");
+            // setta il contatto attivo
+            setActiveContact(b.getAccessibleText());
             // toglie il pannello che dice che nessuna chat è selezionata
             coveringPane.toBack();
             // toglie tutti i messaggi con il contatto precedente
@@ -284,36 +279,56 @@ public class ClientController implements Initializable {
             destinatario_f.setText(b.getAccessibleText());
             contattoAttivo = b.getAccessibleText();
             // resetta la ricerca
-            search_f.setText("");
+            if (search_f.getText().length() > 0) {
+                search_f.setText("");
+                caricaContatti(client.getContattiFromDataBase());
+            }
             client.setContatto_attivo(contattoAttivo);
-            caricaContatti(client.getContattiFromDataBase());
             caricaMessaggi(client.getMessaggiFromDataBase(contattoAttivo));
         }
+    }
+
+    /**
+     * Questo metodo setta il contatto attivo
+     * @param name - nome del contatto attivo
+     */
+    private void setActiveContact(String name) {
+        contactsContaier.getChildren().forEach(c -> {
+            if (c.getAccessibleText() != null && c.getAccessibleText().equals(name)) {
+                activeContact =(HBox) c;
+                activeContact.getStyleClass().add("contactActive");
+            } else {
+                c.getStyleClass().removeAll("contactActive");
+                System.out.println(c.getStyleClass());
+            }
+        });
     }
 
     /**
      * Questo metodo porta in cima alla lista dei contatti l'ultimo con cui si è messaggato se non è già primo
      * */
     private void raiseContact() {
-        if (!newContact) {
-            // metto i contatti in una lista
-            List<Node> nodes = new ArrayList<>(contactsContaier.getChildren());
-            // se il contatto è già in cima
-            if (nodes.get(0).equals(activeContact))
-                return;
-            // prendo l'indice del contatto da portare in alto per rimuovere il separator
-            int i = nodes.indexOf(activeContact);
-            // rimuovo separator
-            nodes.remove(i + 1);
-            // rimuovo il contatto da portare in alto
-            nodes.remove(activeContact);
-            // lo porto in alto (lo metto come primo nodo della lista)
-            nodes.add(0, activeContact);
-            // aggiungo un separator in 2 posizione
-            nodes.add(1, new Separator());
-            // rimuovo tutti i contatti e ci metto la nuova lista
-            contactsContaier.getChildren().clear();
-            contactsContaier.getChildren().addAll(nodes);
-        }
+        // assicuro il contatto attivo
+        setActiveContact(contattoAttivo);
+        // metto i contatti in una lista
+        List<Node> nodes = new ArrayList<>(contactsContaier.getChildren());
+//        nodes.forEach(System.out::println);
+//        System.out.println("attivo: " +  activeContact + "\n");
+        // se il contatto è già in cima
+        if (nodes.get(0).equals(activeContact))
+            return;
+        // prendo l'indice del contatto da portare in alto per rimuovere il separator
+        int i = nodes.indexOf(activeContact);
+        // rimuovo separator
+        nodes.remove(i + 1);
+        // rimuovo il contatto da portare in alto
+        nodes.remove(activeContact);
+        // lo porto in alto (lo metto come primo nodo della lista)
+        nodes.add(0, activeContact);
+        // aggiungo un separator in 2 posizione
+        nodes.add(1, new Separator());
+        // rimuovo tutti i contatti e ci metto la nuova lista
+        contactsContaier.getChildren().clear();
+        contactsContaier.getChildren().addAll(nodes);
     }
 }
