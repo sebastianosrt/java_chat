@@ -41,6 +41,16 @@ public class Client implements Runnable {
         Platform.runLater(() -> this.client_controller.caricaContatti(this.getContattiFromDataBase()));
     }
 
+    private void destroy() {
+        try {
+            input.close();
+            output.close();
+            socket.close();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
     @Override
     public void run() {
         JSONObject req;
