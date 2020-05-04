@@ -450,9 +450,11 @@ public class MySQL {
                 ArrayList<JSONObject> listOfMessages = new ArrayList<>();
 
                 while (rs.next()){
-                    //nel caso bisogni modificare manualmente l'id dei messaggi (impostanto l'ordine crescente di arrivo 1,2,3)
-                    //HashMap<String,String> temp_map = new HashMap<>();
-                    //temp_map.put("temp_id", rs.getString(0));
+                    /*
+                        nel caso bisogni modificare manualmente l'id dei messaggi (impostanto l'ordine crescente di arrivo 1,2,3)
+                        HashMap<String,String> temp_map = new HashMap<>();
+                        temp_map.put("temp_id", rs.getString(0))
+                     */
 
                     JSONObject temp_message = new JSONObject(MySQL.createRowObj(rs)); //viene passata una HashMap
                     listOfMessages.add(temp_message);
