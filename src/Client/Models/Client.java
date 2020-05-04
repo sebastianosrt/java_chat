@@ -5,10 +5,7 @@ import javafx.application.Platform;
 import org.json.JSONArray;
 import org.json.JSONObject;
 
-import java.io.BufferedReader;
-import java.io.IOException;
-import java.io.InputStreamReader;
-import java.io.PrintWriter;
+import java.io.*;
 import java.net.Socket;
 import java.util.ArrayList;
 
@@ -30,8 +27,8 @@ public class Client implements Runnable {
 
         try {
             this.socket = new Socket("localhost", 666);
-            this.output = new PrintWriter(this.socket.getOutputStream(), true);
-            this.input = new BufferedReader(new InputStreamReader(this.socket.getInputStream()));
+            this.output = new PrintWriter(new BufferedOutputStream(this.socket.getOutputStream()), true);
+            this.input = new BufferedReader(new InputStreamReader(new BufferedInputStream(this.socket.getInputStream())));
         } catch(IOException e) {
             e.printStackTrace();
         }

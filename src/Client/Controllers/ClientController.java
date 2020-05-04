@@ -297,10 +297,8 @@ public class ClientController implements Initializable {
             if (c.getAccessibleText() != null && c.getAccessibleText().equals(name)) {
                 activeContact =(HBox) c;
                 activeContact.getStyleClass().add("contactActive");
-            } else {
+            } else
                 c.getStyleClass().removeAll("contactActive");
-                System.out.println(c.getStyleClass());
-            }
         });
     }
 
@@ -312,8 +310,6 @@ public class ClientController implements Initializable {
         setActiveContact(contattoAttivo);
         // metto i contatti in una lista
         List<Node> nodes = new ArrayList<>(contactsContaier.getChildren());
-//        nodes.forEach(System.out::println);
-//        System.out.println("attivo: " +  activeContact + "\n");
         // se il contatto è già in cima
         if (nodes.get(0).equals(activeContact))
             return;

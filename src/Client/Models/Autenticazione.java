@@ -2,13 +2,37 @@ package Client.Models;
 
 import org.json.JSONObject;
 
-import java.io.BufferedReader;
-import java.io.IOException;
-import java.io.InputStreamReader;
-import java.io.PrintWriter;
+import java.io.*;
 import java.net.Socket;
 
 public class Autenticazione {
+    private static Socket socket;
+    private static PrintWriter output;
+    private static BufferedReader input;
+
+    /**
+     * Questo metodo inizializza il socket ed i flussi
+     */
+    private static void init() throws IOException {
+        try {
+            socket = new Socket("localhost", 666);
+        } catch (IOException e) {
+        }
+        output = new PrintWriter(new BufferedOutputStream(socket.getOutputStream()), true);
+        input = new BufferedReader(new InputStreamReader(new BufferedInputStream(socket.getInputStream())));
+    }
+
+    /**
+     * Questo metodo chiude i flussi ed il socket
+     */
+    private static void destroy() {
+        try {
+            output.close();
+            input.close();
+            socket.close();
+        } catch (IOException e) {
+        }
+    }
 
     /**
      *
@@ -23,29 +47,24 @@ public class Autenticazione {
         json_r.put("comando", "login");
         json_r.put("username", username);
         json_r.put("password", password);
+        JSONObject resp = null;
 
         try {
-            Socket socket = new Socket("localhost", 666);
-            PrintWriter output = new PrintWriter(socket.getOutputStream(), false);
-            BufferedReader input = new BufferedReader(new InputStreamReader(socket.getInputStream()));
-
+            init();
             output.println(json_r.toString());
-            output.flush();
-            JSONObject resp = new JSONObject(input.readLine());
-
-            output.close();
-            input.close();
-            socket.close();
-
-            if(resp.getString("risultato").equals("true")) {
-                return "";
-            } else {
-                return resp.getString("errore");
-            }
-        } catch(IOException e) {
-            return "connessione non riuscita";
+            resp = new JSONObject(input.readLine());
+        } catch (IOException e) {
+            return "errore interno";
         }
 
+        destroy();
+
+        if (resp == null)
+            return "errore interno";
+        if(resp.getString("risultato").equals("true"))
+            return "";
+        else
+            return resp.getString("errore");
     }
 
     /**
@@ -63,17 +82,12 @@ public class Autenticazione {
         json_r.put("password", password);
 
         try {
-            Socket socket = new Socket("localhost", 666);
-            PrintWriter output = new PrintWriter(socket.getOutputStream(), false);
-            BufferedReader input = new BufferedReader(new InputStreamReader(socket.getInputStream()));
-
+            init();
             output.println(json_r.toString());
             output.flush();
             JSONObject resp = new JSONObject(input.readLine());
 
-            output.close();
-            input.close();
-            socket.close();
+            destroy();
 
             if(resp.getString("risultato").equals("true")) {
                 return "";

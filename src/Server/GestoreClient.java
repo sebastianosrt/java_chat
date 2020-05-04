@@ -1,9 +1,6 @@
 package Server;
 
-import java.io.BufferedReader;
-import java.io.IOException;
-import java.io.InputStreamReader;
-import java.io.PrintWriter;
+import java.io.*;
 import java.net.Socket;
 import java.sql.SQLException;
 import java.util.ArrayList;
@@ -95,8 +92,8 @@ class GestoreClient implements Runnable {
      * @throws IOException
      */
     private void init() throws IOException {
-        output = new PrintWriter(client.getOutputStream(), true);
-        input = new BufferedReader(new InputStreamReader(client.getInputStream()));
+        output = new PrintWriter(new BufferedOutputStream(client.getOutputStream()), true);
+        input = new BufferedReader(new InputStreamReader(new BufferedInputStream(client.getInputStream())));
     }
 
     /**
