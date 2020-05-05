@@ -60,7 +60,7 @@ public class MySQL {
                 ArrayList<String> tables = new ArrayList<>();
 
                 //qua si possono aggiungere tutte le query per ogni tabella
-                tables.add("CREATE TABLE IF NOT EXISTS `users` (`id` int(0) NOT NULL AUTO_INCREMENT,`username` varchar(255) NOT NULL,`password` varchar(255) NOT NULL,`statusClient` varchar(255),PRIMARY KEY (`id`));"); //tabella utenti
+                tables.add("CREATE TABLE IF NOT EXISTS `users` (`id` int(0) NOT NULL AUTO_INCREMENT,`username` varchar(255) NOT NULL,`password` varchar(255) NOT NULL,`statusClient` varchar(255), `checked` varchar(255), PRIMARY KEY (`id`));"); //tabella utenti
 
                 tables.add("CREATE TABLE IF NOT EXISTS `contacts` (`id` int(0) NOT NULL AUTO_INCREMENT,`user` varchar(255) NOT NULL,`contact` varchar(255) NOT NULL,PRIMARY KEY (`id`));"); //tabella contatti
 
@@ -447,9 +447,11 @@ public class MySQL {
                 ArrayList<JSONObject> listOfMessages = new ArrayList<>();
 
                 while (rs.next()){
-                    //nel caso bisogni modificare manualmente l'id dei messaggi (impostanto l'ordine crescente di arrivo 1,2,3)
-                    //HashMap<String,String> temp_map = new HashMap<>();
-                    //temp_map.put("temp_id", rs.getString(0));
+                    /*
+                        nel caso bisogni modificare manualmente l'id dei messaggi (impostanto l'ordine crescente di arrivo 1,2,3)
+                        HashMap<String,String> temp_map = new HashMap<>();
+                        temp_map.put("temp_id", rs.getString(0))
+                     */
 
                     JSONObject temp_message = new JSONObject(MySQL.createRowObj(rs)); //viene passata una HashMap
                     listOfMessages.add(temp_message);

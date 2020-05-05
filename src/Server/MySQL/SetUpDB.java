@@ -17,7 +17,6 @@ public class SetUpDB {
             System.out.println(MySQL.addMessage("mario", "admin", "text", "messaggio di test")); //aggiungi messaggio al db
             System.out.println(MySQL.getMessaggi("admin", "mario")); //cerca username
 
-
             MySQL.closeConnection();
 
         }catch (SQLException e){
