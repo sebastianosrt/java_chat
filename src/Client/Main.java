@@ -1,5 +1,6 @@
 package Client;
 
+import Client.Controllers.LogInController;
 import javafx.application.Application;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
@@ -13,24 +14,12 @@ import java.io.IOException;
  * @author Sebastiano Sartor
  */
 public class Main extends Application {
-    private double xOffset = 0;
-    private double yOffset = 0;
-
     // apre la pagina di log in
     @Override
     public void start(Stage primaryStage) throws IOException {
         FXMLLoader loader = new FXMLLoader(getClass().getResource("Views/LogInView.fxml"));
+        loader.setController(new LogInController(primaryStage));
         Parent root = loader.load();
-
-        root.setOnMousePressed(event -> {
-            xOffset = event.getSceneX();
-            yOffset = event.getSceneY();
-        });
-        root.setOnMouseDragged(event -> {
-            primaryStage.setX(event.getScreenX() - xOffset);
-            primaryStage.setY(event.getScreenY() - yOffset);
-        });
-
         Scene scene = new Scene(root);
         primaryStage.initStyle(StageStyle.UNDECORATED);
         primaryStage.setResizable(false);

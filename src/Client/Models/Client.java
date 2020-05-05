@@ -51,6 +51,21 @@ public class Client implements Runnable {
         p.println(json_r);
     }
 
+    /**
+     * Questo metodo chiude i flussi ed il socket
+     * @throws IOException
+     */
+    public void destroy() {
+        this.disconnect(this.output);
+        try {
+            this.input.close();
+            this.output.close();
+            this.socket.close();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
     @Override
     public void run() {
         JSONObject req;

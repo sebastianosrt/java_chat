@@ -23,11 +23,12 @@
             </Label>
             <JFXTextField fx:id="search_f" focusColor="#00ff8c" labelFloat="true" layoutX="154.0" layoutY="17.0" prefHeight="25.0" prefWidth="134.0" promptText="cerca..." styleClass="input" unFocusColor="#defffc" />
             <Separator layoutX="35.0" layoutY="58.0" maxHeight="1.0" opacity="0.65" prefHeight="1.0" prefWidth="238.0" styleClass="separatorlight" />
-            <ScrollPane fx:id="contactsPane" layoutX="7.0" layoutY="64.0" prefHeight="377.0" prefWidth="298.0" styleClass="panel1" />
+            <ScrollPane fx:id="contactsPane" layoutX="7.0" layoutY="64.0" prefHeight="334.0" prefWidth="298.0" styleClass="panel1" />
+            <JFXButton fx:id="logOut" layoutX="9.0" layoutY="403.0" prefHeight="30.0" prefWidth="69.0" styleClass="button1" text="Log Out" />
          </children>
       </Pane>
       <Separator layoutX="339.0" layoutY="383.0" prefHeight="3.0" prefWidth="395.0" />
-      <JFXButton fx:id="sendBtn" buttonType="RAISED" layoutX="665.0" layoutY="400.0" onMouseClicked="#handleMouseClick" prefHeight="30.0" prefWidth="69.0" styleClass="button1" text="Invia" />
+      <JFXButton fx:id="sendBtn" buttonType="RAISED" layoutX="665.0" layoutY="400.0" prefHeight="30.0" prefWidth="69.0" styleClass="button1" text="Invia" />
       <Pane layoutX="307.0" layoutY="-4.0" prefHeight="58.0" prefWidth="459.0" styleClass="chatTitle">
          <children>
             <Label fx:id="destinatario_f" layoutX="21.0" layoutY="14.0" text="Destinatario">

@@ -24,6 +24,7 @@ import java.util.ResourceBundle;
 * */
 public class LogInController implements Initializable {
     @FXML private Pane loginPanel;
+    @FXML private Stage stage;
     @FXML private Pane registrazionePanel;
     @FXML private TextField username_f;
     @FXML private TextField password_f;
@@ -44,6 +45,8 @@ public class LogInController implements Initializable {
     @FXML private ImageView minimizeBtn1;
     private double xOffset = 0;
     private double yOffset = 0;
+
+    public LogInController(Stage stage) { this.stage = stage; }
 
     /**
     * Questo metodo prende le credenziali dalla view, esegue la query al database in caso di errore lo mostra, altrimenti apre l'interfaccia della chat
@@ -109,31 +112,22 @@ public class LogInController implements Initializable {
     * @throws IOException
     * */
     private void apriChatView(String username, MouseEvent event) throws IOException {
+        Node node = (Node) event.getSource();
+        Stage stage = (Stage) node.getScene().getWindow();
+
         FXMLLoader loader = new FXMLLoader(getClass().getResource("/Client/Views/ChatView.fxml"));
-        loader.setController(new ClientController());
+        loader.setController(new ClientController(stage));
         ClientController controller = loader.getController();
         controller.setUsername(username);
 
         Parent root = loader.load();
         Scene scene = new Scene(root);
-        Node node = (Node) event.getSource();
-        Stage stage = (Stage) node.getScene().getWindow();
         stage.close();
         stage.setScene(scene);
         stage.setResizable(false);
         stage.show();
         stage.requestFocus();
         node.setFocusTraversable(true);
-
-        // muove la finestra quando viene trascinata
-        root.setOnMousePressed(event12 -> {
-            xOffset = event12.getSceneX();
-            yOffset = event12.getSceneY();
-        });
-        root.setOnMouseDragged(event1 -> {
-            stage.setX(event1.getScreenX() - xOffset);
-            stage.setY(event1.getScreenY() - yOffset);
-        });
     }
 
     /**
@@ -170,5 +164,23 @@ public class LogInController implements Initializable {
         // minimizza scheda
         minimizeBtn.setOnMouseClicked(e -> ((Stage)((ImageView)e.getSource()).getScene().getWindow()).setIconified(true));
         minimizeBtn1.setOnMouseClicked(e -> ((Stage)((ImageView)e.getSource()).getScene().getWindow()).setIconified(true));
+
+        // muove la finestra quando viene trascinata
+        loginPanel.setOnMousePressed(event12 -> {
+            xOffset = event12.getSceneX();
+            yOffset = event12.getSceneY();
+        });
+        loginPanel.setOnMouseDragged(event1 -> {
+            stage.setX(event1.getScreenX() - xOffset);
+            stage.setY(event1.getScreenY() - yOffset);
+        });
+        registrazionePanel.setOnMousePressed(event12 -> {
+            xOffset = event12.getSceneX();
+            yOffset = event12.getSceneY();
+        });
+        registrazionePanel.setOnMouseDragged(event1 -> {
+            stage.setX(event1.getScreenX() - xOffset);
+            stage.setY(event1.getScreenY() - yOffset);
+        });
     }
 }

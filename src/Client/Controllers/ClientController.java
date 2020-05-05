@@ -5,9 +5,12 @@ import Client.Models.Messaggio;
 import com.jfoenix.controls.JFXTextArea;
 import javafx.application.Platform;
 import javafx.fxml.FXML;
+import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
 import javafx.geometry.Pos;
 import javafx.scene.Node;
+import javafx.scene.Parent;
+import javafx.scene.Scene;
 import javafx.scene.control.*;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
@@ -31,10 +34,10 @@ import javafx.stage.Stage;
 
 import java.awt.*;
 import java.awt.datatransfer.StringSelection;
+import java.io.IOException;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Objects;
 import java.util.ResourceBundle;
 
 
@@ -47,13 +50,17 @@ public class ClientController implements Initializable {
     private String contattoAttivo = null;
     private Client client;
     private boolean newContact = false;
+    private double xOffset = 0;
+    private double yOffset = 0;
 
+    @FXML private Stage stage;
     @FXML private AnchorPane body;
     @FXML private Label username_f;
     @FXML private Label destinatario_f;
     @FXML private TextField search_f;
     @FXML private JFXTextArea message_f;
     @FXML private Button sendBtn;
+    @FXML private Button logOut;
     @FXML private ScrollPane scrollPane;
     @FXML private ScrollPane contactsPane;
     @FXML private Pane coveringPane;
@@ -67,18 +74,7 @@ public class ClientController implements Initializable {
     @FXML private HBox selectedMessage;
     @FXML private HBox activeContact = null;
 
-    /**
-     * Questo metodo gestisce i click del mouse
-     * @param event - evento click
-     */
-    @FXML
-    private void handleMouseClick(MouseEvent event) {
-        // invia il messaggio
-        if (event.getSource() == sendBtn) {
-            addMessaggio(inviaMessaggio(username, message_f.getText()));
-            message_f.setText("");
-        }
-    }
+    public ClientController(Stage stage) { this.stage = stage; }
 
     @Override
     public void initialize(URL location, ResourceBundle resources) {
@@ -114,6 +110,21 @@ public class ClientController implements Initializable {
         contactsContaier.setPrefWidth(contactsPane.getPrefWidth() - 5);
         contactsPane.setContent(contactsContaier);
 
+        setEventListeners();
+
+        client = new Client(username, this);
+        new Thread(client).start();
+    }
+
+    /**
+     * Set event listeners
+     */
+    private void setEventListeners() {
+        // invia messaggio
+        sendBtn.setOnMouseClicked(e -> {
+            addMessaggio(inviaMessaggio(username, message_f.getText()));
+            message_f.setText("");
+        });
         // quando viene premuto enter invia un messaggio
         body.setOnKeyReleased(e -> {
             if (e.getCode() == KeyCode.ENTER) {
@@ -133,9 +144,20 @@ public class ClientController implements Initializable {
             if (search_f.getText().length() > 0) caricaContatti(client.searchUsers(search_f.getText()));
             else caricaContatti(client.getContattiFromDataBase());
         });
-
-        client = new Client(username, this);
-        new Thread(client).start();
+        //logout
+        logOut.setOnMouseClicked(e -> {
+            client.destroy();
+            apriLogInView(e);
+        });
+        // muove la finestra quando viene trascinata
+        body.setOnMousePressed(e -> {
+            xOffset = e.getSceneX();
+            yOffset = e.getSceneY();
+        });
+        body.setOnMouseDragged(e -> {
+            stage.setX(e.getScreenX() - xOffset);
+            stage.setY(e.getScreenY() - yOffset);
+        });
     }
 
     public void setUsername(String username) {
@@ -343,5 +365,30 @@ public class ClientController implements Initializable {
                     return true;
         } catch (ClassCastException e) {}
         return false;
+    }
+
+    /**
+     * Questo metodo ritorna al login
+     * @param event - l'oggetto dell'evento click
+     * @throws IOException
+     * */
+    private void apriLogInView(MouseEvent event) {
+        FXMLLoader loader = new FXMLLoader(getClass().getResource("/Client/Views/LogInView.fxml"));
+        loader.setController(new LogInController(stage));
+        Parent root = null;
+        try {
+            root = loader.load();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        Scene scene = new Scene(root);
+        Node node = (Node) event.getSource();
+        Stage stage = (Stage) node.getScene().getWindow();
+        stage.close();
+        stage.setScene(scene);
+        stage.setResizable(false);
+        stage.show();
+        stage.requestFocus();
+        node.setFocusTraversable(true);
     }
 }
