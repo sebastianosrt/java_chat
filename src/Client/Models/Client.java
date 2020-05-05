@@ -53,7 +53,6 @@ public class Client implements Runnable {
 
     /**
      * Questo metodo chiude i flussi ed il socket
-     * @throws IOException
      */
     public void destroy() {
         this.disconnect(this.output);
@@ -89,7 +88,7 @@ public class Client implements Runnable {
     }
 
     public ArrayList<String> searchUsers(String utente) {
-        ArrayList<String> lista_utenti = new ArrayList<String>();
+        ArrayList<String> lista_utenti = new ArrayList<>();
         JSONObject json_r = new JSONObject();
         json_r.put("sorgente", this.username);
         json_r.put("destinatario", "database");
@@ -187,7 +186,7 @@ public class Client implements Runnable {
     }
 
     public ArrayList<String> getContattiFromDataBase() {
-        ArrayList<String> contatti = new ArrayList();
+        ArrayList<String> contatti = new ArrayList<>();
         JSONObject json_r = new JSONObject();
         json_r.put("sorgente", this.username);
         json_r.put("destinatario", "database");
@@ -219,7 +218,7 @@ public class Client implements Runnable {
     }
 
     public ArrayList<Messaggio> getMessaggiFromDataBase(String contatto) {
-        ArrayList<Messaggio> messaggi = new ArrayList<Messaggio>();
+        ArrayList<Messaggio> messaggi = new ArrayList<>();
         JSONObject json_r = new JSONObject();
         json_r.put("sorgente", this.username);
         json_r.put("destinatario", "database");

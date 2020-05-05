@@ -33,41 +33,47 @@ class GestoreClient implements Runnable {
                 // riceve il messaggio che sarà una JSON string
                 String messaggio = input.readLine();
                 if (messaggio != null) {
-                    JSONObject object = new JSONObject(messaggio);
+                    JSONObject req = new JSONObject(messaggio);
                     JSONObject res = null;
-                    String comando = object.getString("comando");
+                    String comando = req.getString("comando");
 
                     if (comando.equals("invia_messaggio")) {
-                        res = MySQL.addMessage(object.getString("sorgente"), object.getString("destinatario"), object.getString("type"), object.getString("data"));
+                        res = MySQL.addMessage(req.getString("sorgente"), req.getString("destinatario"), req.getString("type"), req.getString("data"));
                         if (res.getString("risultato").equals("true")) {
                             output.println(res);
-                            object.put("id", res.getInt("inserted_id"));
+                            req.put("id", res.getInt("inserted_id"));
                             // converto la stringa in oggetto e prendo il valore del campo destinatario
                             String destinatario = new JSONObject(messaggio).getString("destinatario");
                             // prende i client connessi
                             ArrayList<GestoreClient> clients = server.getClients();
                             // ricerca del destinatario tra i client ed invia il messaggio
-                            for (GestoreClient c : clients)
-                                if (c.getUsername() != null && c.getUsername().equals(destinatario))
-                                    c.inviaMessaggio(object.toString());
+                            boolean sent = false;
+                            for (GestoreClient c : clients) {
+                                if (c.getUsername() != null && c.getUsername().equals(destinatario)) {
+                                    c.inviaMessaggio(req.toString());
+                                    sent = true;
+                                }
+                            }
+                            if (!sent)
+                                MySQL.addContact(req.getString("destinatario"), req.getString("sorgente"));
                         }
                     }
                     else if(comando.equals("set_username"))
-                        setUsername(object.getString("username"));
+                        setUsername(req.getString("username"));
                     else if(comando.equals("login"))
-                        res = MySQL.authentication(object.getString("username"), object.getString("password"));
+                        res = MySQL.authentication(req.getString("username"), req.getString("password"));
                     else if(comando.equals("registrazione"))
-                        res = MySQL.addUser(object.getString("username"), object.getString("password"));
+                        res = MySQL.addUser(req.getString("username"), req.getString("password"));
                     else if(comando.equals("get_contatti"))
-                        res = MySQL.getListContacts(object.getString("sorgente"));
+                        res = MySQL.getListContacts(req.getString("sorgente"));
                     else if(comando.equals("add_contatto"))
-                        res = MySQL.addContact(object.getString("sorgente"), object.getString("contatto"));
+                        res = MySQL.addContact(req.getString("sorgente"), req.getString("contatto"));
                     else if(comando.equals("cerca_utenti"))
-                        res = MySQL.searchUser(object.getString("nome_utente"));
+                        res = MySQL.searchUser(req.getString("nome_utente"));
                     else if(comando.equals("get_messaggi"))
-                        res = MySQL.getMessaggi(object.getString("sorgente"), object.getString("contatto"));
+                        res = MySQL.getMessaggi(req.getString("sorgente"), req.getString("contatto"));
                     else if(comando.equals("elimina_messaggio"))
-                        res = MySQL.getMessaggi(object.getString("sorgente"), object.getString("contatto"));
+                        res = MySQL.getMessaggi(req.getString("sorgente"), req.getString("contatto"));
                     else if(comando.equals("disconnect"))
                         this.destroy();
                     if (res != null)

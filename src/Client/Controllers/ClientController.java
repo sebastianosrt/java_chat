@@ -108,6 +108,7 @@ public class ClientController implements Initializable {
         // contatti
         contactsContaier = new VBox();
         contactsContaier.setPrefWidth(contactsPane.getPrefWidth() - 5);
+        contactsPane.setFitToWidth(true);
         contactsPane.setContent(contactsContaier);
 
         setEventListeners();
@@ -285,6 +286,8 @@ public class ClientController implements Initializable {
      */
     public void caricaContatti(ArrayList<String> contatti) {
         contactsContaier.getChildren().clear();
+        if (contatti.contains(this.username))
+            contatti.remove(this.username);
         contatti.forEach(this::addContatto);
         if (contattoAttivo != null)
             setActiveContact(contattoAttivo);
@@ -370,7 +373,6 @@ public class ClientController implements Initializable {
     /**
      * Questo metodo ritorna al login
      * @param event - l'oggetto dell'evento click
-     * @throws IOException
      * */
     private void apriLogInView(MouseEvent event) {
         FXMLLoader loader = new FXMLLoader(getClass().getResource("/Client/Views/LogInView.fxml"));
@@ -378,17 +380,17 @@ public class ClientController implements Initializable {
         Parent root = null;
         try {
             root = loader.load();
+            Scene scene = new Scene(root);
+            Node node = (Node) event.getSource();
+            Stage stage = (Stage) node.getScene().getWindow();
+            stage.close();
+            stage.setScene(scene);
+            stage.setResizable(false);
+            stage.show();
+            stage.requestFocus();
+            node.setFocusTraversable(true);
         } catch (IOException e) {
             e.printStackTrace();
         }
-        Scene scene = new Scene(root);
-        Node node = (Node) event.getSource();
-        Stage stage = (Stage) node.getScene().getWindow();
-        stage.close();
-        stage.setScene(scene);
-        stage.setResizable(false);
-        stage.show();
-        stage.requestFocus();
-        node.setFocusTraversable(true);
     }
 }
