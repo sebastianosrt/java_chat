@@ -134,7 +134,7 @@ public class MySQL {
                     response.put("risultato", "true");
                 }else{
                     response.put("risultato", "false");
-                    response.put("errore", "username_already_exist");
+                    response.put("errore", "Username già esistente");
                 }
             }else{
                 response.put("risultato", "false");
@@ -174,11 +174,11 @@ public class MySQL {
                         response.put("risultato", "true");
                     }else{
                         response.put("risultato", "false");
-                        response.put("errore", "incorrect_password");
+                        response.put("errore", "Password Scorretta");
                     }
                 }else{
                     response.put("risultato", "false");
-                    response.put("errore", "inexistent_username");
+                    response.put("errore", "Username inesistente!");
                 }
             }else{
                 response.put("risultato", "false");
