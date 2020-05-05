@@ -470,4 +470,70 @@ public class MySQL {
         return response;
     }
 
+    /**
+     *
+     * @param id del messaggio del DB
+     * @return content of the message
+     */
+    public static JSONObject getMessage(int id){
+        JSONObject response = new JSONObject();
+        response.put("sorgente", "database");
+        response.put("metodo", "getMessage");
+
+        try {
+            boolean statusConn = conn.isClosed();
+            if(!statusConn){
+
+                PreparedStatement pstmt = conn.prepareStatement("SELECT * FROM `messages` WHERE `id` = ?");
+                pstmt.setInt(1, id);
+                ResultSet  rs = pstmt.executeQuery(); //esegue la query
+
+                if (rs.next()){
+                    JSONObject temp_message = new JSONObject(MySQL.createRowObj(rs)); //viene passata una HashMap
+
+                    response.put("message_record", temp_message);
+                    response.put("risultato","true");
+                }else{
+                    response.put("risultato","false");
+                    response.put("errore", "messaggio non trovato con questo id: " + id);
+                }
+
+
+            }else{
+                response.put("risultato", "false");
+                response.put("errore", "connection_closed");
+            }
+        }catch (SQLException e){
+            System.out.println(e.toString());
+        }
+        return response;
+    }
+
+    public static JSONObject deleteMessage(int id){
+        JSONObject response = new JSONObject();
+        response.put("sorgente", "database");
+        response.put("metodo", "delete_message");
+
+        try {
+            boolean statusConn = conn.isClosed();
+            if(!statusConn){
+
+                PreparedStatement pstmt = conn.prepareStatement("DELETE FROM `messages` WHERE `id` = ?");
+                pstmt.setInt(1, id);
+                 //esegue la query
+
+                System.out.println(pstmt.executeUpdate());
+                response.put("risultato","true");
+
+
+            }else{
+                response.put("risultato", "false");
+                response.put("errore", "connection_closed");
+            }
+        }catch (SQLException e){
+            System.out.println(e.toString());
+        }
+
+        return response;
+    }
 }
