@@ -34,6 +34,7 @@ import java.awt.datatransfer.StringSelection;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 import java.util.ResourceBundle;
 
 
@@ -181,8 +182,11 @@ public class ClientController implements Initializable {
                     while (testo.length() > 0 && testo.charAt(testo.length() - 1) == '\n') testo = testo.substring(0, testo.length() - 1);
                     if (testo.length() > 0) {
                         int id = message.id;
-                        Text text=new Text(testo);
-                        text.setFill(Color.BLACK);
+                        Text text = new Text(testo);
+                        if (!this.username.equals(username))
+                            text.setFill(Color.WHITE);
+                        else
+                            text.setFill(Color.BLACK);
                         TextFlow tempFlow = new TextFlow();
 
                         tempFlow.getChildren().add(text);
@@ -213,6 +217,12 @@ public class ClientController implements Initializable {
                         chatContaier.getChildren().addAll(hbox);
                     }
                 }
+            } else {
+                System.out.println("xxx");
+                if (!hasContact(message.mittente)) {
+                    client.addContactToDataBase(message.mittente);
+                    caricaContatti(client.getContattiFromDataBase());
+                }
             }
         }
     }
@@ -225,10 +235,8 @@ public class ClientController implements Initializable {
         if (messaggi.size() == 0)
             this.newContact = true;
         else {
-//            if (client.getContattiFromDataBase().contains(contattoAttivo)) {
             chatContaier.getChildren().clear();
             messaggi.forEach(this::addMessaggio);
-//            }
         }
     }
 
@@ -326,5 +334,14 @@ public class ClientController implements Initializable {
         // rimuovo tutti i contatti e ci metto la nuova lista
         contactsContaier.getChildren().clear();
         contactsContaier.getChildren().addAll(nodes);
+    }
+
+    private boolean hasContact(String name) {
+        try {
+            for (Object c : contactsContaier.getChildren())
+                if (((HBox) c).getAccessibleText().equals(name))
+                    return true;
+        } catch (ClassCastException e) {}
+        return false;
     }
 }
