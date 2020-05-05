@@ -21,7 +21,6 @@ class GestoreClient implements Runnable {
     private String username = null;
 
     public GestoreClient(Server server, Socket client) {
-        System.out.println("thread creato");
         this.server = server;
         this.client = client;
     }
@@ -30,53 +29,56 @@ class GestoreClient implements Runnable {
     public void run() {
         try {
             init();
-            // riceve il messaggio che sarà una JSON string
-            String messaggio = input.readLine();
-            if (messaggio != null) {
-                JSONObject object = new JSONObject(messaggio);
-                JSONObject res = null;
-                String comando = object.getString("comando");
+            while (client.isConnected()) {
+                // riceve il messaggio che sarà una JSON string
+                String messaggio = input.readLine();
+                if (messaggio != null) {
+                    JSONObject object = new JSONObject(messaggio);
+                    JSONObject res = null;
+                    String comando = object.getString("comando");
 
-                if (comando.equals("invia_messaggio")) {
-                    res = MySQL.addMessage(object.getString("sorgente"), object.getString("destinatario"), object.getString("type"), object.getString("data"));
-                    if (res.getString("risultato").equals("true")) {
-                        output.println(res);
-                        object.put("id", res.getInt("inserted_id"));
-                        // converto la stringa in oggetto e prendo il valore del campo destinatario
-                        String destinatario = new JSONObject(messaggio).getString("destinatario");
-                        // prende i client connessi
-                        ArrayList<GestoreClient> clients = server.getClients();
-                        // ricerca del destinatario tra i client ed invia il messaggio
-                        for (GestoreClient c : clients)
-                            if (c.getUsername() != null && c.getUsername().equals(destinatario))
-                                c.inviaMessaggio(object.toString());
+                    if (comando.equals("invia_messaggio")) {
+                        res = MySQL.addMessage(object.getString("sorgente"), object.getString("destinatario"), object.getString("type"), object.getString("data"));
+                        if (res.getString("risultato").equals("true")) {
+                            output.println(res);
+                            object.put("id", res.getInt("inserted_id"));
+                            // converto la stringa in oggetto e prendo il valore del campo destinatario
+                            String destinatario = new JSONObject(messaggio).getString("destinatario");
+                            // prende i client connessi
+                            ArrayList<GestoreClient> clients = server.getClients();
+                            // ricerca del destinatario tra i client ed invia il messaggio
+                            for (GestoreClient c : clients)
+                                if (c.getUsername() != null && c.getUsername().equals(destinatario))
+                                    c.inviaMessaggio(object.toString());
+                        }
                     }
-                    this.destroy();
+                    else if(comando.equals("set_username"))
+                        setUsername(object.getString("username"));
+                    else if(comando.equals("login"))
+                        res = MySQL.authentication(object.getString("username"), object.getString("password"));
+                    else if(comando.equals("registrazione"))
+                        res = MySQL.addUser(object.getString("username"), object.getString("password"));
+                    else if(comando.equals("get_contatti"))
+                        res = MySQL.getListContacts(object.getString("sorgente"));
+                    else if(comando.equals("add_contatto"))
+                        res = MySQL.addContact(object.getString("sorgente"), object.getString("contatto"));
+                    else if(comando.equals("cerca_utenti"))
+                        res = MySQL.searchUser(object.getString("nome_utente"));
+                    else if(comando.equals("get_messaggi"))
+                        res = MySQL.getMessaggi(object.getString("sorgente"), object.getString("contatto"));
+                    else if(comando.equals("elimina_messaggio"))
+                        res = MySQL.getMessaggi(object.getString("sorgente"), object.getString("contatto"));
+                    else if(comando.equals("disconnect"))
+                        this.destroy();
+                    if (res != null)
+                        output.println(res);
                 }
-                else if(comando.equals("set_username"))
-                    setUsername(object.getString("username"));
-                else if(comando.equals("login"))
-                    res = MySQL.authentication(object.getString("username"), object.getString("password"));
-                else if(comando.equals("registrazione"))
-                    res = MySQL.addUser(object.getString("username"), object.getString("password"));
-                else if(comando.equals("get_contatti"))
-                    res = MySQL.getListContacts(object.getString("sorgente"));
-                else if(comando.equals("add_contatto"))
-                    res = MySQL.addContact(object.getString("sorgente"), object.getString("contatto"));
-                else if(comando.equals("cerca_utenti"))
-                    res = MySQL.searchUser(object.getString("nome_utente"));
-                else if(comando.equals("get_messaggi"))
-                    res = MySQL.getMessaggi(object.getString("sorgente"), object.getString("contatto"));
-                else if(comando.equals("elimina_messaggio"))
-                    res = MySQL.getMessaggi(object.getString("sorgente"), object.getString("contatto"));
-                if (res != null)
-                    output.println(res);
             }
             this.destroy();
         } catch (IOException | SQLException e) {
             // client si disconnette
             try {
-                destroy();
+                this.destroy();
             } catch (IOException ex) {
                 ex.printStackTrace();
             }

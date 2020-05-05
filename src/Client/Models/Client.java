@@ -41,14 +41,14 @@ public class Client implements Runnable {
         Platform.runLater(() -> this.client_controller.caricaContatti(this.getContattiFromDataBase()));
     }
 
-    private void destroy() {
-        try {
-            input.close();
-            output.close();
-            socket.close();
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
+    /**
+     * Questo metodo serve per inviare il comando di disconnessione
+     * @param p - serve per inviare il comando al server
+     */
+    private void disconnect(PrintWriter p) {
+        JSONObject json_r = new JSONObject();
+        json_r.put("comando", "disconnect");
+        p.println(json_r);
     }
 
     @Override
@@ -98,6 +98,7 @@ public class Client implements Runnable {
                 }
             }
 
+            disconnect(out);
             out.close();
             in.close();
             s.close();
@@ -122,6 +123,7 @@ public class Client implements Runnable {
             out.println(json_r.toString());
             JSONObject resp = new JSONObject(in.readLine());
 
+            disconnect(out);
             out.close();
             in.close();
             s.close();
@@ -150,6 +152,7 @@ public class Client implements Runnable {
                 id = resp.getInt("inserted_id");
             }
 
+            disconnect(out);
             out.close();
             in.close();
             s.close();
@@ -192,6 +195,7 @@ public class Client implements Runnable {
                 }
             }
 
+            disconnect(out);
             out.close();
             in.close();
             s.close();
@@ -224,6 +228,7 @@ public class Client implements Runnable {
                 }
             }
 
+            disconnect(out);
             out.close();
             in.close();
             s.close();

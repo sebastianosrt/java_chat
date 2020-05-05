@@ -34,6 +34,12 @@ public class Autenticazione {
         }
     }
 
+    private static void disconnect() {
+        JSONObject json_r = new JSONObject();
+        json_r.put("comando", "disconnect");
+        output.println(json_r);
+    }
+
     /**
      *
      * @param username username da loggare
@@ -57,6 +63,7 @@ public class Autenticazione {
             return "errore interno";
         }
 
+        disconnect();
         destroy();
 
         if (resp == null)
@@ -87,6 +94,7 @@ public class Autenticazione {
             output.flush();
             JSONObject resp = new JSONObject(input.readLine());
 
+            disconnect();
             destroy();
 
             if(resp.getString("risultato").equals("true")) {

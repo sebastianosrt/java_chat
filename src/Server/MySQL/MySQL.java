@@ -26,9 +26,7 @@ public class MySQL {
 
         try {
             Class.forName(DRIVER);
-            conn = (Connection)DriverManager.getConnection(URL + DBNANME, USER, PASSWORD);
-
-            System.out.println("Connessione effettuata dai porco dio");
+            conn = DriverManager.getConnection(URL + DBNANME, USER, PASSWORD);
         } catch (ClassNotFoundException | SQLException e) {
             System.out.println("Connessione non effettuata " + e.toString());
         }
@@ -43,7 +41,6 @@ public class MySQL {
     public static void closeConnection() throws SQLException {
         try{
             conn.close();
-            System.out.println("Connessione chiusa correttamente!");
         }catch (SQLException e){
             System.out.println("Errore nella chiusura della connesione al database: " + e.toString());
         }
