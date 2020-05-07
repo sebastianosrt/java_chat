@@ -43,7 +43,7 @@ class GestoreClient implements Runnable {
                             output.println(res);
                             req.put("id", res.getInt("inserted_id"));
                             // converto la stringa in oggetto e prendo il valore del campo destinatario
-                            String destinatario = new JSONObject(messaggio).getString("destinatario");
+                            String destinatario = req.getString("destinatario");
                             // prende i client connessi
                             ArrayList<GestoreClient> clients = server.getClients();
                             // ricerca del destinatario tra i client ed invia il messaggio
@@ -72,8 +72,16 @@ class GestoreClient implements Runnable {
                         res = MySQL.searchUser(req.getString("nome_utente"));
                     else if(comando.equals("get_messaggi"))
                         res = MySQL.getMessaggi(req.getString("sorgente"), req.getString("contatto"));
-                    else if(comando.equals("elimina_messaggio"))
+                    else if(comando.equals("elimina_messaggio")) {
                         res = MySQL.deleteMessage(req.getInt("id_messaggio"));
+                        if(res.getString("risultato").equals("true")) {
+                            String destinatario = req.getString("contatto");
+                            ArrayList<GestoreClient> clients = server.getClients();
+                            for (GestoreClient c : clients)
+                                if (c.getUsername() != null && c.getUsername().equals(destinatario))
+                                    c.inviaMessaggio(req.toString());
+                        }
+                    }
                     else if(comando.equals("disconnect"))
                         this.destroy();
                     if (res != null)

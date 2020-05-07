@@ -15,7 +15,6 @@ public class Client implements Runnable {
     private PrintWriter output;
     private BufferedReader input;
     private String username;
-    private String contatto_attivo;
 
     /**
      *
@@ -80,6 +79,9 @@ public class Client implements Runnable {
                             JSONObject finalReq = req;
                             Platform.runLater(() -> this.client_controller.addMessaggio(new Messaggio(finalReq.getInt("id"), finalReq.getString("data"), finalReq.getString("sorgente"), finalReq.getString("destinatario"), finalReq.getString("type"))));
                         }
+                    } else if (comando.equals("elimina_messaggio")) {
+                        JSONObject finalReq = req;
+                        Platform.runLater(() -> this.client_controller.eliminaMessaggio(finalReq.getInt("id_messaggio"), finalReq.getString("sorgente")));
                     }
                 }
             } catch (IOException e) {
@@ -251,12 +253,13 @@ public class Client implements Runnable {
         return messaggi;
     }
 
-    public void eliminaMessaggioFromDataBase(int id_messaggio) {
+    public void eliminaMessaggio(int id_messaggio, String contatto) {
         JSONObject json_r = new JSONObject();
         json_r.put("sorgente", this.username);
         json_r.put("destinatario", "database");
         json_r.put("comando", "elimina_messaggio");
         json_r.put("id_messaggio", id_messaggio);
+        json_r.put("contatto", contatto);
 
         try {
             Socket s = new Socket("localhost", 666);
@@ -274,9 +277,6 @@ public class Client implements Runnable {
         }
     }
 
-    public void setContatto_attivo(String contatto) {
-        this.contatto_attivo = contatto;
-    }
     public void exit() {
         try {
             this.socket.close();

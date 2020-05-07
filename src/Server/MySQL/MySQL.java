@@ -521,11 +521,10 @@ public class MySQL {
                 PreparedStatement pstmt = conn.prepareStatement("DELETE FROM `messages` WHERE `id` = ?");
                 pstmt.setInt(1, id);
                  //esegue la query
-
-                System.out.println(pstmt.executeUpdate());
-                response.put("risultato","true");
-
-
+                if (pstmt.executeUpdate() == 1)
+                    response.put("risultato","true");
+                else
+                    response.put("risultato", "false");
             }else{
                 response.put("risultato", "false");
                 response.put("errore", "connection_closed");

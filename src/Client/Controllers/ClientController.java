@@ -37,6 +37,7 @@ import java.awt.datatransfer.StringSelection;
 import java.io.IOException;
 import java.net.URL;
 import java.util.ArrayList;
+import java.util.ConcurrentModificationException;
 import java.util.List;
 import java.util.ResourceBundle;
 
@@ -151,7 +152,7 @@ public class ClientController implements Initializable {
         // menu
         elimina.setOnAction(event -> {
             String id = selectedMessage.getId();
-            client.eliminaMessaggioFromDataBase(Integer.parseInt(id));
+            client.eliminaMessaggio(Integer.parseInt(id), contattoAttivo);
             chatContaier.getChildren().remove(selectedMessage);
         });
         copia.setOnAction(event -> {
@@ -242,7 +243,6 @@ public class ClientController implements Initializable {
                     }
                 }
             } else {
-                System.out.println("xxx");
                 if (!hasContact(message.mittente)) {
                     client.addContactToDataBase(message.mittente);
                     caricaContatti(client.getContattiFromDataBase());
@@ -253,15 +253,20 @@ public class ClientController implements Initializable {
 
     /**
      * Questo metodo elimina un messaggio
-     * @param id
+     * @param id - l'id del messaggio da eliminare
+     * @param contatto - nome del contatto da cui eliminare il messaggio
      */
-    public void eliminaMessaggio(int id) {
-        chatContaier.getChildren().forEach(c -> {
-            if (c.getId().equals(Integer.toString(id))) {
-                chatContaier.getChildren().remove(c);
-                return;
-            }
-        });
+    public void eliminaMessaggio(int id, String contatto) {
+        if (contatto.equals(contattoAttivo)) {
+            try {
+                chatContaier.getChildren().forEach(c -> {
+                    if (c.getId().equals(Integer.toString(id))) {
+                        chatContaier.getChildren().remove(c);
+                        return;
+                    }
+                });
+            } catch (ConcurrentModificationException e) {}
+        }
     }
 
     /**
@@ -330,7 +335,6 @@ public class ClientController implements Initializable {
                 search_f.setText("");
                 caricaContatti(client.getContattiFromDataBase());
             }
-            client.setContatto_attivo(contattoAttivo);
             caricaMessaggi(client.getMessaggiFromDataBase(contattoAttivo));
         }
     }
