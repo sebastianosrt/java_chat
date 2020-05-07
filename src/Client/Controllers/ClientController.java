@@ -94,17 +94,6 @@ public class ClientController implements Initializable {
         copia = new MenuItem("copia");
         menu.getItems().addAll(elimina, copia);
 
-        elimina.setOnAction(event -> {
-            String id = selectedMessage.getId();
-            chatContaier.getChildren().remove(selectedMessage);
-        });
-        copia.setOnAction(event -> {
-            TextFlow f = (TextFlow) selectedMessage.getChildren().get(0);
-            String str = f.getAccessibleText();
-            // copy on clipboard
-            Toolkit.getDefaultToolkit().getSystemClipboard().setContents(new StringSelection(str), null);
-        });
-
         // contatti
         contactsContaier = new VBox();
         contactsContaier.setPrefWidth(contactsPane.getPrefWidth() - 5);
@@ -158,6 +147,18 @@ public class ClientController implements Initializable {
         body.setOnMouseDragged(e -> {
             stage.setX(e.getScreenX() - xOffset);
             stage.setY(e.getScreenY() - yOffset);
+        });
+        // menu
+        elimina.setOnAction(event -> {
+            String id = selectedMessage.getId();
+            client.eliminaMessaggioFromDataBase(Integer.parseInt(id));
+            chatContaier.getChildren().remove(selectedMessage);
+        });
+        copia.setOnAction(event -> {
+            TextFlow f = (TextFlow) selectedMessage.getChildren().get(0);
+            String str = f.getAccessibleText();
+            // copy on clipboard
+            Toolkit.getDefaultToolkit().getSystemClipboard().setContents(new StringSelection(str), null);
         });
     }
 
@@ -248,6 +249,19 @@ public class ClientController implements Initializable {
                 }
             }
         }
+    }
+
+    /**
+     * Questo metodo elimina un messaggio
+     * @param id
+     */
+    public void eliminaMessaggio(int id) {
+        chatContaier.getChildren().forEach(c -> {
+            if (c.getId().equals(Integer.toString(id))) {
+                chatContaier.getChildren().remove(c);
+                return;
+            }
+        });
     }
 
     /**
