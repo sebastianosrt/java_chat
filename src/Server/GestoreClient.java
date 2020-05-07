@@ -73,7 +73,7 @@ class GestoreClient implements Runnable {
                     else if(comando.equals("get_messaggi"))
                         res = MySQL.getMessaggi(req.getString("sorgente"), req.getString("contatto"));
                     else if(comando.equals("elimina_messaggio"))
-                        res = MySQL.getMessaggi(req.getString("sorgente"), req.getString("contatto"));
+                        res = MySQL.deleteMessage(req.getInt("id_messaggio"));
                     else if(comando.equals("disconnect"))
                         this.destroy();
                     if (res != null)

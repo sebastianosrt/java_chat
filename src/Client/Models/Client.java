@@ -251,6 +251,29 @@ public class Client implements Runnable {
         return messaggi;
     }
 
+    public void eliminaMessaggioFromDataBase(int id_messaggio) {
+        JSONObject json_r = new JSONObject();
+        json_r.put("sorgente", this.username);
+        json_r.put("destinatario", "database");
+        json_r.put("comando", "elimina_messaggio");
+        json_r.put("id_messaggio", id_messaggio);
+
+        try {
+            Socket s = new Socket("localhost", 666);
+            PrintWriter out = new PrintWriter(s.getOutputStream(), true);
+            BufferedReader in = new BufferedReader(new InputStreamReader(s.getInputStream()));
+            out.println(json_r.toString());
+            JSONObject resp = new JSONObject(in.readLine());
+
+            disconnect(out);
+            out.close();
+            in.close();
+            s.close();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
     public void setContatto_attivo(String contatto) {
         this.contatto_attivo = contatto;
     }
