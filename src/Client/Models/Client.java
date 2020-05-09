@@ -82,6 +82,9 @@ public class Client implements Runnable {
                     } else if (comando.equals("elimina_messaggio")) {
                         JSONObject finalReq = req;
                         Platform.runLater(() -> this.client_controller.eliminaMessaggio(finalReq.getInt("id_messaggio"), finalReq.getString("sorgente")));
+                    } else if(comando.equals("invia_file")) {
+                        JSONObject finalReq = req;
+                        Platform.runLater(() -> this.client_controller.addFile(finalReq.getString("sorgente"), finalReq.getString("file_name"), finalReq.getInt("id")));
                     }
                 }
             } catch (IOException e) {
@@ -168,6 +171,53 @@ public class Client implements Runnable {
 
             disconnect(out);
             out.close();
+            in.close();
+            s.close();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
+        return id;
+    }
+
+    public int inviaFile(String contatto, String path, String fileName) {
+        int id = -1;
+        JSONObject json_r = new JSONObject();
+        json_r.put("sorgente", this.username);
+        json_r.put("destinatario", contatto);
+        json_r.put("comando", "invia_file");
+
+        try {
+            Socket s = new Socket("localhost", 666);
+            PrintWriter out = new PrintWriter(s.getOutputStream(), true);
+            BufferedReader in = new BufferedReader(new InputStreamReader(s.getInputStream()));
+            out.println(json_r);
+
+            // leggo file e prendo la dimensione
+            FileInputStream fs = new FileInputStream(path);
+            int size = (int) fs.getChannel().size();
+            // invio dimensione file e nome file
+            json_r = new JSONObject();
+            json_r.put("size", size);
+            json_r.put("file_name", fileName);
+            out.println(json_r);
+            // invio i bytes
+            byte[] b = new byte[size];
+            fs.read(b, 0, b.length);
+            OutputStream os = s.getOutputStream();
+            os.write(b, 0, b.length);
+
+
+//            out.println(json_r.toString());
+//            JSONObject resp = new JSONObject(in.readLine());
+//
+//            if(resp.getString("risultato").equals("true")) {
+//                id = resp.getInt("inserted_id");
+//            }
+//
+            disconnect(out);
+            out.close();
+            os.close();
             in.close();
             s.close();
         } catch (IOException e) {

@@ -170,7 +170,8 @@ public class ClientController implements Initializable {
             FileChooser fc = new FileChooser();
             File selected = fc.showOpenDialog(null);
             if (selected != null) {
-                addFile(username, selected.getName(), 1);
+                int id = client.inviaFile(contattoAttivo, selected.getAbsolutePath(), selected.getName());
+                addFile(this.username, selected.getName(), id);
             }
         });
     }

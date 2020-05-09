@@ -55,7 +55,7 @@
     -fx-background-color: -color5;
 }
 .button2:hover {
-    -fx-background-color: -color2;
+    -fx-background-color: -color1;
 }
 .textFlow{
      -fx-background-color: linear-gradient(to left, derive(-color2, 50%), derive(-color4, 30%));

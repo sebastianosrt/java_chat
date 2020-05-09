@@ -2,6 +2,9 @@ package Server;
 
 import java.io.*;
 import java.net.Socket;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.sql.SQLException;
 import java.util.ArrayList;
 
@@ -57,6 +60,46 @@ class GestoreClient implements Runnable {
                             if (!sent)
                                 MySQL.addContact(req.getString("destinatario"), req.getString("sorgente"));
                         }
+                    }
+                    else if (comando.equals("invia_file")) {
+                        String mittente = req.getString("sorgente");
+                        String destinatario = req.getString("destinatario");
+
+                        req = new JSONObject(input.readLine());
+                        int size = req.getInt("size");
+                        String filename = req.getString("file_name");
+
+                        String path = new File(".").getCanonicalPath();
+                        path += "\\Files\\";
+
+//                        while (!new File(path + filename).exists())
+//                            filename = "a" + filename;
+                        InputStream is = client.getInputStream();
+                        FileOutputStream fo = new FileOutputStream(path + filename);
+                        int count;
+                        byte[] buffer = new byte[size]; // or 4096, or more
+                        while (fo.getChannel().size() < size-1 && (count = is.read(buffer)) > 0)
+                            fo.write(buffer, 0, count);
+
+                        int id = 0;
+//                        id = MySQL.addFile(mittente, destinatario, filename)
+
+                        boolean sent = false;
+                        ArrayList<GestoreClient> clients = server.getClients();
+                        req = new JSONObject();
+                        req.put("sorgente", mittente);
+                        req.put("destinatario", destinatario);
+                        req.put("comando", "invia_file");
+                        req.put("file_name", filename);
+                        req.put("id", id);
+                        for (GestoreClient c : clients) {
+                            if (c.getUsername() != null && c.getUsername().equals(destinatario)) {
+                                c.inviaMessaggio(req.toString());
+                                sent = true;
+                            }
+                        }
+                        if (!sent)
+                            MySQL.addContact(destinatario, mittente);
                     }
                     else if(comando.equals("set_username"))
                         setUsername(req.getString("username"));
