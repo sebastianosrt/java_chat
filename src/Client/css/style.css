@@ -39,9 +39,6 @@
 }
 .scroll-pane > .viewport  { -fx-background-color: white; }
 .panel1 > .viewport  { -fx-background-color: -color2; }
-.button1 {
-    -fx-background-color: #8fffbf;
-}
 .button:hover {
     -fx-background-color: #fcb103;
     -fx-scale-x: 1.05;
@@ -51,6 +48,15 @@
      -fx-scale-y: 0.9;
      -fx-scale-x: 0.9;
  }
+.button1 {
+    -fx-background-color: #8fffbf;
+}
+.button2 {
+    -fx-background-color: -color5;
+}
+.button2:hover {
+    -fx-background-color: -color2;
+}
 .textFlow{
      -fx-background-color: linear-gradient(to left, derive(-color2, 50%), derive(-color4, 30%));
      -fx-background-insets: -5 -10 -5 -5;
@@ -69,7 +75,6 @@
      c -0.436089,3.14572 -2.890695,3.57304 -4.908212,4.67449 z";
 }
 .hbox{
-//    -fx-background-insets: 15;
     -fx-padding: 12px;
 }
 .tempFlow{

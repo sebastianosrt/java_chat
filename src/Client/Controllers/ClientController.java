@@ -2,6 +2,7 @@ package Client.Controllers;
 
 import Client.Models.Client;
 import Client.Models.Messaggio;
+import com.jfoenix.controls.JFXButton;
 import com.jfoenix.controls.JFXTextArea;
 import javafx.application.Platform;
 import javafx.fxml.FXML;
@@ -30,10 +31,12 @@ import javafx.scene.text.Font;
 import javafx.scene.text.FontWeight;
 import javafx.scene.text.Text;
 import javafx.scene.text.TextFlow;
+import javafx.stage.FileChooser;
 import javafx.stage.Stage;
 
 import java.awt.*;
 import java.awt.datatransfer.StringSelection;
+import java.io.File;
 import java.io.IOException;
 import java.net.URL;
 import java.util.ArrayList;
@@ -62,6 +65,7 @@ public class ClientController implements Initializable {
     @FXML private JFXTextArea message_f;
     @FXML private Button sendBtn;
     @FXML private Button logOut;
+    @FXML private Button fileBtn;
     @FXML private ScrollPane scrollPane;
     @FXML private ScrollPane contactsPane;
     @FXML private Pane coveringPane;
@@ -161,6 +165,14 @@ public class ClientController implements Initializable {
             // copy on clipboard
             Toolkit.getDefaultToolkit().getSystemClipboard().setContents(new StringSelection(str), null);
         });
+        // files
+        fileBtn.setOnMouseClicked(event -> {
+            FileChooser fc = new FileChooser();
+            File selected = fc.showOpenDialog(null);
+            if (selected != null) {
+                addFile(username, selected.getName(), 1);
+            }
+        });
     }
 
     public void setUsername(String username) {
@@ -247,6 +259,55 @@ public class ClientController implements Initializable {
                     client.addContactToDataBase(message.mittente);
                     caricaContatti(client.getContattiFromDataBase());
                 }
+            }
+        }
+    }
+
+    /**
+     * Aggiunge un messaggio contenente file
+     * @param username - mittente
+     * @param filename - nome del file
+     * @param id - id del messaggio
+     */
+    public void addFile(String username, String filename, int id) {
+        if (username != null && (username.equals(contattoAttivo) || username.equals(this.username))) {
+            if (filename.length() > 0) {
+                JFXButton b = new JFXButton(filename);
+                b.getStyleClass().add("button2");
+                b.setOnMouseClicked(e -> {
+
+                });
+                TextFlow tempFlow = new TextFlow();
+                tempFlow.getChildren().add(b);
+                TextFlow flow = new TextFlow(tempFlow);
+                HBox hbox = new HBox(12);
+                if (!this.username.equals(username)) {
+                    tempFlow.getStyleClass().add("tempFlowFlipped");
+                    flow.getStyleClass().add("textFlowFlipped");
+                    chatContaier.setAlignment(Pos.TOP_LEFT);
+                    hbox.setAlignment(Pos.CENTER_LEFT);
+                } else {
+                    tempFlow.getStyleClass().add("tempFlow");
+                    flow.getStyleClass().add("textFlow");
+                    hbox.setAlignment(Pos.BOTTOM_RIGHT);
+                }
+                hbox.getChildren().add(flow);
+                hbox.getStyleClass().add("hbox");
+                hbox.setId(id + "");
+                flow.setAccessibleText(filename);
+                // seleziona messaggio
+                hbox.setOnMouseClicked((MouseEvent e) -> {
+                    if (e.getButton() == MouseButton.SECONDARY) {
+                        selectedMessage = (HBox) e.getSource();
+                        menu.show(scrollPane, e.getScreenX(), e.getScreenY());
+                    }
+                });
+                chatContaier.getChildren().addAll(hbox);
+            }
+        } else {
+            if (!hasContact(contattoAttivo)) {
+                client.addContactToDataBase(contattoAttivo);
+                caricaContatti(client.getContattiFromDataBase());
             }
         }
     }

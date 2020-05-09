@@ -12,9 +12,9 @@
 <?import javafx.scene.layout.Pane?>
 <?import javafx.scene.text.Font?>
 
-<AnchorPane fx:id="body" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="441.0" prefWidth="765.0" style="-fx-background-color: white;" stylesheets="@../css/style.css" xmlns="http://javafx.com/javafx/" xmlns:fx="http://javafx.com/fxml/">
+<AnchorPane fx:id="body" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="441.0" prefWidth="896.0" style="-fx-background-color: white;" stylesheets="@../css/style.css" xmlns="http://javafx.com/javafx/" xmlns:fx="http://javafx.com/fxml/">
    <children>
-      <Pane prefHeight="441.0" prefWidth="307.0" style="-fx-border-color: -color3;" styleClass="panel1" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="458.0" AnchorPane.topAnchor="0.0">
+      <Pane prefHeight="441.0" prefWidth="307.0" style="-fx-border-color: -color3;" styleClass="panel1" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="589.0" AnchorPane.topAnchor="0.0">
          <children>
             <Label fx:id="username_f" layoutX="14.0" layoutY="13.0" prefHeight="32.0" prefWidth="134.0" text="Username">
                <font>
@@ -23,13 +23,12 @@
             </Label>
             <JFXTextField fx:id="search_f" focusColor="#00ff8c" labelFloat="true" layoutX="154.0" layoutY="17.0" prefHeight="25.0" prefWidth="134.0" promptText="cerca..." styleClass="input" unFocusColor="#defffc" />
             <Separator layoutX="35.0" layoutY="58.0" maxHeight="1.0" opacity="0.65" prefHeight="1.0" prefWidth="238.0" styleClass="separatorlight" />
-            <ScrollPane fx:id="contactsPane" layoutX="7.0" layoutY="64.0" prefHeight="334.0" prefWidth="298.0" styleClass="panel1" />
+            <ScrollPane fx:id="contactsPane" layoutX="7.0" layoutY="64.0" prefHeight="334.0" prefWidth="296.0" styleClass="panel1" />
             <JFXButton fx:id="logOut" layoutX="9.0" layoutY="403.0" prefHeight="30.0" prefWidth="69.0" styleClass="button1" text="Log Out" />
          </children>
       </Pane>
-      <Separator layoutX="339.0" layoutY="383.0" prefHeight="3.0" prefWidth="395.0" />
-      <JFXButton fx:id="sendBtn" buttonType="RAISED" layoutX="665.0" layoutY="400.0" prefHeight="30.0" prefWidth="69.0" styleClass="button1" text="Invia" />
-      <Pane layoutX="307.0" layoutY="-4.0" prefHeight="58.0" prefWidth="459.0" styleClass="chatTitle">
+      <Separator layoutX="339.0" layoutY="384.0" prefHeight="2.0" prefWidth="531.0" />
+      <Pane layoutX="307.0" layoutY="-4.0" prefHeight="58.0" prefWidth="589.0" styleClass="chatTitle">
          <children>
             <Label fx:id="destinatario_f" layoutX="21.0" layoutY="14.0" text="Destinatario">
                <font>
@@ -38,9 +37,11 @@
             </Label>
          </children>
       </Pane>
-      <ScrollPane fx:id="scrollPane" layoutX="311.0" layoutY="61.0" prefHeight="319.0" prefWidth="452.0" style="-fx-border-color: white; -fx-background-color: white;" />
+      <ScrollPane fx:id="scrollPane" layoutX="311.0" layoutY="61.0" prefHeight="319.0" prefWidth="581.0" style="-fx-border-color: white; -fx-background-color: white;" />
       <JFXTextArea fx:id="message_f" focusColor="#ff8300" layoutX="324.0" layoutY="403.0" minHeight="25.0" prefHeight="14.0" prefWidth="325.0" promptText="Inserisci il messaggio..." unFocusColor="#6b61cb" />
-      <Pane fx:id="coveringPane" layoutX="307.0" prefHeight="463.0" prefWidth="489.0" style="-fx-background-color: white;">
+      <JFXButton fx:id="fileBtn" buttonType="RAISED" layoutX="772.0" layoutY="400.0" prefHeight="30.0" prefWidth="69.0" styleClass="button1" text="File" />
+      <JFXButton fx:id="sendBtn" buttonType="RAISED" layoutX="695.0" layoutY="399.0" prefHeight="30.0" prefWidth="69.0" styleClass="button1" text="Invia" />
+      <Pane fx:id="coveringPane" layoutX="307.0" prefHeight="441.0" prefWidth="589.0" style="-fx-background-color: white;">
          <children>
             <Label layoutX="129.0" layoutY="217.0" style="-fx-text-fill: black;" text="Nessuna chat selezionata">
                <font>
@@ -49,12 +50,12 @@
             </Label>
          </children>
       </Pane>
-      <ImageView fx:id="closeBtn" fitHeight="25.0" fitWidth="19.0" layoutX="742.0" layoutY="6.0" pickOnBounds="true" preserveRatio="true">
+      <ImageView fx:id="closeBtn" fitHeight="19.0" fitWidth="25.0" layoutX="833.0" layoutY="6.0" pickOnBounds="true" preserveRatio="true">
          <image>
             <Image url="@../../media/close.png" />
          </image>
       </ImageView>
-      <ImageView fx:id="minimizeBtn" fitHeight="19.0" fitWidth="19.0" layoutX="719.0" layoutY="6.0" pickOnBounds="true" preserveRatio="true">
+      <ImageView fx:id="minimizeBtn" fitHeight="19.0" fitWidth="19.0" layoutX="857.0" layoutY="6.0" pickOnBounds="true" preserveRatio="true">
          <image>
             <Image url="@../../media/minus.png" />
          </image>
