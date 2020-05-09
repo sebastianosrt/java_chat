@@ -35,6 +35,7 @@ class GestoreClient implements Runnable {
             while (client.isConnected()) {
                 // riceve il messaggio che sarà una JSON string
                 String messaggio = input.readLine();
+                System.out.println(messaggio);
                 if (messaggio != null) {
                     JSONObject req = new JSONObject(messaggio);
                     JSONObject res = null;
@@ -67,6 +68,7 @@ class GestoreClient implements Runnable {
 
                         req = new JSONObject(input.readLine());
                         int size = req.getInt("size");
+                        byte[] buffer = new byte[size]; // or 4096, or more
                         String filename = req.getString("file_name");
 
                         String path = new File(".").getCanonicalPath();
@@ -75,14 +77,21 @@ class GestoreClient implements Runnable {
 //                        while (!new File(path + filename).exists())
 //                            filename = "a" + filename;
                         InputStream is = client.getInputStream();
-                        FileOutputStream fo = new FileOutputStream(path + filename);
-                        int count;
-                        byte[] buffer = new byte[size]; // or 4096, or more
-                        while (fo.getChannel().size() < size-1 && (count = is.read(buffer)) > 0)
-                            fo.write(buffer, 0, count);
+                        String finalPath = path;
+                        // thread che legge dal socket e scrive il file
+                        new Thread(() -> {
+                            try {
+                                FileOutputStream fo = new FileOutputStream(finalPath + filename);
+                                int count;
+                                while (fo.getChannel().size() < size-1 && (count = is.read(buffer)) > 0)
+                                    fo.write(buffer, 0, count);
+                            } catch (IOException e) {}
+                        }).start();
 
                         int id = 0;
-//                        id = MySQL.addFile(mittente, destinatario, filename)
+
+                        res = MySQL.addMessage(mittente, destinatario, "file", filename);
+                        output.println(res);
 
                         boolean sent = false;
                         ArrayList<GestoreClient> clients = server.getClients();

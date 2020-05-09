@@ -165,9 +165,8 @@ public class Client implements Runnable {
             out.println(json_r.toString());
             JSONObject resp = new JSONObject(in.readLine());
 
-            if(resp.getString("risultato").equals("true")) {
+            if(resp.getString("risultato").equals("true"))
                 id = resp.getInt("inserted_id");
-            }
 
             disconnect(out);
             out.close();
@@ -203,27 +202,27 @@ public class Client implements Runnable {
             out.println(json_r);
             // invio i bytes
             byte[] b = new byte[size];
-            fs.read(b, 0, b.length);
-            OutputStream os = s.getOutputStream();
-            os.write(b, 0, b.length);
 
+            //thread che legge il file e lo invia
+            new Thread(() -> {
+                try {
+                    fs.read(b, 0, b.length);
+                    OutputStream os = s.getOutputStream();
+                    os.write(b, 0, b.length);
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+            }).start();
 
-//            out.println(json_r.toString());
-//            JSONObject resp = new JSONObject(in.readLine());
-//
-//            if(resp.getString("risultato").equals("true")) {
-//                id = resp.getInt("inserted_id");
-//            }
-//
+            id = new JSONObject(in.readLine()).getInt("inserted_id");
+
             disconnect(out);
             out.close();
-            os.close();
             in.close();
             s.close();
         } catch (IOException e) {
             e.printStackTrace();
         }
-
         return id;
     }
 
@@ -242,11 +241,20 @@ public class Client implements Runnable {
             int size = res.getInt("size");
 
             InputStream is = s.getInputStream();
-            FileOutputStream fo = new FileOutputStream(filepath + "\\" + fileName);
-            int count;
-            byte[] buffer = new byte[size]; // or 4096, or more
-            while (fo.getChannel().size() < size-1 && (count = is.read(buffer)) > 0)
-                fo.write(buffer, 0, count);
+
+            // thread che legge e scrive il file
+            new Thread(() -> {
+                FileOutputStream fo = null;
+                try {
+                    fo = new FileOutputStream(filepath + "\\" + fileName);
+                    int count;
+                    byte[] buffer = new byte[size]; // or 4096, or more
+                    while (fo.getChannel().size() < size-1 && (count = is.read(buffer)) > 0)
+                        fo.write(buffer, 0, count);
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+            }).start();
 
             disconnect(out);
             out.close();
