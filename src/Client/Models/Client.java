@@ -227,6 +227,36 @@ public class Client implements Runnable {
         return id;
     }
 
+    public void getFile(String fileName, String filepath) {
+        JSONObject json_r = new JSONObject();
+        json_r.put("comando", "get_file");
+        json_r.put("file_name", fileName);
+
+        try {
+            Socket s = new Socket("localhost", 666);
+            PrintWriter out = new PrintWriter(s.getOutputStream(), true);
+            BufferedReader in = new BufferedReader(new InputStreamReader(s.getInputStream()));
+            out.println(json_r);
+
+            JSONObject res = new JSONObject(in.readLine());
+            int size = res.getInt("size");
+
+            InputStream is = s.getInputStream();
+            FileOutputStream fo = new FileOutputStream(filepath + "\\" + fileName);
+            int count;
+            byte[] buffer = new byte[size]; // or 4096, or more
+            while (fo.getChannel().size() < size-1 && (count = is.read(buffer)) > 0)
+                fo.write(buffer, 0, count);
+
+            disconnect(out);
+            out.close();
+            in.close();
+            s.close();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
     private void setUsernameServerSocket() {
         JSONObject json_r = new JSONObject();
         json_r.put("sorgente", this.username);

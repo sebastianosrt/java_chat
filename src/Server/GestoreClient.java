@@ -100,6 +100,21 @@ class GestoreClient implements Runnable {
                         }
                         if (!sent)
                             MySQL.addContact(destinatario, mittente);
+                    } else if(comando.equals("get_file")) {
+                        String fileName = req.getString("file_name");
+                        // leggo file e prendo la dimensione
+                        FileInputStream fs = new FileInputStream("./Files/"+fileName);
+                        int size = (int) fs.getChannel().size();
+                        // invio dimensione file e nome file
+                        res = new JSONObject();
+                        res.put("size", size);
+                        output.println(res);
+                        // invio i bytes
+                        byte[] b = new byte[size];
+                        fs.read(b, 0, b.length);
+                        OutputStream os = client.getOutputStream();
+                        os.write(b, 0, b.length);
+                        os.close();
                     }
                     else if(comando.equals("set_username"))
                         setUsername(req.getString("username"));

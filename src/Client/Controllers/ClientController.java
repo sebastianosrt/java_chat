@@ -31,6 +31,7 @@ import javafx.scene.text.Font;
 import javafx.scene.text.FontWeight;
 import javafx.scene.text.Text;
 import javafx.scene.text.TextFlow;
+import javafx.stage.DirectoryChooser;
 import javafx.stage.FileChooser;
 import javafx.stage.Stage;
 
@@ -212,54 +213,58 @@ public class ClientController implements Initializable {
      * */
     public void addMessaggio(Messaggio message) {
         if (message != null) {
-            String username = message.mittente;
-            String testo = message.testo;
-            if (username.equals(contattoAttivo) || username.equals(this.username)) {
-                if (testo.length() > 0) {
-                    //toglie gli \n finali
-                    while (testo.length() > 0 && testo.charAt(testo.length() - 1) == '\n') testo = testo.substring(0, testo.length() - 1);
+            if (message.type.equals("text")) {
+                String username = message.mittente;
+                String testo = message.testo;
+                if (username.equals(contattoAttivo) || username.equals(this.username)) {
                     if (testo.length() > 0) {
-                        int id = message.id;
-                        Text text = new Text(testo);
-                        if (!this.username.equals(username))
-                            text.setFill(Color.WHITE);
-                        else
-                            text.setFill(Color.BLACK);
-                        TextFlow tempFlow = new TextFlow();
+                        //toglie gli \n finali
+                        while (testo.length() > 0 && testo.charAt(testo.length() - 1) == '\n') testo = testo.substring(0, testo.length() - 1);
+                        if (testo.length() > 0) {
+                            int id = message.id;
+                            Text text = new Text(testo);
+                            if (!this.username.equals(username))
+                                text.setFill(Color.WHITE);
+                            else
+                                text.setFill(Color.BLACK);
+                            TextFlow tempFlow = new TextFlow();
 
-                        tempFlow.getChildren().add(text);
-                        tempFlow.setMaxWidth(200);
-                        TextFlow flow = new TextFlow(tempFlow);
-                        HBox hbox = new HBox(12);
-                        if (!this.username.equals(username)) {
-                            tempFlow.getStyleClass().add("tempFlowFlipped");
-                            flow.getStyleClass().add("textFlowFlipped");
-                            chatContaier.setAlignment(Pos.TOP_LEFT);
-                            hbox.setAlignment(Pos.CENTER_LEFT);
-                        } else {
-                            tempFlow.getStyleClass().add("tempFlow");
-                            flow.getStyleClass().add("textFlow");
-                            hbox.setAlignment(Pos.BOTTOM_RIGHT);
-                        }
-                        hbox.getChildren().add(flow);
-                        hbox.getStyleClass().add("hbox");
-                        hbox.setId(id + "");
-                        flow.setAccessibleText(testo);
-                        // seleziona messaggio
-                        hbox.setOnMouseClicked((MouseEvent e) -> {
-                            if (e.getButton() == MouseButton.SECONDARY) {
-                                selectedMessage = (HBox) e.getSource();
-                                menu.show(scrollPane, e.getScreenX(), e.getScreenY());
+                            tempFlow.getChildren().add(text);
+                            tempFlow.setMaxWidth(200);
+                            TextFlow flow = new TextFlow(tempFlow);
+                            HBox hbox = new HBox(12);
+                            if (!this.username.equals(username)) {
+                                tempFlow.getStyleClass().add("tempFlowFlipped");
+                                flow.getStyleClass().add("textFlowFlipped");
+                                chatContaier.setAlignment(Pos.TOP_LEFT);
+                                hbox.setAlignment(Pos.CENTER_LEFT);
+                            } else {
+                                tempFlow.getStyleClass().add("tempFlow");
+                                flow.getStyleClass().add("textFlow");
+                                hbox.setAlignment(Pos.BOTTOM_RIGHT);
                             }
-                        });
-                        chatContaier.getChildren().addAll(hbox);
+                            hbox.getChildren().add(flow);
+                            hbox.getStyleClass().add("hbox");
+                            hbox.setId(id + "");
+                            flow.setAccessibleText(testo);
+                            // seleziona messaggio
+                            hbox.setOnMouseClicked((MouseEvent e) -> {
+                                if (e.getButton() == MouseButton.SECONDARY) {
+                                    selectedMessage = (HBox) e.getSource();
+                                    menu.show(scrollPane, e.getScreenX(), e.getScreenY());
+                                }
+                            });
+                            chatContaier.getChildren().addAll(hbox);
+                        }
+                    }
+                } else {
+                    if (!hasContact(message.mittente)) {
+                        client.addContactToDataBase(message.mittente);
+                        caricaContatti(client.getContattiFromDataBase());
                     }
                 }
             } else {
-                if (!hasContact(message.mittente)) {
-                    client.addContactToDataBase(message.mittente);
-                    caricaContatti(client.getContattiFromDataBase());
-                }
+                addFile(message.mittente, message.testo, message.id);
             }
         }
     }
@@ -275,8 +280,11 @@ public class ClientController implements Initializable {
             if (filename.length() > 0) {
                 JFXButton b = new JFXButton(filename);
                 b.getStyleClass().add("button2");
+                b.setAccessibleText(filename);
                 b.setOnMouseClicked(e -> {
-
+                    String path = new DirectoryChooser().showDialog(null).getAbsolutePath();
+                    if (path != null)
+                        client.getFile(b.getAccessibleText(), path);
                 });
                 TextFlow tempFlow = new TextFlow();
                 tempFlow.getChildren().add(b);
