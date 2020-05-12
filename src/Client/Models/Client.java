@@ -61,9 +61,6 @@ public class Client implements Runnable {
         this.exit();
     }
 
-    /**
-     * Questo metodo è richiamato dal thread dell'oggetto per ricevere comandi dal ServerSocket
-     */
     @Override
     public void run() {
         JSONObject req;
