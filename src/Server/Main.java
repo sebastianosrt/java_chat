@@ -2,6 +2,7 @@ package Server;
 
 /**
  * Apre il server
+ *
  * @author Sebastiano Sartor
  */
 class Main {

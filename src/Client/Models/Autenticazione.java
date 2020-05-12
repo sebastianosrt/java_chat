@@ -17,6 +17,7 @@ public class Autenticazione {
         try {
             socket = new Socket("localhost", 666);
         } catch (IOException e) {
+            System.out.println();
         }
         output = new PrintWriter(new BufferedOutputStream(socket.getOutputStream()), true);
         input = new BufferedReader(new InputStreamReader(new BufferedInputStream(socket.getInputStream())));
@@ -31,6 +32,7 @@ public class Autenticazione {
             input.close();
             socket.close();
         } catch (IOException e) {
+            System.out.println();
         }
     }
 
@@ -41,7 +43,6 @@ public class Autenticazione {
     }
 
     /**
-     *
      * @param username username da loggare
      * @param password password da loggare
      * @return stringa nulla se è andato tutto a buon fine
@@ -53,7 +54,7 @@ public class Autenticazione {
         json_r.put("comando", "login");
         json_r.put("username", username);
         json_r.put("password", password);
-        JSONObject resp = null;
+        JSONObject resp;
 
         try {
             init();
@@ -66,16 +67,13 @@ public class Autenticazione {
         disconnect();
         destroy();
 
-        if (resp == null)
-            return "errore interno";
-        if(resp.getString("risultato").equals("true"))
+        if (resp.getString("risultato").equals("true"))
             return "";
         else
             return resp.getString("errore");
     }
 
     /**
-     *
      * @param username username dell'utente da registrare
      * @param password password dell'utente da registrare
      * @return stringa nulla se è andato tutto a buon fine
@@ -97,12 +95,12 @@ public class Autenticazione {
             disconnect();
             destroy();
 
-            if(resp.getString("risultato").equals("true")) {
+            if (resp.getString("risultato").equals("true")) {
                 return "";
             } else {
                 return resp.getString("errore");
             }
-        } catch(IOException e) {
+        } catch (IOException e) {
             return "connessione non riuscita";
         }
     }

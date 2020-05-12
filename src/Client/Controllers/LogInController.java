@@ -1,6 +1,7 @@
 package Client.Controllers;
 
 import Client.Models.Autenticazione;
+import animatefx.animation.Pulse;
 import javafx.application.Platform;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
@@ -8,50 +9,76 @@ import javafx.fxml.Initializable;
 import javafx.scene.Node;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
-import javafx.scene.control.*;
+import javafx.scene.control.Button;
+import javafx.scene.control.Label;
+import javafx.scene.control.TextField;
 import javafx.scene.image.ImageView;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.Pane;
 import javafx.stage.Stage;
-import animatefx.animation.*;
+
 import java.io.IOException;
 import java.net.URL;
 import java.util.ResourceBundle;
 
 /**
-* Questa classe gestisce l'interfaccia di log in
-* @author Sebastiano Sartor
-* */
+ * Questa classe gestisce l'interfaccia di log in
+ *
+ * @author Sebastiano Sartor
+ */
 public class LogInController implements Initializable {
-    @FXML private Pane loginPanel;
-    @FXML private Stage stage;
-    @FXML private Pane registrazionePanel;
-    @FXML private TextField username_f;
-    @FXML private TextField password_f;
-    @FXML private Label error_f;
-    @FXML private Label response;
-    @FXML private Button submit_f;
-    @FXML private Button registrati_f;
-    @FXML private TextField username_r;
-    @FXML private TextField password_r;
-    @FXML private Label error_r;
-    @FXML private Button submit_r;
-    @FXML private Button login_r;
-    @FXML private Label registrati_label;
-    @FXML private Label login_label;
-    @FXML private ImageView closeBtn;
-    @FXML private ImageView minimizeBtn;
-    @FXML private ImageView closeBtn1;
-    @FXML private ImageView minimizeBtn1;
+    @FXML
+    private Pane loginPanel;
+    @FXML
+    private final Stage stage;
+    @FXML
+    private Pane registrazionePanel;
+    @FXML
+    private TextField username_f;
+    @FXML
+    private TextField password_f;
+    @FXML
+    private Label error_f;
+    @FXML
+    private Label response;
+    @FXML
+    private Button submit_f;
+    @FXML
+    private Button registrati_f;
+    @FXML
+    private TextField username_r;
+    @FXML
+    private TextField password_r;
+    @FXML
+    private Label error_r;
+    @FXML
+    private Button submit_r;
+    @FXML
+    private Button login_r;
+    @FXML
+    private Label registrati_label;
+    @FXML
+    private Label login_label;
+    @FXML
+    private ImageView closeBtn;
+    @FXML
+    private ImageView minimizeBtn;
+    @FXML
+    private ImageView closeBtn1;
+    @FXML
+    private ImageView minimizeBtn1;
     private double xOffset = 0; // posizione x della finestra nello schermo
     private double yOffset = 0; // posizione y della finestra nello schermo
 
-    public LogInController(Stage stage) { this.stage = stage; }
+    public LogInController(Stage stage) {
+        this.stage = stage;
+    }
 
     /**
-    * Questo metodo prende le credenziali dalla view, esegue la query al database in caso di errore lo mostra, altrimenti apre l'interfaccia della chat
-    * @param event - l'evento del click di tipo MouseEvent
-    * */
+     * Questo metodo prende le credenziali dalla view, esegue la query al database in caso di errore lo mostra, altrimenti apre l'interfaccia della chat
+     *
+     * @param event - l'evento del click di tipo MouseEvent
+     */
     public void logIn(MouseEvent event) {
         // prende le credenziali dalle caselle di testo
         String username = username_f.getText();
@@ -106,11 +133,12 @@ public class LogInController implements Initializable {
     }
 
     /**
-    * Questo metodo apre la chat
-    * @param username - l'username dell'utente che ha aperto la chat
-    * @param event - l'oggetto dell'evento click
-    * @throws IOException
-    * */
+     * Questo metodo apre la chat
+     *
+     * @param username - l'username dell'utente che ha aperto la chat
+     * @param event    - l'oggetto dell'evento click
+     * @throws IOException
+     */
     private void apriChatView(String username, MouseEvent event) throws IOException {
         Node node = (Node) event.getSource();
         Stage stage = (Stage) node.getScene().getWindow();
@@ -131,9 +159,10 @@ public class LogInController implements Initializable {
     }
 
     /**
-    * Questo metodo gestisce i click del mouse
-    * @param event - l'oggetto dell'evento click
-    * */
+     * Questo metodo gestisce i click del mouse
+     *
+     * @param event - l'oggetto dell'evento click
+     */
     @FXML
     private void handleMouseClick(MouseEvent event) {
         error_r.setText("");
@@ -162,8 +191,8 @@ public class LogInController implements Initializable {
         closeBtn1.setOnMouseClicked(e -> Platform.exit());
 
         // minimizza scheda
-        minimizeBtn.setOnMouseClicked(e -> ((Stage)((ImageView)e.getSource()).getScene().getWindow()).setIconified(true));
-        minimizeBtn1.setOnMouseClicked(e -> ((Stage)((ImageView)e.getSource()).getScene().getWindow()).setIconified(true));
+        minimizeBtn.setOnMouseClicked(e -> ((Stage) ((ImageView) e.getSource()).getScene().getWindow()).setIconified(true));
+        minimizeBtn1.setOnMouseClicked(e -> ((Stage) ((ImageView) e.getSource()).getScene().getWindow()).setIconified(true));
 
         // muove la finestra quando viene trascinata
         loginPanel.setOnMousePressed(event12 -> {

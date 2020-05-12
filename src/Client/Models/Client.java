@@ -10,14 +10,13 @@ import java.net.Socket;
 import java.util.ArrayList;
 
 public class Client implements Runnable {
-    private ClientController client_controller;
+    private final ClientController client_controller;
     private Socket socket;
     private PrintWriter output;
     private BufferedReader input;
-    private String username;
+    private final String username;
 
     /**
-     *
      * @param username - username dell'utente loggato
      */
     public Client(String username, ClientController client_controller) {
@@ -28,7 +27,7 @@ public class Client implements Runnable {
             this.socket = new Socket("localhost", 666);
             this.output = new PrintWriter(new BufferedOutputStream(this.socket.getOutputStream()), true);
             this.input = new BufferedReader(new InputStreamReader(new BufferedInputStream(this.socket.getInputStream())));
-        } catch(IOException e) {
+        } catch (IOException e) {
             e.printStackTrace();
         }
 
@@ -45,6 +44,7 @@ public class Client implements Runnable {
 
     /**
      * Questo metodo serve per inviare il comando di disconnessione
+     *
      * @param p - serve per inviare il comando al server
      */
     private void disconnect(PrintWriter p) {
@@ -65,7 +65,7 @@ public class Client implements Runnable {
     public void run() {
         JSONObject req;
         String comando;
-        while(!this.socket.isClosed()) {
+        while (!this.socket.isClosed()) {
             try {
                 String res = this.input.readLine();
                 if (res != null) {
@@ -91,13 +91,14 @@ public class Client implements Runnable {
                     }
                 }
             } catch (IOException e) {
-                System.out.println("");
+                System.out.println();
             }
         }
     }
 
     /**
      * Questo metodo serve per effettuare la ricerca di un utente
+     *
      * @param utente - username dell'utente da cercare
      * @return ritorna una lista di username (utenti)
      */
@@ -116,10 +117,10 @@ public class Client implements Runnable {
             out.println(json_r.toString());
             JSONObject resp = new JSONObject(in.readLine());
 
-            if(resp.getString("risultato").equals("true")) {
+            if (resp.getString("risultato").equals("true")) {
                 JSONArray utenti_array = resp.getJSONArray("username_trovati");
                 int utenti_length = utenti_array.length();
-                for(int i = 0; i < utenti_length; i++) {
+                for (int i = 0; i < utenti_length; i++) {
                     lista_utenti.add(utenti_array.getString(i));
                 }
             }
@@ -137,6 +138,7 @@ public class Client implements Runnable {
 
     /**
      * Questo metodo serve per aggiungere un utente ai propri contatti
+     *
      * @param username_contatto - username dell'utente da aggiungere
      */
     public void addContactToDataBase(String username_contatto) {
@@ -164,7 +166,8 @@ public class Client implements Runnable {
 
     /**
      * Questo metodo invia un messaggio testuale
-     * @param contatto - username del destinatario
+     *
+     * @param contatto  - username del destinatario
      * @param messaggio - testo del messaggio
      * @return ritorna l'id del messaggio da aggiungere alla view
      */
@@ -184,7 +187,7 @@ public class Client implements Runnable {
             out.println(json_r.toString());
             JSONObject resp = new JSONObject(in.readLine());
 
-            if(resp.getString("risultato").equals("true"))
+            if (resp.getString("risultato").equals("true"))
                 id = resp.getInt("inserted_id");
 
             disconnect(out);
@@ -200,11 +203,12 @@ public class Client implements Runnable {
 
     /**
      * Invia un file
-     * @author Sebastiano Sartor
+     *
      * @param contatto - il nome del contatto a cui inviare il file
-     * @param path - il percorso del file
+     * @param path     - il percorso del file
      * @param fileName -  il nome del file
      * @return ritorna l'id del messaggio da aggiungere alla view
+     * @author Sebastiano Sartor
      */
     public int inviaFile(String contatto, String path, String fileName) {
         int id = -1;
@@ -256,9 +260,10 @@ public class Client implements Runnable {
 
     /**
      * Scarica un file dal server
-     * @author Sebastiano Sartor
+     *
      * @param fileName - nome del file da scaricare
      * @param filepath - percorso dove salvare il file
+     * @author Sebastiano Sartor
      */
     public void getFile(String fileName, String filepath) {
         JSONObject json_r = new JSONObject();
@@ -282,7 +287,7 @@ public class Client implements Runnable {
                 FileOutputStream fo = new FileOutputStream(filepath + "\\" + fileName);
                 int count;
                 byte[] buffer = new byte[size]; // or 4096, or more
-                while (fo.getChannel().size() < size-1 && (count = is.read(buffer)) > 0)
+                while (fo.getChannel().size() < size - 1 && (count = is.read(buffer)) > 0)
                     fo.write(buffer, 0, count);
             } catch (IOException e) {
                 e.printStackTrace();
@@ -313,6 +318,7 @@ public class Client implements Runnable {
 
     /**
      * Questo metodo recupera i contatti dell'utente appena loggato
+     *
      * @return ritorna una lista di username (contatti)
      */
     public ArrayList<String> getContattiFromDataBase() {
@@ -329,10 +335,10 @@ public class Client implements Runnable {
             out.println(json_r.toString());
             JSONObject resp = new JSONObject(in.readLine());
 
-            if(resp.getString("risultato").equals("true")) {
+            if (resp.getString("risultato").equals("true")) {
                 JSONArray contatti_array = resp.getJSONArray("lista_contatti");
                 int contatti_length = contatti_array.length();
-                for(int i = 0; i < contatti_length; i++) {
+                for (int i = 0; i < contatti_length; i++) {
                     contatti.add(contatti_array.getString(i));
                 }
             }
@@ -349,6 +355,7 @@ public class Client implements Runnable {
 
     /**
      * Questo motodo recupera i messaggi inviati o ricevuti con un determinato contatto
+     *
      * @param contatto - username del contatto
      * @return ritorna una lista di messaggi
      */
@@ -366,10 +373,10 @@ public class Client implements Runnable {
             BufferedReader in = new BufferedReader(new InputStreamReader(s.getInputStream()));
             out.println(json_r.toString());
             JSONObject resp = new JSONObject(in.readLine());
-            if(resp.getString("risultato").equals("true")) {
+            if (resp.getString("risultato").equals("true")) {
                 JSONArray messaggi_array = resp.getJSONArray("lista_messaggi");
                 int messaggi_length = messaggi_array.length();
-                for(int i = 0; i < messaggi_length; i++) {
+                for (int i = 0; i < messaggi_length; i++) {
                     JSONObject messaggio = messaggi_array.getJSONObject(i);
                     messaggi.add(new Messaggio(messaggio.getInt("id"), messaggio.getString("data"), messaggio.getString("mittente"), messaggio.getString("destinatario"), messaggio.getString("type")));
                 }
@@ -379,7 +386,7 @@ public class Client implements Runnable {
             out.close();
             in.close();
             s.close();
-        } catch(IOException e) {
+        } catch (IOException e) {
             e.printStackTrace();
         }
 
@@ -388,8 +395,9 @@ public class Client implements Runnable {
 
     /**
      * Questo metodo elimina un determinato messaggio già inviato o ricevuto
+     *
      * @param id_messaggio - ID del messaggio da eliminare
-     * @param contatto - username del contatto che ha ricevuto o inviato il messaggio da eliminare
+     * @param contatto     - username del contatto che ha ricevuto o inviato il messaggio da eliminare
      */
     public void eliminaMessaggio(int id_messaggio, String contatto) {
         JSONObject json_r = new JSONObject();

@@ -12,12 +12,12 @@ import javafx.geometry.Pos;
 import javafx.scene.Node;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
-import javafx.scene.control.*;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.control.MenuItem;
 import javafx.scene.control.ScrollPane;
 import javafx.scene.control.TextField;
+import javafx.scene.control.*;
 import javafx.scene.image.ImageView;
 import javafx.scene.input.KeyCode;
 import javafx.scene.input.MouseButton;
@@ -48,8 +48,9 @@ import java.util.ResourceBundle;
 
 /**
  * Questa classe gestisce l'interfaccia di log in
+ *
  * @author Sebastiano Sartor
- * */
+ */
 public class ClientController implements Initializable {
     private String username;
     private String contattoAttivo = null;
@@ -57,29 +58,52 @@ public class ClientController implements Initializable {
     private boolean newContact = false;
     private double xOffset = 0;
     private double yOffset = 0;
-    @FXML private Stage stage;
-    @FXML private AnchorPane body;
-    @FXML private Label username_f;
-    @FXML private Label destinatario_f;
-    @FXML private TextField search_f;
-    @FXML private JFXTextArea message_f;
-    @FXML private Button sendBtn;
-    @FXML private Button logOut;
-    @FXML private Button fileBtn;
-    @FXML private ScrollPane scrollPane;
-    @FXML private ScrollPane contactsPane;
-    @FXML private Pane coveringPane;
-    @FXML private ImageView closeBtn;
-    @FXML private ImageView minimizeBtn;
-    @FXML private VBox chatContaier;
-    @FXML private VBox contactsContaier;
-    @FXML private ContextMenu menu;
-    @FXML private MenuItem copia;
-    @FXML private MenuItem elimina;
-    @FXML private HBox selectedMessage;
-    @FXML private HBox activeContact = null;
+    @FXML
+    private final Stage stage;
+    @FXML
+    private AnchorPane body;
+    @FXML
+    private Label username_f;
+    @FXML
+    private Label destinatario_f;
+    @FXML
+    private TextField search_f;
+    @FXML
+    private JFXTextArea message_f;
+    @FXML
+    private Button sendBtn;
+    @FXML
+    private Button logOut;
+    @FXML
+    private Button fileBtn;
+    @FXML
+    private ScrollPane scrollPane;
+    @FXML
+    private ScrollPane contactsPane;
+    @FXML
+    private Pane coveringPane;
+    @FXML
+    private ImageView closeBtn;
+    @FXML
+    private ImageView minimizeBtn;
+    @FXML
+    private VBox chatContaier;
+    @FXML
+    private VBox contactsContaier;
+    @FXML
+    private ContextMenu menu;
+    @FXML
+    private MenuItem copia;
+    @FXML
+    private MenuItem elimina;
+    @FXML
+    private HBox selectedMessage;
+    @FXML
+    private HBox activeContact = null;
 
-    public ClientController(Stage stage) { this.stage = stage; }
+    public ClientController(Stage stage) {
+        this.stage = stage;
+    }
 
     @Override
     public void initialize(URL location, ResourceBundle resources) {
@@ -133,7 +157,7 @@ public class ClientController implements Initializable {
             Platform.exit();
         });
         // minimizza scheda
-        minimizeBtn.setOnMouseClicked(e -> ((Stage)((ImageView)e.getSource()).getScene().getWindow()).setIconified(true));
+        minimizeBtn.setOnMouseClicked(e -> ((Stage) ((ImageView) e.getSource()).getScene().getWindow()).setIconified(true));
         // ricerca utente
         search_f.setOnKeyReleased(e -> {
             if (search_f.getText().length() > 0) caricaContatti(client.searchUsers(search_f.getText()));
@@ -178,6 +202,7 @@ public class ClientController implements Initializable {
 
     /**
      * Questo metodo setta l'username dell'utente loggato
+     *
      * @param username - username dell'utente
      */
     public void setUsername(String username) {
@@ -186,16 +211,18 @@ public class ClientController implements Initializable {
 
     /**
      * Questo metodo invia il messaggio al destinatario
+     *
      * @param username - l'username del mittente del messaggio
-     * @param message - il contenuto del messaggio
+     * @param message  - il contenuto del messaggio
      * @return il messaggio da che sarà aggiunto alla view
-     * */
+     */
     public Messaggio inviaMessaggio(String username, String message) {
         Messaggio m = new Messaggio(0, message, username, contattoAttivo, "text");
         if (username.equals(contattoAttivo) || username.equals(this.username)) {
             if (message.length() > 0) {
                 //toglie gli \n finali
-                while (message.length() > 0 && message.charAt(message.length() - 1) == '\n') message = message.substring(0, message.length() - 1);
+                while (message.length() > 0 && message.charAt(message.length() - 1) == '\n')
+                    message = message.substring(0, message.length() - 1);
                 if (message.length() > 0) {
                     if (newContact) {
                         client.addContactToDataBase(contattoAttivo);
@@ -213,8 +240,9 @@ public class ClientController implements Initializable {
 
     /**
      * Questo metodo aggiunge alla view un nuovo messaggio e gli aggiunge un event listener per il tasto destro del mouse
+     *
      * @param message - il messaggio da aggiungere alla view
-     * */
+     */
     public void addMessaggio(Messaggio message) {
         if (message != null) {
             if (message.type.equals("text")) {
@@ -223,7 +251,8 @@ public class ClientController implements Initializable {
                 if (username.equals(contattoAttivo) || username.equals(this.username)) {
                     if (testo.length() > 0) {
                         //toglie gli \n finali
-                        while (testo.length() > 0 && testo.charAt(testo.length() - 1) == '\n') testo = testo.substring(0, testo.length() - 1);
+                        while (testo.length() > 0 && testo.charAt(testo.length() - 1) == '\n')
+                            testo = testo.substring(0, testo.length() - 1);
                         if (testo.length() > 0) {
                             int id = message.id;
                             Text text = new Text(testo);
@@ -275,9 +304,10 @@ public class ClientController implements Initializable {
 
     /**
      * Aggiunge alla view un messaggio contenente file
+     *
      * @param username - mittente
      * @param filename - nome del file
-     * @param id - id del messaggio
+     * @param id       - id del messaggio
      */
     public void addFile(String username, String filename, int id) {
         if (username != null && (username.equals(contattoAttivo) || username.equals(this.username))) {
@@ -327,26 +357,26 @@ public class ClientController implements Initializable {
 
     /**
      * Questo metodo elimina un messaggio
-     * @param id - l'id del messaggio da eliminare
+     *
+     * @param id       - l'id del messaggio da eliminare
      * @param contatto - nome del contatto da cui eliminare il messaggio
      */
     public void eliminaMessaggio(int id, String contatto) {
         if (contatto.equals(contattoAttivo)) {
             try {
                 chatContaier.getChildren().forEach(c -> {
-                    if (c.getId().equals(Integer.toString(id))) {
+                    if (c.getId().equals(Integer.toString(id)))
                         chatContaier.getChildren().remove(c);
-                        return;
-                    }
                 });
             } catch (ConcurrentModificationException e) {
-                System.out.println("");
+                System.out.println();
             }
         }
     }
 
     /**
      * Questo metodo mostra i messaggi con un contatto
+     *
      * @param messaggi - array contenente i messaggi della chat messaggi
      */
     public void caricaMessaggi(ArrayList<Messaggio> messaggi) {
@@ -360,6 +390,7 @@ public class ClientController implements Initializable {
 
     /**
      * Questo metodo aggiunge un contatto nella view
+     *
      * @param username - l'username del contatto da aggiungere
      */
     public void addContatto(String username) {
@@ -376,12 +407,12 @@ public class ClientController implements Initializable {
 
     /**
      * Questo metodo carica tutti i contatti dell'utente nella view
+     *
      * @param contatti - array contenente i contatti dell'utente
      */
     public void caricaContatti(ArrayList<String> contatti) {
         contactsContaier.getChildren().clear();
-        if (contatti.contains(this.username))
-            contatti.remove(this.username);
+        contatti.remove(this.username);
         contatti.forEach(this::addContatto);
         if (contattoAttivo != null)
             setActiveContact(contattoAttivo);
@@ -389,8 +420,9 @@ public class ClientController implements Initializable {
 
     /**
      * Questo metodo seleziona un contatto
+     *
      * @param e - l'evento del click di tipo MouseEvent
-     * */
+     */
     private void selectContact(MouseEvent e) {
         // prendo il contatto selezionato dall'evento
         HBox b = (HBox) e.getSource();
@@ -416,12 +448,13 @@ public class ClientController implements Initializable {
 
     /**
      * Questo metodo setta il contatto attivo
+     *
      * @param name - nome del contatto attivo
      */
     private void setActiveContact(String name) {
         contactsContaier.getChildren().forEach(c -> {
             if (c.getAccessibleText() != null && c.getAccessibleText().equals(name)) {
-                activeContact =(HBox) c;
+                activeContact = (HBox) c;
                 activeContact.getStyleClass().add("contactActive");
             } else
                 c.getStyleClass().removeAll("contactActive");
@@ -430,7 +463,7 @@ public class ClientController implements Initializable {
 
     /**
      * Questo metodo porta in cima alla lista dei contatti l'ultimo con cui si è messaggato se non è già primo
-     * */
+     */
     private void raiseContact() {
         // assicuro il contatto attivo
         setActiveContact(contattoAttivo);
@@ -456,6 +489,7 @@ public class ClientController implements Initializable {
 
     /**
      * Questo metodo controlla se l'utente ha un contatto
+     *
      * @param name - nome del contatto da controllare
      * @return true se ha il contatto, altrimenti false
      */
@@ -465,15 +499,16 @@ public class ClientController implements Initializable {
                 if (((HBox) c).getAccessibleText().equals(name))
                     return true;
         } catch (ClassCastException e) {
-            System.out.println("");
+            System.out.println();
         }
         return false;
     }
 
     /**
      * Questo metodo ritorna al login
+     *
      * @param event - l'oggetto dell'evento click
-     * */
+     */
     private void apriLogInView(MouseEvent event) {
         FXMLLoader loader = new FXMLLoader(getClass().getResource("/Client/Views/LogInView.fxml"));
         loader.setController(new LogInController(stage));

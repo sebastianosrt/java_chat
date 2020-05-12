@@ -12,9 +12,14 @@ import java.io.IOException;
 
 /**
  * Apre la pagina di log in
+ *
  * @author Sebastiano Sartor
  */
 public class Main extends Application {
+    public static void main(String[] args) {
+        launch(args);
+    }
+
     @Override
     public void start(Stage primaryStage) throws IOException {
         // carica il file fxml
@@ -29,9 +34,5 @@ public class Main extends Application {
         primaryStage.setScene(scene);
         primaryStage.show();
         primaryStage.requestFocus();
-    }
-
-    public static void main(String[] args) {
-        launch(args);
     }
 }

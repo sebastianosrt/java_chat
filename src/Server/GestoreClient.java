@@ -1,20 +1,20 @@
 package Server;
 
+import Server.MySQL.MySQL;
+import org.json.JSONObject;
+
 import java.io.*;
 import java.net.Socket;
-import java.sql.SQLException;
 import java.util.ArrayList;
-
-import Server.MySQL.MySQL;
-import org.json.*;
 
 /**
  * Questa classe riceve i messaggi da un client ed esegue un comando dato
+ *
  * @author Sebastiano Sartor
- * */
+ */
 class GestoreClient implements Runnable {
-    private Server server;
-    private Socket client;
+    private final Server server;
+    private final Socket client;
     private PrintWriter output;
     private BufferedReader input;
     private String username = null;
@@ -177,6 +177,7 @@ class GestoreClient implements Runnable {
 
     /**
      * Inizializza gli stream
+     *
      * @throws IOException
      */
     private void init() throws IOException {
@@ -186,6 +187,7 @@ class GestoreClient implements Runnable {
 
     /**
      * Chiude gli stream ed i socket e rimuove "this" dalla lista dei gestore client del server
+     *
      * @throws IOException
      */
     private void destroy() throws IOException {
@@ -197,6 +199,7 @@ class GestoreClient implements Runnable {
 
     /**
      * Invia un messaggio al client connesso
+     *
      * @param messaggio - il messaggio da inviare al client connesso
      */
     public void inviaMessaggio(String messaggio) {
@@ -204,18 +207,20 @@ class GestoreClient implements Runnable {
     }
 
     /**
-     * Setta l'username dell'utente gestito
-     * @param username - username da settare
-     */
-    public void setUsername(String username) {
-        this.username = username;
-    }
-
-    /**
      * Ritorna l'username dell'utente gestito
+     *
      * @return username - username dell'utente gestito
      */
     public String getUsername() {
         return username;
+    }
+
+    /**
+     * Setta l'username dell'utente gestito
+     *
+     * @param username - username da settare
+     */
+    public void setUsername(String username) {
+        this.username = username;
     }
 }

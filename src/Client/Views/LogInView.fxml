@@ -1,87 +1,110 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-<?import com.jfoenix.controls.JFXButton?>
-<?import com.jfoenix.controls.JFXPasswordField?>
-<?import com.jfoenix.controls.JFXTextField?>
+<?import com.jfoenix.controls.*?>
+<?import javafx.scene.control.*?>
 <?import javafx.scene.Cursor?>
-<?import javafx.scene.control.Label?>
-<?import javafx.scene.image.Image?>
-<?import javafx.scene.image.ImageView?>
-<?import javafx.scene.layout.AnchorPane?>
-<?import javafx.scene.layout.Pane?>
-<?import javafx.scene.text.Font?>
-
-<AnchorPane prefHeight="338.0" prefWidth="600.0" stylesheets="@../css/style.css" xmlns="http://javafx.com/javafx/" xmlns:fx="http://javafx.com/fxml/">
-   <children>
-      <Pane fx:id="registrazionePanel" layoutX="10.0" layoutY="10.0" prefHeight="348.0" prefWidth="610.0" styleClass="body" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
-         <children>
-            <Label layoutX="245.0" layoutY="46.0" prefHeight="45.0" prefWidth="109.0" text="Registrati">
-               <font>
-                  <Font size="25.0" />
-               </font>
-            </Label>
-            <JFXTextField fx:id="username_r" focusColor="#00ffea" layoutX="233.0" layoutY="100.0" promptText="username" styleClass="input" unFocusColor="WHITE" />
-            <JFXPasswordField fx:id="password_r" focusColor="#00ffe5" layoutX="231.0" layoutY="144.0" promptText="password" styleClass="input" unFocusColor="WHITE" />
-            <Label fx:id="response" layoutX="221.0" layoutY="188.0" style="-fx-text-fill: -color4;" text="Registrato correttamente">
-               <font>
-                  <Font size="14.0" />
-               </font>
-            </Label>
-            <Label fx:id="error_r" layoutX="234.0" layoutY="188.0" styleClass="error" text="Inserisci un username">
-               <font>
-                  <Font size="14.0" />
-               </font></Label>
-            <JFXButton fx:id="submit_r" buttonType="RAISED" layoutX="264.0" layoutY="222.0" onMouseClicked="#handleMouseClick" prefHeight="32.0" prefWidth="72.0" styleClass="button1" text="Invia" />
-            <Label fx:id="login_label" layoutX="178.0" layoutY="275.0" onMouseClicked="#handleMouseClick" styleClass="labelfor" text="Hai già un account?">
-               <font>
-                  <Font size="14.0" />
-               </font>
-               <cursor>
-                  <Cursor fx:constant="HAND" />
-               </cursor></Label>
-            <JFXButton fx:id="login_r" buttonType="RAISED" layoutX="318.0" layoutY="269.0" onMouseClicked="#handleMouseClick" prefHeight="32.0" prefWidth="72.0" styleClass="button1" text="Log In" />
-            <ImageView fx:id="closeBtn" fitHeight="20.0" fitWidth="26.0" layoutX="576.0" layoutY="4.0" pickOnBounds="true" preserveRatio="true">
-               <image>
-                  <Image url="@../../media/close.png" />
-               </image>
-            </ImageView>
-            <ImageView fx:id="minimizeBtn" fitHeight="25.0" fitWidth="20.0" layoutX="550.0" layoutY="4.0" pickOnBounds="true" preserveRatio="true">
-               <image>
-                  <Image url="@../../media/minus.png" />
-               </image>
-            </ImageView>
-         </children>
-      </Pane>
-      <Pane fx:id="loginPanel" prefHeight="338.0" prefWidth="600.0" styleClass="body" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
-         <children>
-               <Label layoutX="264.0" layoutY="47.0" prefHeight="45.0" prefWidth="72.0" text="Log In">
-                  <font>
-                     <Font size="25.0" />
-                  </font>
-               </Label>
-            <JFXTextField fx:id="username_f" focusColor="#00ffea" layoutX="233.0" layoutY="101.0" promptText="username" styleClass="input" unFocusColor="WHITE" />
-            <JFXPasswordField fx:id="password_f" focusColor="#00ffe5" layoutX="232.0" layoutY="144.0" promptText="password" styleClass="input" unFocusColor="WHITE" />
-            <Label fx:id="error_f" alignment="BASELINE_CENTER" layoutX="234.0" layoutY="186.0" styleClass="error" text="Inserisci un username">
-               <font>
-                  <Font size="14.0" />
-               </font></Label>
-            <JFXButton fx:id="submit_f" buttonType="RAISED" layoutX="264.0" layoutY="218.0" onMouseClicked="#handleMouseClick" prefHeight="32.0" prefWidth="72.0" styleClass="button1" text="Invia" />
-            <Label fx:id="registrati_label" layoutX="173.0" layoutY="275.0" onMouseClicked="#handleMouseClick" styleClass="labelfor" text="Non hai un'account?">
-               <font>
-                  <Font size="14.0" />
-               </font></Label>
-            <JFXButton fx:id="registrati_f" buttonType="RAISED" layoutX="313.0" layoutY="269.0" onMouseClicked="#handleMouseClick" prefHeight="32.0" prefWidth="72.0" styleClass="button1" text="Registrati" />
-            <ImageView fx:id="closeBtn1" fitHeight="20.0" fitWidth="26.0" layoutX="576.0" layoutY="4.0" pickOnBounds="true" preserveRatio="true">
-               <image>
-                  <Image url="@../../media/close.png" />
-               </image>
-            </ImageView>
-            <ImageView fx:id="minimizeBtn1" fitHeight="25.0" fitWidth="20.0" layoutX="550.0" layoutY="4.0" pickOnBounds="true" preserveRatio="true">
-               <image>
-                  <Image url="@../../media/minus.png" />
-               </image>
-            </ImageView>
-         </children>
-      </Pane>
-   </children>
+<?import javafx.scene.image.*?>
+<?import javafx.scene.layout.*?>
+<?import javafx.scene.text.*?>
+<AnchorPane xmlns:fx="http://javafx.com/fxml/" prefHeight="338.0" prefWidth="600.0" stylesheets="@../css/style.css"
+            xmlns="http://javafx.com/javafx/">
+    <children>
+        <Pane fx:id="registrazionePanel" layoutX="10.0" layoutY="10.0" prefHeight="348.0" prefWidth="610.0"
+              styleClass="body" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0"
+              AnchorPane.topAnchor="0.0">
+            <children>
+                <Label layoutX="245.0" layoutY="46.0" prefHeight="45.0" prefWidth="109.0" text="Registrati">
+                    <font>
+                        <Font size="25.0"/>
+                    </font>
+                </Label>
+                <JFXTextField fx:id="username_r" focusColor="#00ffea" layoutX="233.0" layoutY="100.0"
+                              promptText="username" styleClass="input" unFocusColor="WHITE"/>
+                <JFXPasswordField fx:id="password_r" focusColor="#00ffe5" layoutX="231.0" layoutY="144.0"
+                                  promptText="password" styleClass="input" unFocusColor="WHITE"/>
+                <Label fx:id="response" layoutX="221.0" layoutY="188.0" style="-fx-text-fill: -color4;"
+                       text="Registrato correttamente">
+                    <font>
+                        <Font size="14.0"/>
+                    </font>
+                </Label>
+                <Label fx:id="error_r" layoutX="234.0" layoutY="188.0" styleClass="error" text="Inserisci un username">
+                    <font>
+                        <Font size="14.0"/>
+                    </font>
+                </Label>
+                <JFXButton fx:id="submit_r" buttonType="RAISED" layoutX="264.0" layoutY="222.0"
+                           onMouseClicked="#handleMouseClick" prefHeight="32.0" prefWidth="72.0" styleClass="button1"
+                           text="Invia"/>
+                <Label fx:id="login_label" layoutX="178.0" layoutY="275.0" onMouseClicked="#handleMouseClick"
+                       styleClass="labelfor" text="Hai già un account?">
+                    <font>
+                        <Font size="14.0"/>
+                    </font>
+                    <cursor>
+                        <Cursor fx:constant="HAND"/>
+                    </cursor>
+                </Label>
+                <JFXButton fx:id="login_r" buttonType="RAISED" layoutX="318.0" layoutY="269.0"
+                           onMouseClicked="#handleMouseClick" prefHeight="32.0" prefWidth="72.0" styleClass="button1"
+                           text="Log In"/>
+                <ImageView fx:id="closeBtn" fitHeight="20.0" fitWidth="26.0" layoutX="576.0" layoutY="4.0"
+                           pickOnBounds="true" preserveRatio="true">
+                    <image>
+                        <Image url="@../../media/close.png"/>
+                    </image>
+                </ImageView>
+                <ImageView fx:id="minimizeBtn" fitHeight="25.0" fitWidth="20.0" layoutX="550.0" layoutY="4.0"
+                           pickOnBounds="true" preserveRatio="true">
+                    <image>
+                        <Image url="@../../media/minus.png"/>
+                    </image>
+                </ImageView>
+            </children>
+        </Pane>
+        <Pane fx:id="loginPanel" prefHeight="338.0" prefWidth="600.0" styleClass="body" AnchorPane.bottomAnchor="0.0"
+              AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+            <children>
+                <Label layoutX="264.0" layoutY="47.0" prefHeight="45.0" prefWidth="72.0" text="Log In">
+                    <font>
+                        <Font size="25.0"/>
+                    </font>
+                </Label>
+                <JFXTextField fx:id="username_f" focusColor="#00ffea" layoutX="233.0" layoutY="101.0"
+                              promptText="username" styleClass="input" unFocusColor="WHITE"/>
+                <JFXPasswordField fx:id="password_f" focusColor="#00ffe5" layoutX="232.0" layoutY="144.0"
+                                  promptText="password" styleClass="input" unFocusColor="WHITE"/>
+                <Label fx:id="error_f" alignment="BASELINE_CENTER" layoutX="234.0" layoutY="186.0" styleClass="error"
+                       text="Inserisci un username">
+                    <font>
+                        <Font size="14.0"/>
+                    </font>
+                </Label>
+                <JFXButton fx:id="submit_f" buttonType="RAISED" layoutX="264.0" layoutY="218.0"
+                           onMouseClicked="#handleMouseClick" prefHeight="32.0" prefWidth="72.0" styleClass="button1"
+                           text="Invia"/>
+                <Label fx:id="registrati_label" layoutX="173.0" layoutY="275.0" onMouseClicked="#handleMouseClick"
+                       styleClass="labelfor" text="Non hai un'account?">
+                    <font>
+                        <Font size="14.0"/>
+                    </font>
+                </Label>
+                <JFXButton fx:id="registrati_f" buttonType="RAISED" layoutX="313.0" layoutY="269.0"
+                           onMouseClicked="#handleMouseClick" prefHeight="32.0" prefWidth="72.0" styleClass="button1"
+                           text="Registrati"/>
+                <ImageView fx:id="closeBtn1" fitHeight="20.0" fitWidth="26.0" layoutX="576.0" layoutY="4.0"
+                           pickOnBounds="true" preserveRatio="true">
+                    <image>
+                        <Image url="@../../media/close.png"/>
+                    </image>
+                </ImageView>
+                <ImageView fx:id="minimizeBtn1" fitHeight="25.0" fitWidth="20.0" layoutX="550.0" layoutY="4.0"
+                           pickOnBounds="true" preserveRatio="true">
+                    <image>
+                        <Image url="@../../media/minus.png"/>
+                    </image>
+                </ImageView>
+            </children>
+        </Pane>
+    </children>
 </AnchorPane>

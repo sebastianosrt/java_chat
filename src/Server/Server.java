@@ -9,10 +9,11 @@ import java.util.ArrayList;
 
 /**
  * Apre il server, si connette al database ed accetta le connessioni
+ *
  * @author Sebastiano Sartor
  */
 class Server implements Runnable {
-    private ArrayList<GestoreClient> clients = new ArrayList<>();
+    private final ArrayList<GestoreClient> clients = new ArrayList<>();
 
     @Override
     public void run() {
@@ -37,6 +38,7 @@ class Server implements Runnable {
 
     /**
      * Ritorna i client connessi
+     *
      * @return clients - lista di gestore client
      */
     public ArrayList<GestoreClient> getClients() {
@@ -45,6 +47,7 @@ class Server implements Runnable {
 
     /**
      * rimuove un gestore client dalla lista
+     *
      * @param client - il gestore client da rimuovere
      */
     public void rimuoviClient(GestoreClient client) {
