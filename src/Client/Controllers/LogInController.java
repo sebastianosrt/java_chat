@@ -43,8 +43,8 @@ public class LogInController implements Initializable {
     @FXML private ImageView minimizeBtn;
     @FXML private ImageView closeBtn1;
     @FXML private ImageView minimizeBtn1;
-    private double xOffset = 0;
-    private double yOffset = 0;
+    private double xOffset = 0; // posizione x della finestra nello schermo
+    private double yOffset = 0; // posizione y della finestra nello schermo
 
     public LogInController(Stage stage) { this.stage = stage; }
 
@@ -79,7 +79,7 @@ public class LogInController implements Initializable {
     }
 
     /**
-     * Questo metodo registra un utente
+     * Questo metodo registra un utente, in caso di errore lo mostra
      */
     public void signUp() {
         response.setText("");

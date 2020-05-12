@@ -10,9 +10,9 @@ import java.util.HashMap;
 public class MySQL {
 
     private final static String URL      = "jdbc:mysql://localhost:3306/";
-    private final static String DBNANME  = "progettojava";// progettojava è il nome del database
-    private final static String USER     = "progettojava"; // l'utente per accedere al database si chiama allo stesso modo
-    private final static String PASSWORD = "pswprogetto";
+    private final static String DBNANME  = "java_chat";// progettojava è il nome del database
+    private final static String USER     = "java_chat"; // l'utente per accedere al database si chiama allo stesso modo
+    private final static String PASSWORD = "java_chat";
     private final static String DRIVER   = "com.mysql.jdbc.Driver";
     private static Connection conn;
 
@@ -20,10 +20,8 @@ public class MySQL {
     /**
      * Apri la connessione con il database
      * @return Connection
-     * @throws SQLException
      */
-    public static Connection openConnection() throws SQLException {
-
+    public static Connection openConnection() {
         try {
             Class.forName(DRIVER);
             conn = DriverManager.getConnection(URL + DBNANME, USER, PASSWORD);
@@ -36,9 +34,8 @@ public class MySQL {
 
     /**
      * chiudi la connesione con il database
-     * @throws SQLException
      */
-    public static void closeConnection() throws SQLException {
+    public static void closeConnection() {
         try{
             conn.close();
         }catch (SQLException e){
@@ -49,9 +46,8 @@ public class MySQL {
 
     /**
      * crea le tabelle per il corretto salvataggio dei dati
-     * @throws SQLException
      */
-    public static void createTables() throws SQLException {
+    public static void createTables() {
         try {
             boolean statusConn = conn.isClosed();
 
@@ -113,10 +109,8 @@ public class MySQL {
      * @param username nome dell'utente da aggiungere
      * @param password password dell'utente da aggiungere
      * @return json response of the result
-     * @throws SQLException
      */
-    public static JSONObject addUser(String username, String password) throws SQLException {
-
+    public static JSONObject addUser(String username, String password) {
         JSONObject response = new JSONObject();
         response.put("sorgente", "database");
         response.put("metodo", "aggiungi_utente");
@@ -152,9 +146,8 @@ public class MySQL {
      * @param username nome dell'utente da aggiungere
      * @param password password dell'utente da aggiungere
      * @return json response of the result
-     * @throws SQLException
      */
-    public static JSONObject authentication(String username, String password) throws SQLException{
+    public static JSONObject authentication(String username, String password) {
 
         JSONObject response = new JSONObject();
         response.put("sorgente", "database");
@@ -198,7 +191,7 @@ public class MySQL {
      * @throws SQLException
      */
     private static HashMap<String, String> createRowObj(ResultSet rs) throws SQLException {
-        HashMap<String, String> map = new HashMap<String, String>();
+        HashMap<String, String> map = new HashMap<>();
 
         ResultSetMetaData rsmd = rs.getMetaData();
         int columnsNumber = rsmd.getColumnCount();
@@ -247,9 +240,8 @@ public class MySQL {
      * @param user username del profilo autenticato
      * @param contact contatto da aggiungere
      * @return json response of the result
-     * @throws SQLException
      */
-    public static JSONObject addContact(String user, String contact) throws SQLException{
+    public static JSONObject addContact(String user, String contact) {
         JSONObject response = new JSONObject();
         response.put("sorgente", "database");
         response.put("metodo", "aggiungi_contatto");
@@ -291,9 +283,8 @@ public class MySQL {
      *
      * @param user username dell'utente di cui cercare i contatti
      * @return lista di contatti
-     * @throws SQLException
      */
-    public static JSONObject getListContacts(String user) throws SQLException{
+    public static JSONObject getListContacts(String user) {
         JSONObject response = new JSONObject();
         response.put("sorgente", "database");
         response.put("metodo", "get_contatti");
@@ -335,9 +326,8 @@ public class MySQL {
      *
      * @param s stringa con cui deve inziare l'username
      * @return listq di username trovati
-     * @throws SQLException
      */
-    public static JSONObject searchUser(String s) throws SQLException{
+    public static JSONObject searchUser(String s) {
         JSONObject response = new JSONObject();
         response.put("sorgente", "database");
         response.put("metodo", "cerca_utente");
@@ -386,9 +376,8 @@ public class MySQL {
      * @param type tipo di messaggio inviato (testo, file)
      * @param data contenuto del messaggio
      * @return json response of the result with the id of inserted row in the DB
-     * @throws SQLException
      */
-    public static JSONObject addMessage(String mittente, String destinatario, String type, String data) throws SQLException {
+    public static JSONObject addMessage(String mittente, String destinatario, String type, String data) {
 
         JSONObject response = new JSONObject();
         response.put("sorgente", "database");
@@ -426,9 +415,8 @@ public class MySQL {
      * @param mittente colui che invia il messaggio
      * @param destinatario colui che riceve il messaggio
      * @return json response of the result
-     * @throws SQLException
      */
-    public static JSONObject getMessaggi(String mittente, String destinatario) throws SQLException{
+    public static JSONObject getMessaggi(String mittente, String destinatario) {
         JSONObject response = new JSONObject();
         response.put("sorgente", "database");
         response.put("metodo", "get_messaggi");

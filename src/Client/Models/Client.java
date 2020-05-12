@@ -74,20 +74,27 @@ public class Client implements Runnable {
                 if (res != null) {
                     req = new JSONObject(res);
                     comando = req.getString("comando");
-                    if(comando.equals("invia_messaggio")) {
-                        if(req.getString("type").equals("text")) {
+                    switch (comando) {
+                        case "invia_messaggio":
+                            if (req.getString("type").equals("text")) {
+                                JSONObject finalReq = req;
+                                Platform.runLater(() -> this.client_controller.addMessaggio(new Messaggio(finalReq.getInt("id"), finalReq.getString("data"), finalReq.getString("sorgente"), finalReq.getString("destinatario"), finalReq.getString("type"))));
+                            }
+                            break;
+                        case "elimina_messaggio": {
                             JSONObject finalReq = req;
-                            Platform.runLater(() -> this.client_controller.addMessaggio(new Messaggio(finalReq.getInt("id"), finalReq.getString("data"), finalReq.getString("sorgente"), finalReq.getString("destinatario"), finalReq.getString("type"))));
+                            Platform.runLater(() -> this.client_controller.eliminaMessaggio(finalReq.getInt("id_messaggio"), finalReq.getString("sorgente")));
+                            break;
                         }
-                    } else if (comando.equals("elimina_messaggio")) {
-                        JSONObject finalReq = req;
-                        Platform.runLater(() -> this.client_controller.eliminaMessaggio(finalReq.getInt("id_messaggio"), finalReq.getString("sorgente")));
-                    } else if(comando.equals("invia_file")) {
-                        JSONObject finalReq = req;
-                        Platform.runLater(() -> this.client_controller.addFile(finalReq.getString("sorgente"), finalReq.getString("file_name"), finalReq.getInt("id")));
+                        case "invia_file": {
+                            JSONObject finalReq = req;
+                            Platform.runLater(() -> this.client_controller.addFile(finalReq.getString("sorgente"), finalReq.getString("file_name"), finalReq.getInt("id")));
+                            break;
+                        }
                     }
                 }
             } catch (IOException e) {
+                System.out.println("");
             }
         }
     }
@@ -179,6 +186,14 @@ public class Client implements Runnable {
         return id;
     }
 
+    /**
+     * Invia un file
+     * @author Sebastiano Sartor
+     * @param contatto - il nome del contatto a cui inviare il file
+     * @param path - il percorso del file
+     * @param fileName -  il nome del file
+     * @return ritorna l'id del messaggio da aggiungere alla view
+     */
     public int inviaFile(String contatto, String path, String fileName) {
         int id = -1;
         JSONObject json_r = new JSONObject();
@@ -190,6 +205,7 @@ public class Client implements Runnable {
             Socket s = new Socket("localhost", 666);
             PrintWriter out = new PrintWriter(s.getOutputStream(), true);
             BufferedReader in = new BufferedReader(new InputStreamReader(s.getInputStream()));
+            // invia una prima richiesta avvisando il server che starà per ricevere un file
             out.println(json_r);
 
             // leggo file e prendo la dimensione
@@ -213,9 +229,9 @@ public class Client implements Runnable {
                     e.printStackTrace();
                 }
             }).start();
-
+            // prendo l'id del messaggio dalla risposta
             id = new JSONObject(in.readLine()).getInt("inserted_id");
-
+            // disconnessione
             disconnect(out);
             out.close();
             in.close();
@@ -226,6 +242,12 @@ public class Client implements Runnable {
         return id;
     }
 
+    /**
+     * Scarica un file dal server
+     * @author Sebastiano Sartor
+     * @param fileName - nome del file da scaricare
+     * @param filepath - percorso dove salvare il file
+     */
     public void getFile(String fileName, String filepath) {
         JSONObject json_r = new JSONObject();
         json_r.put("comando", "get_file");
@@ -235,27 +257,25 @@ public class Client implements Runnable {
             Socket s = new Socket("localhost", 666);
             PrintWriter out = new PrintWriter(s.getOutputStream(), true);
             BufferedReader in = new BufferedReader(new InputStreamReader(s.getInputStream()));
+            // richiesta al server
             out.println(json_r);
 
+            // ricevo la grandezza del file che sto per ricevere
             JSONObject res = new JSONObject(in.readLine());
             int size = res.getInt("size");
 
+            // legge dallo stream finchè non ha letto tutta la grandezza del file, e lo scrive nel percorso specificato
             InputStream is = s.getInputStream();
-
-            // thread che legge e scrive il file
-            new Thread(() -> {
-                FileOutputStream fo = null;
-                try {
-                    fo = new FileOutputStream(filepath + "\\" + fileName);
-                    int count;
-                    byte[] buffer = new byte[size]; // or 4096, or more
-                    while (fo.getChannel().size() < size-1 && (count = is.read(buffer)) > 0)
-                        fo.write(buffer, 0, count);
-                } catch (IOException e) {
-                    e.printStackTrace();
-                }
-            }).start();
-
+            try {
+                FileOutputStream fo = new FileOutputStream(filepath + "\\" + fileName);
+                int count;
+                byte[] buffer = new byte[size]; // or 4096, or more
+                while (fo.getChannel().size() < size-1 && (count = is.read(buffer)) > 0)
+                    fo.write(buffer, 0, count);
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+            // disconnessione
             disconnect(out);
             out.close();
             in.close();

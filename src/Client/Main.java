@@ -11,14 +11,17 @@ import javafx.stage.StageStyle;
 import java.io.IOException;
 
 /**
+ * Apre la pagina di log in
  * @author Sebastiano Sartor
  */
 public class Main extends Application {
-    // apre la pagina di log in
     @Override
     public void start(Stage primaryStage) throws IOException {
+        // carica il file fxml
         FXMLLoader loader = new FXMLLoader(getClass().getResource("Views/LogInView.fxml"));
+        // setta il controller della pagina
         loader.setController(new LogInController(primaryStage));
+        // apre la finestra
         Parent root = loader.load();
         Scene scene = new Scene(root);
         primaryStage.initStyle(StageStyle.UNDECORATED);

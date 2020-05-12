@@ -57,7 +57,6 @@ public class ClientController implements Initializable {
     private boolean newContact = false;
     private double xOffset = 0;
     private double yOffset = 0;
-
     @FXML private Stage stage;
     @FXML private AnchorPane body;
     @FXML private Label username_f;
@@ -113,7 +112,7 @@ public class ClientController implements Initializable {
     }
 
     /**
-     * Set event listeners
+     * Questo metodo setta gli event listeners
      */
     private void setEventListeners() {
         // invia messaggio
@@ -177,6 +176,10 @@ public class ClientController implements Initializable {
         });
     }
 
+    /**
+     * Questo metodo setta l'username dell'utente loggato
+     * @param username - username dell'utente
+     */
     public void setUsername(String username) {
         this.username = username;
     }
@@ -185,6 +188,7 @@ public class ClientController implements Initializable {
      * Questo metodo invia il messaggio al destinatario
      * @param username - l'username del mittente del messaggio
      * @param message - il contenuto del messaggio
+     * @return il messaggio da che sarà aggiunto alla view
      * */
     public Messaggio inviaMessaggio(String username, String message) {
         Messaggio m = new Messaggio(0, message, username, contattoAttivo, "text");
@@ -209,7 +213,7 @@ public class ClientController implements Initializable {
 
     /**
      * Questo metodo aggiunge alla view un nuovo messaggio e gli aggiunge un event listener per il tasto destro del mouse
-     * @param message - il messaggio
+     * @param message - il messaggio da aggiungere alla view
      * */
     public void addMessaggio(Messaggio message) {
         if (message != null) {
@@ -247,7 +251,7 @@ public class ClientController implements Initializable {
                             hbox.getStyleClass().add("hbox");
                             hbox.setId(id + "");
                             flow.setAccessibleText(testo);
-                            // seleziona messaggio
+                            // set evento - seleziona messaggio
                             hbox.setOnMouseClicked((MouseEvent e) -> {
                                 if (e.getButton() == MouseButton.SECONDARY) {
                                     selectedMessage = (HBox) e.getSource();
@@ -270,7 +274,7 @@ public class ClientController implements Initializable {
     }
 
     /**
-     * Aggiunge un messaggio contenente file
+     * Aggiunge alla view un messaggio contenente file
      * @param username - mittente
      * @param filename - nome del file
      * @param id - id del messaggio
@@ -282,9 +286,9 @@ public class ClientController implements Initializable {
                 b.getStyleClass().add("button2");
                 b.setAccessibleText(filename);
                 b.setOnMouseClicked(e -> {
-                    String path = new DirectoryChooser().showDialog(null).getAbsolutePath();
+                    File path = new DirectoryChooser().showDialog(null);
                     if (path != null)
-                        client.getFile(b.getAccessibleText(), path);
+                        client.getFile(b.getAccessibleText(), path.getAbsolutePath());
                 });
                 TextFlow tempFlow = new TextFlow();
                 tempFlow.getChildren().add(b);
@@ -304,7 +308,7 @@ public class ClientController implements Initializable {
                 hbox.getStyleClass().add("hbox");
                 hbox.setId(id + "");
                 flow.setAccessibleText(filename);
-                // seleziona messaggio
+                // set evento - seleziona messaggio
                 hbox.setOnMouseClicked((MouseEvent e) -> {
                     if (e.getButton() == MouseButton.SECONDARY) {
                         selectedMessage = (HBox) e.getSource();
@@ -335,7 +339,9 @@ public class ClientController implements Initializable {
                         return;
                     }
                 });
-            } catch (ConcurrentModificationException e) {}
+            } catch (ConcurrentModificationException e) {
+                System.out.println("");
+            }
         }
     }
 
@@ -364,7 +370,6 @@ public class ClientController implements Initializable {
         label.setFont(Font.font("Arial", FontWeight.BOLD, 16));
         hbox.getChildren().addAll(label);
         hbox.setAccessibleText(label.getText());
-
         hbox.setOnMouseClicked(this::selectContact);
         contactsContaier.getChildren().addAll(hbox, new Separator());
     }
@@ -449,12 +454,19 @@ public class ClientController implements Initializable {
         contactsContaier.getChildren().addAll(nodes);
     }
 
+    /**
+     * Questo metodo controlla se l'utente ha un contatto
+     * @param name - nome del contatto da controllare
+     * @return true se ha il contatto, altrimenti false
+     */
     private boolean hasContact(String name) {
         try {
             for (Object c : contactsContaier.getChildren())
                 if (((HBox) c).getAccessibleText().equals(name))
                     return true;
-        } catch (ClassCastException e) {}
+        } catch (ClassCastException e) {
+            System.out.println("");
+        }
         return false;
     }
 
@@ -465,9 +477,8 @@ public class ClientController implements Initializable {
     private void apriLogInView(MouseEvent event) {
         FXMLLoader loader = new FXMLLoader(getClass().getResource("/Client/Views/LogInView.fxml"));
         loader.setController(new LogInController(stage));
-        Parent root = null;
         try {
-            root = loader.load();
+            Parent root = loader.load();
             Scene scene = new Scene(root);
             Node node = (Node) event.getSource();
             Stage stage = (Stage) node.getScene().getWindow();

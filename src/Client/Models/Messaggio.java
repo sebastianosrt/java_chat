@@ -1,5 +1,8 @@
 package Client.Models;
 
+/**
+ * Classe modello dei messaggi
+ */
 public class Messaggio {
     public int id;
     public String testo;
