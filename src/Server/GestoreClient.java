@@ -81,7 +81,7 @@ class GestoreClient implements Runnable {
                                     while (fo.getChannel().size() < size - 1 && (count = is.read(buffer)) > 0)
                                         fo.write(buffer, 0, count);
                                 } catch (IOException e) {
-                                    System.out.println("error");
+                                    System.out.println("non risesco a scrivere il file");
                                 }
                             }).start();
 

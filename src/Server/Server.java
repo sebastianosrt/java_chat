@@ -5,7 +5,6 @@ import Server.MySQL.MySQL;
 import java.io.IOException;
 import java.net.ServerSocket;
 import java.net.Socket;
-import java.sql.SQLException;
 import java.util.ArrayList;
 
 /**
@@ -31,7 +30,7 @@ class Server implements Runnable {
                 new Thread(client).start();
             }
         } catch (IOException e) {
-            System.out.println("");
+            System.out.println();
         }
         MySQL.closeConnection();
     }

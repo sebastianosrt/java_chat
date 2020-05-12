@@ -147,7 +147,7 @@ public class MySQL {
 
 
     /**
-     * Controlla l'autenticazio alla chat attraverso le credenziali
+     * Controlla l'autenticazione alla chat attraverso le credenziali
      * @param username nome dell'utente da aggiungere
      * @param password password dell'utente da aggiungere
      * @return json response of the result
