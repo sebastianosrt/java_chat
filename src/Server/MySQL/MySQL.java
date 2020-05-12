@@ -9,13 +9,13 @@ import java.util.HashMap;
 
 public class MySQL {
 
+    //IL database va creato a mano da MySQL
     private final static String URL      = "jdbc:mysql://localhost:3306/";
-    private final static String DBNANME  = "java_chat";// progettojava è il nome del database
-    private final static String USER     = "java_chat"; // l'utente per accedere al database si chiama allo stesso modo
-    private final static String PASSWORD = "java_chat";
+    private final static String DBNANME  = "java_chat"; // inserisci qui il nome del database
+    private final static String USER     = "java_chat"; // inserisci qui il nome dell'utente per accedere database
+    private final static String PASSWORD = "java_chat"; // inserisci qui la password dell'utente per accedere database
     private final static String DRIVER   = "com.mysql.jdbc.Driver";
     private static Connection conn;
-
 
     /**
      * Apri la connessione con il database
@@ -80,7 +80,12 @@ public class MySQL {
         }
     }
 
-
+    /**
+     * Controlla se l'username inserito in fase di registrazione esiste o meno
+     * @param username da cercare
+     * @return true or false
+     * @throws SQLException in caso di errori nell'esecuzione della query
+     */
     public static boolean existUsername(String username) throws SQLException {
         boolean esiste = false;
 
@@ -105,7 +110,7 @@ public class MySQL {
 
 
     /**
-     *
+     * Aggiunge un nuovo utente alla chat quando si registra
      * @param username nome dell'utente da aggiungere
      * @param password password dell'utente da aggiungere
      * @return json response of the result
@@ -142,7 +147,7 @@ public class MySQL {
 
 
     /**
-     *
+     * Controlla l'autenticazio alla chat attraverso le credenziali
      * @param username nome dell'utente da aggiungere
      * @param password password dell'utente da aggiungere
      * @return json response of the result
@@ -185,10 +190,10 @@ public class MySQL {
 
 
     /**
-     *
+     * Metodo utilile all'interno della classe statica MySQL
      * @param rs risultato della query
      * @return mappa di stringhe (simile ad un array associativo [php])
-     * @throws SQLException
+     * @throws SQLException in caso di errori nell'esecuzione della query
      */
     private static HashMap<String, String> createRowObj(ResultSet rs) throws SQLException {
         HashMap<String, String> map = new HashMap<>();
@@ -205,11 +210,11 @@ public class MySQL {
 
 
     /**
-     *
+     * Cerca se esiste un contatto nella lista contatti di un determinato utente
      * @param user username del profilo autenticato
      * @param contact contatto da cercare
      * @return json response of the result
-     * @throws SQLException
+     * @throws SQLException in caso di errori nell'esecuzione della query
      */
     public static boolean existContact(String user, String contact) throws SQLException {
         boolean esiste = false;
@@ -236,7 +241,7 @@ public class MySQL {
 
 
     /**
-     *
+     * Aggiungi un contatto alla lista contatti di un determinato utente
      * @param user username del profilo autenticato
      * @param contact contatto da aggiungere
      * @return json response of the result
@@ -280,7 +285,7 @@ public class MySQL {
     }
 
     /**
-     *
+     * Ottieni la lista dei contatti di un determinato utente
      * @param user username dell'utente di cui cercare i contatti
      * @return lista di contatti
      */
@@ -323,7 +328,7 @@ public class MySQL {
     }
 
     /**
-     *
+     * Cerca un utente nella lista degli utente registrati alla chat nel DB
      * @param s stringa con cui deve inziare l'username
      * @return listq di username trovati
      */
@@ -370,7 +375,7 @@ public class MySQL {
     }
 
     /**
-     *
+     * Aggiungi un messaggio al DB
      * @param mittente intestario del messaggio inviato
      * @param destinatario ricevente del messaggio inviato
      * @param type tipo di messaggio inviato (testo, file)
@@ -411,7 +416,7 @@ public class MySQL {
 
 
     /**
-     *
+     * Ottieni tutti i messaggi di una determinata chat
      * @param mittente colui che invia il messaggio
      * @param destinatario colui che riceve il messaggio
      * @return json response of the result
@@ -459,7 +464,7 @@ public class MySQL {
     }
 
     /**
-     *
+     * Visualizza tutte le informazione di un determinato messaggio nel db
      * @param id del messaggio del DB
      * @return content of the message
      */
@@ -497,6 +502,11 @@ public class MySQL {
         return response;
     }
 
+    /**
+     * Elimina messaggio dal database
+     * @param id univoco del messaggio nel db
+     * @return true or false se il messaggio è stato eliminato
+     */
     public static JSONObject deleteMessage(int id){
         JSONObject response = new JSONObject();
         response.put("sorgente", "database");
