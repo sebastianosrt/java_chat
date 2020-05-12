@@ -18,7 +18,7 @@ public class Client implements Runnable {
 
     /**
      *
-     * @param username username dell'utente loggato
+     * @param username - username dell'utente loggato
      */
     public Client(String username, ClientController client_controller) {
         this.client_controller = client_controller;
@@ -35,6 +35,9 @@ public class Client implements Runnable {
         this.init();
     }
 
+    /**
+     * Questo metodo inizializza la l'oggetto istanziato
+     */
     private void init() {
         this.setUsernameServerSocket();
         Platform.runLater(() -> this.client_controller.caricaContatti(this.getContattiFromDataBase()));
@@ -55,15 +58,12 @@ public class Client implements Runnable {
      */
     public void destroy() {
         this.disconnect(this.output);
-        try {
-            this.input.close();
-            this.output.close();
-            this.socket.close();
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
+        this.exit();
     }
 
+    /**
+     * Questo metodo è richiamato dal thread dell'oggetto per ricevere comandi dal ServerSocket
+     */
     @Override
     public void run() {
         JSONObject req;
@@ -99,6 +99,11 @@ public class Client implements Runnable {
         }
     }
 
+    /**
+     * Questo metodo serve per effettuare la ricerca di un utente
+     * @param utente - username dell'utente da cercare
+     * @return ritorna una lista di username (utenti)
+     */
     public ArrayList<String> searchUsers(String utente) {
         ArrayList<String> lista_utenti = new ArrayList<>();
         JSONObject json_r = new JSONObject();
@@ -133,6 +138,10 @@ public class Client implements Runnable {
         return lista_utenti;
     }
 
+    /**
+     * Questo metodo serve per aggiungere un utente ai propri contatti
+     * @param username_contatto - username dell'utente da aggiungere
+     */
     public void addContactToDataBase(String username_contatto) {
         JSONObject json_r = new JSONObject();
         json_r.put("sorgente", this.username);
@@ -156,6 +165,12 @@ public class Client implements Runnable {
         }
     }
 
+    /**
+     * Questo metodo invia un messaggio testuale
+     * @param contatto - username del destinatario
+     * @param messaggio - testo del messaggio
+     * @return ritorna l'id del messaggio da aggiungere alla view
+     */
     public int inviaMessaggio(String contatto, String messaggio) {
         JSONObject json_r = new JSONObject();
         json_r.put("sorgente", this.username);
@@ -285,6 +300,10 @@ public class Client implements Runnable {
         }
     }
 
+    /**
+     * Questo metodo invia e setta lo username dell'utente loggato al ServerSocket
+     * per riconoscerlo quando invia o riceve un messaggio
+     */
     private void setUsernameServerSocket() {
         JSONObject json_r = new JSONObject();
         json_r.put("sorgente", this.username);
@@ -295,6 +314,10 @@ public class Client implements Runnable {
         this.output.println(json_r);
     }
 
+    /**
+     * Questo metodo recupera i contatti dell'utente appena loggato
+     * @return ritorna una lista di username (contatti)
+     */
     public ArrayList<String> getContattiFromDataBase() {
         ArrayList<String> contatti = new ArrayList<>();
         JSONObject json_r = new JSONObject();
@@ -327,6 +350,11 @@ public class Client implements Runnable {
         return contatti;
     }
 
+    /**
+     * Questo motodo recupera i messaggi inviati o ricevuti con un determinato contatto
+     * @param contatto - username del contatto
+     * @return ritorna una lista di messaggi
+     */
     public ArrayList<Messaggio> getMessaggiFromDataBase(String contatto) {
         ArrayList<Messaggio> messaggi = new ArrayList<>();
         JSONObject json_r = new JSONObject();
@@ -361,6 +389,11 @@ public class Client implements Runnable {
         return messaggi;
     }
 
+    /**
+     * Questo metodo elimina un determinato messaggio già inviato o ricevuto
+     * @param id_messaggio - ID del messaggio da eliminare
+     * @param contatto - username del contatto che ha ricevuto o inviato il messaggio da eliminare
+     */
     public void eliminaMessaggio(int id_messaggio, String contatto) {
         JSONObject json_r = new JSONObject();
         json_r.put("sorgente", this.username);
@@ -385,6 +418,9 @@ public class Client implements Runnable {
         }
     }
 
+    /**
+     * Questo metodo termiana la connessione con il ServerSocket
+     */
     public void exit() {
         try {
             this.socket.close();
