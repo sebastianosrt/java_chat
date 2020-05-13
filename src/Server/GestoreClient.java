@@ -178,7 +178,7 @@ class GestoreClient implements Runnable {
     /**
      * Inizializza gli stream
      *
-     * @throws IOException
+     * @throws IOException - IOException
      */
     private void init() throws IOException {
         output = new PrintWriter(new BufferedOutputStream(client.getOutputStream()), true);
@@ -188,7 +188,7 @@ class GestoreClient implements Runnable {
     /**
      * Chiude gli stream ed i socket e rimuove "this" dalla lista dei gestore client del server
      *
-     * @throws IOException
+     * @throws IOException - IOException
      */
     private void destroy() throws IOException {
         server.rimuoviClient(this);

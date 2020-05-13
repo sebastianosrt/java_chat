@@ -137,7 +137,7 @@ public class LogInController implements Initializable {
      *
      * @param username - l'username dell'utente che ha aperto la chat
      * @param event    - l'oggetto dell'evento click
-     * @throws IOException
+     * @throws IOException - IOException
      */
     private void apriChatView(String username, MouseEvent event) throws IOException {
         Node node = (Node) event.getSource();

@@ -12,6 +12,8 @@ public class Autenticazione {
 
     /**
      * Questo metodo inizializza il socket ed i flussi
+     *
+     * @throws IOException - IOException
      */
     private static void init() throws IOException {
         try {

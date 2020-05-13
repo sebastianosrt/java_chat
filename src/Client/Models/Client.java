@@ -17,7 +17,10 @@ public class Client implements Runnable {
     private final String username;
 
     /**
+     * Costruttore classe Client
+     *
      * @param username - username dell'utente loggato
+     * @param client_controller - controller della view
      */
     public Client(String username, ClientController client_controller) {
         this.client_controller = client_controller;
