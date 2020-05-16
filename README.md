@@ -1,68 +1,64 @@
 # JAVA CHAT
-Chat multi-utente, permette lo scambio di messaggi scritti che appaiono in tempo reale sul monitor di ciascun partecipante.
-## Installazione
-### Pre-requisiti
-* java SDK versione 1.8.0_252
-* IDE java
-* MySQL
-### Fase 2
+Real time multi-user chat.
 
-1. Creare un nuovo utente e un nuovo database su MySQL in modo che l'utente creato abbia tutti i privilegi per modificare il database appena creato. In questa guida per esempio utilizzeremo queste credenziali:
+### Prerequisites
+* java SDK 1.8.0_252
+* MySQL
+
+### Installation
+1. Create a new user, with the following credentials, and a new database MySQL and give all the permissions to the user. 
 ```
-	Nome database: esempio_dbChat
-	Nome utente: user_dbChat
-	Password utente: password_dbChat
+	Database name: java_chat
+	Username: java_chat
+	Password: java_chat
 ```
-2. Clonare la repository sul proprio computer in locale
+2. Clone the repository on your device.
 ```
-	 git clone sebastianosrt/java_chat
+	 git clone https://github.com/sebastianosrt/java_chat
 ```
-3.  Aprire la repo appena scaricata con il proprio IDE in java
-4. Spostarsi (attraverso il proprio IDE) nella cartella di MySQL
+3. Open the cloned directory.
+4. (Optional) Change the MySQL credentials in the file:
 ```
 	java_chat/src/Server/MySQL
 ```
-5. Aprire il file `MySQL.java` e modificare gli attributi privati utilizzati per la connessione al database con quelli registrati in precendenza nel punto 1
-
 <p align="center">
 <img src="https://i.ibb.co/Hn6qY6g/cdbchat.png" alt="cdbchat" border="0"> <!--http://prnt.sc/shtma1 da aggiungere alla fine-->
 </p>
 
-6. Dopo essersi assicurati che MySQL sia in esecuzione, eseguire tramite il proprio IDE il file `SetUpDB.java` che si occuperà di creare le tabelle necessarie nel database per il corretto funzionamento della chat
+6. To setup the database execute the SetUpDB file:
 ```
 	 java_chat/src/Server/MySQL/SetUpDB.java
 ```
 
-### Fase 3
-Quasi finito, mancano pochi passaggi!
+Almost finished, there are a few things left!
 
-7.  Azionare il server tramite il proprio IDE in java
+7.  Execute the Server file:
 ```
 	 java_chat/src/Server/Main.java
 ```
-8. Aprire il client
+8. Execute the Client file:
 ```
 	 java_chat/src/Client/Main.java
 ```
 
-Finito! Ora è possibile utilizzare la chat!
+Finished! Now you can chat!
 
-## Utilizzo
-Per poter usufruire della chat è necessario registrarsi ad essa.
-1. Premere sul pulsante apposito "registrati" per creare un account
-2. Dopo aver creato l'account tornare sul menù di login tramite il pulsante apposito
-3. Effettuare l'accesso con le credenziali usate in fase di registrazione tramite l'interfaccia grafica
+## Use
+To use the chat you have to register.
+1. Click on the "registrati" button to create an account.
+2. After registering click go to login.
+3. Type the credentials and sign in.
 
-Una volta effettuato l'accesso tramite la UI sarà possibile:
-* Aggiungere contatti tramite l'apposito pulsante di ricerca
-* Visualizzare la lista contatti
-* Inviare messaggi testuali o file nelle chat
-* molto altro ancora da scoprire...
+Now you can:
+* Search user to message with. 
+* See your contacts.
+* Send messages or files
+* Discover other things...
 
-## Crediti
-Sebastiano
-Federico
-Filiberto
+## Credits
+* **Sartor Sebastiano** - [sebastianosrt](https://github.com/sebastianosrt)
+* **Filiberto Abbatangelo** - [Filibertoo](https://github.com/Filibertoo)
+* **Ton Federico** - [Fedeton](https://github.com/Fedeton)
 
 ##  Copyright and License
 Copyright 2020-2021 Java_chat. 
