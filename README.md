@@ -23,7 +23,9 @@ Chat multi-utente, permette lo scambio di messaggi scritti che appaiono in tempo
 	java_chat/src/Server/MySQL
 ```
 5. Aprire il file `MySQL.java` e modificare gli attributi privati utilizzati per la connessione al database con quelli registrati in precendenza nel punto 1
+
 <img src="https://i.ibb.co/Hn6qY6g/cdbchat.png" alt="cdbchat" border="0"> <!--http://prnt.sc/shtma1 da aggiungere alla fine-->
+
 6. Dopo essersi assicurati che MySQL sia in esecuzione, eseguire tramite il proprio IDE il file `SetUpDB.java` che si occuperà di creare le tabelle necessarie nel database per il corretto funzionamento della chat
 ```
 	 java_chat/src/Server/MySQL/SetUpDB.java
